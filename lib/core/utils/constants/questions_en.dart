@@ -1,6 +1,6 @@
 import 'package:quiz/feature/chat/data/models/assessment_question/assessment_question.dart';
 
-final List<AssessmentQuestion> questions = [
+final List<AssessmentQuestion> questionsEn = [
   // Level 1 (20 questions)
   AssessmentQuestion(
     id: 'Q1',

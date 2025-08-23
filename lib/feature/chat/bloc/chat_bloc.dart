@@ -1,10 +1,13 @@
 // chat_bloc.dart
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:quiz/core/utils/constants/questions.dart';
+import 'package:quiz/core/utils/constants/questions_en.dart';
+import 'package:quiz/core/utils/constants/questions_ar.dart';
 import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
 import 'package:quiz/feature/chat/data/models/assessment_question/assessment_question.dart';
 import 'package:quiz/feature/chat/data/repositories/chat_repository.dart';
+import 'package:quiz/core/utils/di.dart';
+import 'package:quiz/core/local_settings/local_settings_bloc.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -29,9 +32,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ResetChat>(_onResetChat);
   }
 
+  // Helper method to get the current locale from LocalSettingsBloc
+  String get _currentLocale {
+    try {
+      final settingsBloc = getIt<LocalSettingsBloc>();
+      return settingsBloc.state.local;
+    } catch (e) {
+      return 'en'; // Fallback to English
+    }
+  }
+
+  // Helper method to get the right question set based on locale
+  List<AssessmentQuestion> get _questions {
+    return _currentLocale == 'ar' ? questionsAr : questionsEn;
+  }
+
   double get progress {
     final total = levelQuestions.fold<int>(0, (s, q) => s + q.weight);
-    final answered = levelQuestions.where((q) => answers.containsKey(q.id)).fold<int>(0, (s, q) => s + q.weight);
+    final answered = levelQuestions
+        .where((q) => answers.containsKey(q.id))
+        .fold<int>(0, (s, q) => s + q.weight);
     if (total == 0) return 0.0;
     return answered / total;
   }
@@ -57,63 +77,93 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   FutureOr<void> _onChatStarted(ChatStarted event, Emitter<ChatState> emit) {
     selectedLevel = event.level ?? 'Level 1';
 
-    // Filter questions by selected level
-   switch (selectedLevel) {
-  case 'Level 1':
-    // Q1 .. Q20
-    levelQuestions = questions
-        .where((q) =>
-            q.id.startsWith('Q') &&
-            int.parse(q.id.substring(1)) >= 1 &&
-            int.parse(q.id.substring(1)) <= 20)
-        .cast<AssessmentQuestion>()
-        .toList();
-    break;
-  case 'Level 2':
-    // Q1 .. Q60
-    levelQuestions = questions
-        .where((q) =>
-            q.id.startsWith('Q') &&
-            int.parse(q.id.substring(1)) >= 1 &&
-            int.parse(q.id.substring(1)) <= 60)
-        .cast<AssessmentQuestion>()
-        .toList();
-    break;
-  case 'Level 3':
-    // Q1 .. Q131 (all questions up to Q131)
-    levelQuestions = questions
-        .where((q) =>
-            q.id.startsWith('Q') &&
-            int.parse(q.id.substring(1)) >= 1 &&
-            int.parse(q.id.substring(1)) <= 131)
-        .cast<AssessmentQuestion>()
-        .toList();
-    break;
-  default:
-    levelQuestions =
-        questions.whereType<AssessmentQuestion>().cast<AssessmentQuestion>().toList();
-}
+    // Use the appropriate question set based on locale
+    final questions = _questions;
 
+    // Filter questions by selected level
+    switch (selectedLevel) {
+      case 'Level 1':
+        // Q1 to Q20
+        levelQuestions = questions
+            .where((q) {
+              final idNumber = int.tryParse(
+                q.id.replaceAll(RegExp(r'[^0-9]'), ''),
+              );
+              return idNumber != null && idNumber >= 1 && idNumber <= 20;
+            })
+            .toList();
+        break;
+      case 'Level 2':
+        // Q1 to Q60
+        levelQuestions = questions
+            .where((q) {
+              final idNumber = int.tryParse(
+                q.id.replaceAll(RegExp(r'[^0-9]'), ''),
+              );
+              return idNumber != null && idNumber >= 1 && idNumber <= 60;
+            })
+            .toList();
+        break;
+      case 'Level 3':
+        // All questions
+        levelQuestions = List.from(questions);
+        break;
+      default:
+        levelQuestions = questions
+            .where((q) {
+              final idNumber = int.tryParse(
+                q.id.replaceAll(RegExp(r'[^0-9]'), ''),
+              );
+              return idNumber != null && idNumber >= 1 && idNumber <= 20;
+            })
+            .toList();
+    }
 
     messages.clear();
     answers.clear();
     currentQuestionIndex = 0;
     analysisComplete = false;
 
-    _addBot("Starting $selectedLevel assessment. ${levelQuestions.length} questions.");
+    _addBot(
+      "Starting $selectedLevel assessment. ${levelQuestions.length} questions.",
+    );
     if (levelQuestions.isNotEmpty) {
       final q = levelQuestions[currentQuestionIndex];
       _addBot("[${q.level}] ${q.text}\n(Estimated: ${q.timeSeconds} seconds)");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: q, progress: progress, currentIndex: currentQuestionIndex));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: q,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
     } else {
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: 0.0, currentIndex: 0));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: null,
+          progress: 0.0,
+          currentIndex: 0,
+        ),
+      );
     }
   }
 
-  FutureOr<void> _onAnswerSubmitted(AnswerSubmitted event, Emitter<ChatState> emit) async {
+  FutureOr<void> _onAnswerSubmitted(
+    AnswerSubmitted event,
+    Emitter<ChatState> emit,
+  ) async {
     if (analysisComplete) {
       _addBot("Analysis is already complete. Answers cannot be modified.");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: null,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
       return;
     }
 
@@ -124,13 +174,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     answers[currentQ.id] = event.answer;
     _addUser(event.answer);
 
-    if (messages.isNotEmpty && messages.last['isLoading'] == true) messages.removeLast();
+    if (messages.isNotEmpty && messages.last['isLoading'] == true)
+      messages.removeLast();
 
     currentQuestionIndex++;
     if (currentQuestionIndex < levelQuestions.length) {
       final next = levelQuestions[currentQuestionIndex];
-      _addBot("[${next.level}] ${next.text}\n(Estimated: ${next.timeSeconds} seconds)");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: next, progress: progress, currentIndex: currentQuestionIndex));
+      _addBot(
+        "[${next.level}] ${next.text}\n(Estimated: ${next.timeSeconds} seconds)",
+      );
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: next,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
     } else {
       add(AnalysisRequested());
     }
@@ -139,46 +199,89 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   FutureOr<void> _onPrevQuestion(PrevQuestion event, Emitter<ChatState> emit) {
     if (analysisComplete) {
       _addBot("Analysis is already complete. You cannot go back.");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: null,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
       return null;
     }
     if (currentQuestionIndex > 0) {
       currentQuestionIndex--;
       final q = levelQuestions[currentQuestionIndex];
       _addBot("Returning to the previous question:\n[${q.level}] ${q.text}");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: q, progress: progress, currentIndex: currentQuestionIndex));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: q,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
     } else {
       _addBot("You are already at the first question.");
-      emit(ChatLoaded(messages: List.from(messages), currentQuestion: levelQuestions.isNotEmpty ? levelQuestions.first : null, progress: progress, currentIndex: currentQuestionIndex));
+      emit(
+        ChatLoaded(
+          messages: List.from(messages),
+          currentQuestion: levelQuestions.isNotEmpty
+              ? levelQuestions.first
+              : null,
+          progress: progress,
+          currentIndex: currentQuestionIndex,
+        ),
+      );
     }
   }
 
-  Future<void> _onAnalysisRequested(AnalysisRequested event, Emitter<ChatState> emit) async {
+  Future<void> _onAnalysisRequested(
+    AnalysisRequested event,
+    Emitter<ChatState> emit,
+  ) async {
     _addBot("Analyzing responses...", isLoading: true);
-    emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
+    emit(
+      ChatLoaded(
+        messages: List.from(messages),
+        currentQuestion: null,
+        progress: progress,
+        currentIndex: currentQuestionIndex,
+      ),
+    );
 
     try {
-      final payload = levelQuestions.map((q) => {
-        'id': q.id,
-        'level': q.level,
-        'question': q.text,
-        'answer': answers[q.id] ?? '',
-        'weight': q.weight,
-      }).toList();
+      final payload = levelQuestions
+          .map(
+            (q) => {
+              'id': q.id,
+              'level': q.level,
+              'question': q.text,
+              'answer': answers[q.id] ?? '',
+              'weight': q.weight,
+            },
+          )
+          .toList();
 
       final result = await repository.analyzeResponses(payload);
       analysisComplete = true;
       add(AnalysisComplete(result));
     } catch (e) {
-      if (messages.isNotEmpty && messages.last['isLoading'] == true) messages.removeLast();
+      if (messages.isNotEmpty && messages.last['isLoading'] == true)
+        messages.removeLast();
       _addBot("Analysis failed: ${e.toString()}");
       emit(ChatError(e.toString()));
     }
   }
 
-  FutureOr<void> _onAnalysisComplete(AnalysisComplete event, Emitter<ChatState> emit) {
-    if (messages.isNotEmpty && messages.last['isLoading'] == true) messages.removeLast();
-    final formatted = '''
+  FutureOr<void> _onAnalysisComplete(
+    AnalysisComplete event,
+    Emitter<ChatState> emit,
+  ) {
+    if (messages.isNotEmpty && messages.last['isLoading'] == true)
+      messages.removeLast();
+    final formatted =
+        '''
 ${event.result.summary}
 
 Personality:
@@ -202,7 +305,12 @@ Career Suggestions:
 ${event.result.careerSuggestions.map((c) => '- $c').join('\n')}
 ''';
     _addBot(formatted);
-    emit(AnalysisCompleteState(result: event.result, messages: List.from(messages)));
+    emit(
+      AnalysisCompleteState(
+        result: event.result,
+        messages: List.from(messages),
+      ),
+    );
   }
 
   FutureOr<void> _onResetChat(ResetChat event, Emitter<ChatState> emit) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:quiz/core/utils/constants/routes.dart';
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
@@ -50,7 +52,11 @@ class HeroTextArea extends StatelessWidget {
                   : MainAxisAlignment.start,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).go(
+                      '${Routes.quize}?level=${Uri.encodeComponent('Level 1')}',
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.blue900,
                     padding: EdgeInsets.symmetric(

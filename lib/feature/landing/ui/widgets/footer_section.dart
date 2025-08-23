@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
@@ -25,22 +26,22 @@ class FooterSection extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            FooterLogoAndContact(),
+          children: [
+            const FooterLogoAndContact(),
             FooterLinks(
-              title: "Services",
+              title: context.l10n.footerServices,
               items: [
-                "Mentorship",
-                "Personality Analysis",
-                "Courses",
+                context.l10n.footerServiceGuidance,
+                context.l10n.footerServicePersonalityAnalysis,
+                context.l10n.footerServiceCourses,
               ],
             ),
             FooterLinks(
-              title: "Quick Links",
+              title: context.l10n.footerQuickLinks,
               items: [
-                "Dashboard",
-                "Projects",
-                "Academic Mentorship",
+                context.l10n.footerQuickLinksDashboard,
+                context.l10n.footerQuickLinksProjects,
+                context.l10n.footerQuickLinksMentoring,
               ],
             ),
           ],
@@ -63,7 +64,7 @@ class FooterLogoAndContact extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Multiverse Mentor",
+                context.l10n.multiverseMentor,
                 style: AppTextStyles.font22BlueSemiBold,
               ),
               Gap(12.w),
@@ -72,7 +73,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(12.h),
           Text(
-            "A comprehensive platform for skill development and career mentorship",
+            context.l10n.footerPlatformDescription,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16.sp,
@@ -82,7 +83,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(44.h),
           Text(
-            "Contact Us",
+            context.l10n.footerContactUs,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.sp,
@@ -91,7 +92,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(12.h),
           Text(
-            "info@multiversementor.com",
+            context.l10n.footerContactEmail,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: Colors.grey.shade400,
@@ -101,7 +102,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(6.h),
           Text(
-            "+966 13 123 4567",
+            context.l10n.footerContactPhone,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: Colors.grey.shade400,

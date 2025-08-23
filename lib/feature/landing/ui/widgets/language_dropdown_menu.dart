@@ -26,7 +26,7 @@ class LanguageDropdownMenu extends StatelessWidget {
                 context.l10n.english,
                 style: isMobile
                     ? AppTextStyles.font56BoldBlack
-                    : AppTextStyles.font26BoldBlack,
+                    : AppTextStyles.font20SemiBoldBlack,
               ),
             ),
             DropdownMenuItem(
@@ -35,7 +35,7 @@ class LanguageDropdownMenu extends StatelessWidget {
                 context.l10n.arabic,
                 style: isMobile
                     ? AppTextStyles.font56BoldBlack
-                    : AppTextStyles.font26BoldBlack,
+                    : AppTextStyles.font20SemiBoldBlack,
               ),
             ),
           ],

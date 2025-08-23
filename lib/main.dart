@@ -1,48 +1,66 @@
-// lib/main.dart
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:quiz/core/utils/app_logger.dart';
+import 'package:quiz/core/utils/di.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quiz/feature/chat/bloc/chat_bloc.dart';
-import 'package:quiz/feature/chat/data/repositories/chat_repository.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:quiz/feature/landing/ui/pages/landing_page.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:quiz/core/utils/l10n/app_localizations.dart';
+import 'package:url_strategy/url_strategy.dart';
+import 'core/local_settings/local_settings_bloc.dart';
+import 'core/router/app_router.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    ScreenUtilInit(
-      designSize: const Size(1440, 900),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return RepositoryProvider(
-          create: (_) => ChatRepository(),
-          child: BlocProvider(
-            create: (context) => ChatBloc(context.read<ChatRepository>()),
-            child: const MyApp(),
-          ),
-        );
-      },
-    ),
+  setPathUrlStrategy(); // remove # from web URL
+
+  final storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getTemporaryDirectory(),
   );
+
+  HydratedBloc.storage = storage;
+
+  setupDependencyInjections();
+  Bloc.observer = AppLogger.talkerBlocObserver;
+  runApp(MyApp(appRouter: AppRouter()));
 }
 
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.appRouter});
+
+  final AppRouter appRouter;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title : "Multiverse Mentor" , 
-      locale: const Locale('ar'), // 👈 إجبار التطبيق على العربية
-      supportedLocales: const [Locale('ar')],
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      home: const LandingPage(),
+    return BlocBuilder<LocalSettingsBloc, LocalSettingsState>(
+      bloc: getIt<LocalSettingsBloc>(),
+      buildWhen: (p, c) => p != c,
+      builder: (context, state) {
+        return ScreenUtilInit(
+      designSize: const Size(1440, 900),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              title: 'EDM System',
+              routerConfig: appRouter.router,
+              locale: Locale(state.local),
+              theme: state.lightTheme,
+              darkTheme: state.darkTheme,
+              themeMode: state.currentThemeMode,
+              builder: EasyLoading.init(),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/chat/ui/pages/assessment_screen.dart';
@@ -12,19 +13,18 @@ class FeaturesCards extends StatelessWidget {
 
   void _startLevel(BuildContext context, String level) {
     context.read<ChatBloc>().add(ChatStarted(level: level));
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => QuizPage(selectedLevel: level),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => QuizPage(selectedLevel: level)));
   }
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
-        final bool isMobile = sizingInformation.deviceScreenType == DeviceScreenType.mobile;
-        
+        final bool isMobile =
+            sizingInformation.deviceScreenType == DeviceScreenType.mobile;
+
         if (isMobile) {
           // تصميم الموبايل - عمودي
           return Column(
@@ -33,11 +33,8 @@ class FeaturesCards extends StatelessWidget {
               FeatureCardItem(
                 icon: Icons.bolt_outlined,
                 iconBgColor: AppColors.blueColor,
-                title: "Level 1 – Quick Check",
-                description:
-                    "Questions: 20\n"
-                    "Duration: 15 – 20 minutes\n"
-                    "Focus: Communication, Initiative, Problem-Solving, Responsibility, Curiosity",
+                title: context.l10n.level1Title,
+                description: context.l10n.level1Description,
                 onTap: () => _startLevel(context, "Level 1"),
                 isMobile: true,
               ),
@@ -45,11 +42,8 @@ class FeaturesCards extends StatelessWidget {
               FeatureCardItem(
                 icon: Icons.insights_outlined,
                 iconBgColor: AppColors.greenColor,
-                title: "Level 2 – In-Depth",
-                description:
-                    "Questions: 40\n"
-                    "Duration: 30 – 40 minutes\n"
-                    "Focus: Collaboration, Leadership, Flexibility, Time Management, Customer Handling",
+                title: context.l10n.level2Title,
+                description: context.l10n.level2DescriptionMobile,
                 cardGradient: AppColors.greenLinearGradient,
                 onTap: () => _startLevel(context, "Level 2"),
                 isMobile: true,
@@ -58,11 +52,8 @@ class FeaturesCards extends StatelessWidget {
               FeatureCardItem(
                 icon: Icons.star_border_outlined,
                 iconBgColor: AppColors.blueColor,
-                title: "Level 3 – Professional Challenge",
-                description:
-                    "Questions: 60\n"
-                    "Duration: More than 1 hour\n"
-                    "Focus: Strategic Thinking, Innovation, Long-Term Planning, Entrepreneurial Mindset",
+                title: context.l10n.level3Title,
+                description: context.l10n.level3DescriptionMobile,
                 onTap: () => _startLevel(context, "Level 3"),
                 isMobile: true,
               ),
@@ -78,22 +69,16 @@ class FeaturesCards extends StatelessWidget {
               FeatureCardItem(
                 icon: Icons.bolt_outlined,
                 iconBgColor: AppColors.blueColor,
-                title: "Level 1 – Quick Check",
-                description:
-                    "Questions: 20\n"
-                    "Duration: 15 – 20 minutes\n"
-                    "Focus: Communication, Initiative, Problem-Solving, Responsibility, Curiosity",
+                title: context.l10n.level1Title,
+                description: context.l10n.level1Description,
                 onTap: () => _startLevel(context, "Level 1"),
                 isMobile: false,
               ),
               FeatureCardItem(
                 icon: Icons.insights_outlined,
                 iconBgColor: AppColors.greenColor,
-                title: "Level 2 – In-Depth",
-                description:
-                    "Questions: 60\n"
-                    "Duration: 30 – 40 minutes\n"
-                    "Focus: Collaboration, Leadership, Flexibility, Time Management, Customer Handling",
+                title: context.l10n.level2Title,
+                description: context.l10n.level2DescriptionDesktop,
                 cardGradient: AppColors.greenLinearGradient,
                 onTap: () => _startLevel(context, "Level 2"),
                 isMobile: false,
@@ -101,11 +86,8 @@ class FeaturesCards extends StatelessWidget {
               FeatureCardItem(
                 icon: Icons.star_border_outlined,
                 iconBgColor: AppColors.blueColor,
-                title: "Level 3 – Professional Challenge",
-                description:
-                    "Questions: +100\n"
-                    "Duration: More than 1 hour\n"
-                    "Focus: Strategic Thinking, Innovation, Long-Term Planning, Entrepreneurial Mindset",
+                title: context.l10n.level3Title,
+                description: context.l10n.level3DescriptionDesktop,
                 onTap: () => _startLevel(context, "Level 3"),
                 isMobile: false,
               ),
@@ -114,5 +96,5 @@ class FeaturesCards extends StatelessWidget {
         }
       },
     );
-  } 
+  }
 }

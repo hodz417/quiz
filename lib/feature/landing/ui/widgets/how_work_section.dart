@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/feature/landing/ui/widgets/features_cards.dart';
@@ -22,7 +23,7 @@ class HowItWorksSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "?How does Multiverse Mentor work",
+                context.l10n.howItWorksTitle,
                 style: isMobile
                     ? AppTextStyles.font56BoldBlack
                     : AppTextStyles.font30BoldBlack,
@@ -30,7 +31,8 @@ class HowItWorksSection extends StatelessWidget {
               ),
               Gap(12.h),
               Text(
-                "Three simple steps to reach your ideal career path",
+                context.l10n.howItWorksSubtitle,
+
                 style: isMobile
                     ? AppTextStyles.font35Grey
                     : AppTextStyles.font18RegularGrey,

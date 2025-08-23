@@ -23,11 +23,9 @@ class HeroSection extends StatelessWidget {
             vertical: isMobile ? 32.h : 60.h,
           ),
           child: isMobile
-              // Mobile: stack in a Column
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // الصورة أولاً (لو عايز النص أولاني قللي وانا اعدل)
                     HeroImage(width: 1100.w, height: 200.h),
                     Gap(40.h),
                     HeroTextArea(),
@@ -36,12 +34,13 @@ class HeroSection extends StatelessWidget {
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Expanded(flex: 6, child: HeroTextArea()),
+                    Gap(56.w),
+
                     Expanded(
                       flex: 5,
                       child: HeroImage(width: 720.w, height: 280.h),
                     ),
-                    Gap(56.w),
-                    Expanded(flex: 6, child: HeroTextArea()),
                   ],
                 ),
         );

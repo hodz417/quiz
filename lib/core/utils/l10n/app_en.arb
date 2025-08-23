@@ -1,0 +1,272 @@
+{
+  "@@locale": "en",
+  
+
+  "arabic": "Arabic",
+  "@arabic": {
+    "description": "Name of the Arabic language"
+  },
+
+
+    "english": "English",
+  "@english": {
+    "description": "Name of the English language"
+  },
+
+
+  "multiverseMentor": "Multiverse Mentor",
+  "@multiverseMentor": {
+    "description": "Name of the application or service"
+  },
+
+  "heroTitleLine1": "Discover your career path",
+  "@heroTitleLine1": {
+    "description": "First line of the hero section title"
+  },
+  "heroTitleLine2": "with AI",
+  "@heroTitleLine2": {
+    "description": "Second line of the hero section title"
+  },
+  "heroDescription": "A comprehensive platform that helps you identify your skills and build your career path through smart guidance and personalized courses",
+  "@heroDescription": {
+    "description": "Description text in the hero section"
+  },
+  "heroStartNow": "Start Now →",
+  "@heroStartNow": {
+    "description": "Start now button text in the hero section"
+  },
+  "heroLogin": "Login",
+  "@heroLogin": {
+    "description": "Login button text in the hero section"
+  },
+  "howItWorksTitle": "How does Multiverse Mentor work?",
+    "@howItWorksTitle": {
+      "description": "Title for the 'How it works' section"
+    },
+    "howItWorksSubtitle": "Three simple steps to reach your ideal career path",
+    "@howItWorksSubtitle": {
+      "description": "Subtitle for the 'How it works' section"
+    },
+    "featureContinuousGuidanceTitle": "Continuous Guidance",
+    "@featureContinuousGuidanceTitle": {
+      "description": "Title for the continuous guidance feature card"
+    },
+    "featureContinuousGuidanceDescription": "Ongoing follow-up with a smart mentor to help you develop your skills and achieve your goals",
+    "@featureContinuousGuidanceDescription": {
+      "description": "Description for the continuous guidance feature card"
+    },
+    "featureSmartRecommendationsTitle": "Smart Recommendations",
+    "@featureSmartRecommendationsTitle": {
+      "description": "Title for the smart recommendations feature card"
+    },
+    "featureSmartRecommendationsDescription": "Get personalized recommendations for skills and courses based on your personality analysis",
+    "@featureSmartRecommendationsDescription": {
+      "description": "Description for the smart recommendations feature card"
+    },
+    "featurePersonalityAnalysisTitle": "Personality Analysis",
+    "@featurePersonalityAnalysisTitle": {
+      "description": "Title for the personality analysis feature card"
+    },
+    "featurePersonalityAnalysisDescription": "An advanced questionnaire to analyze your personality and learning styles to determine the best path for you",
+    "@featurePersonalityAnalysisDescription": {
+      "description": "Description for the personality analysis feature card" } , 
+    
+    "footerServices": "Services",
+    "@footerServices": {
+      "description": "Footer section title for services"
+    },
+    "footerServiceGuidance": "Guidance",
+    "@footerServiceGuidance": {
+      "description": "Footer service item: Guidance"
+    },
+    "footerServicePersonalityAnalysis": "Personality Analysis",
+    "@footerServicePersonalityAnalysis": {
+      "description": "Footer service item: Personality Analysis"
+    },
+    "footerServiceCourses": "Courses",
+    "@footerServiceCourses": {
+      "description": "Footer service item: Courses"
+    },
+    "footerQuickLinks": "Quick Links",
+    "@footerQuickLinks": {
+      "description": "Footer section title for quick links"
+    },
+    "footerQuickLinksDashboard": "Dashboard",
+    "@footerQuickLinksDashboard": {
+      "description": "Footer quick link: Dashboard"
+    },
+    "footerQuickLinksProjects": "Projects",
+    "@footerQuickLinksProjects": {
+      "description": "Footer quick link: Projects"
+    },
+    "footerQuickLinksMentoring": "Mentoring",
+    "@footerQuickLinksMentoring": {
+      "description": "Footer quick link: Mentoring"
+    },
+    "footerPlatformDescription": "A comprehensive platform for skill development and career guidance",
+    "@footerPlatformDescription": {
+      "description": "Footer description of the platform"
+    },
+    "footerContactUs": "Contact Us",
+    "@footerContactUs": {
+      "description": "Footer contact us label"
+    },
+    "footerContactEmail": "info@multiversementor.com",
+    "@footerContactEmail": {
+      "description": "Footer contact email address"
+    },
+    "footerContactPhone": "+966 13 123 4567",
+    "@footerContactPhone": {
+      "description": "Footer contact phone number"
+    },
+
+  "loginTitle": "Login",
+  "@loginTitle": {
+    "description": "Login screen title"
+  },
+  "loginSubtitle": "Welcome back! Sign in to your account",
+  "@loginSubtitle": {
+    "description": "Welcome message below the login title"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label for email field"
+  },
+  "emailHint": "Enter your email",
+  "@emailHint": {
+    "description": "Hint text for email field"
+  },
+  "emailRequired": "Email is required",
+  "@emailRequired": {
+    "description": "Error message for empty email"
+  },
+  "emailInvalid": "Enter a valid email",
+  "@emailInvalid": {
+    "description": "Error message for invalid email"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label for password field"
+  },
+  "passwordHint": "Enter your password",
+  "@passwordHint": {
+    "description": "Hint text for password field"
+  },
+
+    "rememberMe": "Remember me",
+  "@rememberMe": {
+    "description": "Remember me option in login screen"
+  },
+  "forgotPassword": "Forgot password?",
+  "@forgotPassword": {
+    "description": "Forgot password button"
+  }
+,
+  
+  "orLoginWith": "Or log with",
+  "@orLoginWith": {
+    "description": "Text between traditional and social login options"
+  
+}
+
+,
+  "noAccount": "Don't have an account?",
+  "@noAccount": {
+    "description": "Text shown to users who don't have an account"
+  },
+  "createAccount": "Create a new account",
+  "@createAccount": {
+    "description": "Button to create a new account"
+  }
+,
+
+   "signUpTitle": "Create Account",
+  "@signUpTitle": {
+    "description": "Sign up screen title"
+  },
+  "signUpSubtitle": "Join us and start your journey towards a successful career",
+  "@signUpSubtitle": {
+    "description": "Welcome message below the sign up title"
+  },
+
+  "labelFullname": "Full Name",
+  "@labelFullname": {
+    "description": "Label for full name field"
+  }
+,
+
+
+
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Label for confirm password field"
+  }
+  ,
+    "fullNameHint": "Enter your full name",
+  "@fullNameHint": {
+    "description": "Hint text for full name field"
+  },
+  "fullNameRequired": "Full name is required",
+  "@fullNameRequired": {
+    "description": "Error message when full name is not provided"
+  },
+  "fullNameInvalid": "Invalid full name",
+  "@fullNameInvalid": {
+    "description": "Error message for invalid full name"
+  },
+  "confirmPasswordHint": "Re-enter your password",
+  "@confirmPasswordHint": {
+    "description": "Hint text for confirm password field"
+  },
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {
+    "description": "Text shown to users who already have an account"
+  },
+
+  "fullNameMinLength": "Full name must be at least 3 characters",
+  "@fullNameMinLength": {
+    "description": "Error message for full name minimum length"
+  } ,
+  "passwordMismatch": "Passwords do not match",
+  "@passwordMismatch": {
+    "description": "Error message for password mismatch"
+  }
+
+,
+  "heroShortDescription": "Identify your skills and grow with AI.",
+  "@heroShortDescription": {
+    "description": "Text description in the hero section"
+  }
+
+  ,
+  "level1Title": "Level 1 – Quick Check",
+  "@level1Title": { "description": "Title for level 1 card" },
+
+  "level1Description": "Questions: 20\nDuration: 15 – 20 minutes\nFocus: Communication, Initiative, Problem-Solving, Responsibility, Curiosity",
+  "@level1Description": { "description": "Description for level 1 (mobile/desktop identical)" },
+
+  "level2Title": "Level 2 – In-Depth",
+  "@level2Title": { "description": "Title for level 2 card" },
+
+  "level2DescriptionMobile": "Questions: 40\nDuration: 30 – 40 minutes\nFocus: Collaboration, Leadership, Flexibility, Time Management, Customer Handling",
+  "@level2DescriptionMobile": { "description": "Description for level 2 shown on mobile (as in mobile layout)" },
+
+  "level2DescriptionDesktop": "Questions: 60\nDuration: 30 – 40 minutes\nFocus: Collaboration, Leadership, Flexibility, Time Management, Customer Handling",
+  "@level2DescriptionDesktop": { "description": "Description for level 2 shown on desktop (as in desktop layout)" },
+
+  "level2CardGradientNote": "Uses green gradient styling",
+  "@level2CardGradientNote": { "description": "Note that level 2 card uses a green gradient in the UI" },
+
+  "level3Title": "Level 3 – Professional Challenge",
+  "@level3Title": { "description": "Title for level 3 card" },
+
+  "level3DescriptionMobile": "Questions: 60\nDuration: More than 1 hour\nFocus: Strategic Thinking, Innovation, Long-Term Planning, Entrepreneurial Mindset",
+  "@level3DescriptionMobile": { "description": "Description for level 3 shown on mobile" },
+
+  "level3DescriptionDesktop": "Questions: +100\nDuration: More than 1 hour\nFocus: Strategic Thinking, Innovation, Long-Term Planning, Entrepreneurial Mindset",
+  "@level3DescriptionDesktop": { "description": "Description for level 3 shown on desktop" },
+
+  "startLevelAction": "Start",
+  "@startLevelAction": { "description": "Short label used when starting a level (generic action text)" }
+}
+

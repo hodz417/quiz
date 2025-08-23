@@ -1,0 +1,211 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Arabic (`ar`).
+class AppLocalizationsAr extends AppLocalizations {
+  AppLocalizationsAr([String locale = 'ar']) : super(locale);
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get multiverseMentor => 'Multiverse Mentor';
+
+  @override
+  String get heroTitleLine1 => 'اكتشف مسارك المهني';
+
+  @override
+  String get heroTitleLine2 => 'مع الذكاء الاصطناعي';
+
+  @override
+  String get heroDescription =>
+      'منصة شاملة تساعدك في تحديد مهاراتك وبناء مسارك المهني من خلال التوجيه الذكي والدورات المخصصة';
+
+  @override
+  String get heroStartNow => 'ابدأ الآن ←';
+
+  @override
+  String get heroLogin => 'تسجيل الدخول';
+
+  @override
+  String get howItWorksTitle => 'كيف يعمل Multiverse Mentor؟';
+
+  @override
+  String get howItWorksSubtitle =>
+      'ثلاث خطوات بسيطة للوصول إلى مسارك المهني المثالي';
+
+  @override
+  String get featureContinuousGuidanceTitle => 'إرشاد مستمر';
+
+  @override
+  String get featureContinuousGuidanceDescription =>
+      'متابعة مستمرة مع مرشد ذكي لمساعدتك على تطوير مهاراتك وتحقيق أهدافك';
+
+  @override
+  String get featureSmartRecommendationsTitle => 'توصيات ذكية';
+
+  @override
+  String get featureSmartRecommendationsDescription =>
+      'احصل على توصيات مخصصة للمهارات والدورات بناءً على تحليل شخصيتك';
+
+  @override
+  String get featurePersonalityAnalysisTitle => 'تحليل الشخصية';
+
+  @override
+  String get featurePersonalityAnalysisDescription =>
+      'استبيان متقدم لتحليل شخصيتك وأنماط تعلمك لتحديد المسار الأنسب لك';
+
+  @override
+  String get footerServices => 'الخدمات';
+
+  @override
+  String get footerServiceGuidance => 'الإرشاد';
+
+  @override
+  String get footerServicePersonalityAnalysis => 'تحليل الشخصية';
+
+  @override
+  String get footerServiceCourses => 'الدورات';
+
+  @override
+  String get footerQuickLinks => 'روابط سريعة';
+
+  @override
+  String get footerQuickLinksDashboard => 'لوحة التحكم';
+
+  @override
+  String get footerQuickLinksProjects => 'المشروعات';
+
+  @override
+  String get footerQuickLinksMentoring => 'الإرشاد الأكاديمي';
+
+  @override
+  String get footerPlatformDescription =>
+      'منصة شاملة لتطوير المهارات والإرشاد المهني';
+
+  @override
+  String get footerContactUs => 'تواصل معنا';
+
+  @override
+  String get footerContactEmail => 'info@multiversementor.com';
+
+  @override
+  String get footerContactPhone => '+966 13 123 4567';
+
+  @override
+  String get loginTitle => 'تسجيل الدخول';
+
+  @override
+  String get loginSubtitle => 'مرحبًا بعودتك! ادخل إلى حسابك';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get emailHint => 'أدخل بريدك الإلكتروني';
+
+  @override
+  String get emailRequired => 'البريد الإلكتروني مطلوب';
+
+  @override
+  String get emailInvalid => 'أدخل بريد إلكتروني صحيح';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get passwordHint => 'أدخل كلمة المرور';
+
+  @override
+  String get rememberMe => 'تذكرني';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get orLoginWith => 'أو سجل باستخدام';
+
+  @override
+  String get noAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get createAccount => 'إنشاء حساب جديد';
+
+  @override
+  String get signUpTitle => 'إنشاء حساب جديد';
+
+  @override
+  String get signUpSubtitle => 'انضم إلينا وابدأ رحلتك نحو مسيرة مهنية ناجحة';
+
+  @override
+  String get labelFullname => 'الاسم الكامل';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get fullNameHint => 'أدخل اسمك الكامل';
+
+  @override
+  String get fullNameRequired => 'الاسم الكامل مطلوب';
+
+  @override
+  String get fullNameInvalid => 'الاسم الكامل غير صالح';
+
+  @override
+  String get confirmPasswordHint => 'أدخل كلمة المرور مرة أخرى';
+
+  @override
+  String get alreadyHaveAccount => 'هل لديك حساب بالفعل؟';
+
+  @override
+  String get fullNameMinLength =>
+      'يجب أن يتكون الاسم الكامل من 3 أحرف على الأقل';
+
+  @override
+  String get passwordMismatch => 'كلمات المرور غير متطابقة';
+
+  @override
+  String get heroShortDescription => 'حدد مهاراتك وتطور مع الذكاء الاصطناعي.';
+
+  @override
+  String get level1Title => 'المستوى 1 – فحص سريع';
+
+  @override
+  String get level1Description =>
+      'الأسئلة: 20\nالمدة: 15 – 20 دقيقة\nالتركيز: التواصل، المبادرة، حل المشكلات، المسؤولية، الفضول';
+
+  @override
+  String get level2Title => 'المستوى 2 – تحليل معمق';
+
+  @override
+  String get level2DescriptionMobile =>
+      'الأسئلة: 40\nالمدة: 30 – 40 دقيقة\nالتركيز: التعاون، القيادة، المرونة، إدارة الوقت، التعامل مع العملاء';
+
+  @override
+  String get level2DescriptionDesktop =>
+      'الأسئلة: 60\nالمدة: 30 – 40 دقيقة\nالتركيز: التعاون، القيادة، المرونة، إدارة الوقت، التعامل مع العملاء';
+
+  @override
+  String get level2CardGradientNote => 'تستخدم البطاقة تدرجًا لونيًا أخضر';
+
+  @override
+  String get level3Title => 'المستوى 3 – التحدي المهني';
+
+  @override
+  String get level3DescriptionMobile =>
+      'الأسئلة: 60\nالمدة: أكثر من ساعة\nالتركيز: التفكير الاستراتيجي، الابتكار، التخطيط طويل المدى، عقلية ريادية';
+
+  @override
+  String get level3DescriptionDesktop =>
+      'الأسئلة: +100\nالمدة: أكثر من ساعة\nالتركيز: التفكير الاستراتيجي، الابتكار، التخطيط طويل المدى، عقلية ريادية';
+
+  @override
+  String get startLevelAction => 'ابدأ';
+}

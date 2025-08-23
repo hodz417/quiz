@@ -1,0 +1,289 @@
+{
+  "@@locale": "ar",
+  
+  "arabic": "العربية",
+  "@arabic": {
+    "description": "اسم اللغة العربية"
+  },
+
+
+
+   "english": "English",
+  "@english": {
+    "description": "اسم اللغة الإنجليزية"
+  },
+
+  "multiverseMentor": "Multiverse Mentor",
+  "@multiverseMentor": {
+    "description": "اسم التطبيق أو الخدمة"
+  },
+
+  "heroTitleLine1": "اكتشف مسارك المهني",
+  "@heroTitleLine1": {
+    "description": "السطر الأول من عنوان قسم البطل"
+  },
+  "heroTitleLine2": "مع الذكاء الاصطناعي",
+  "@heroTitleLine2": {
+    "description": "السطر الثاني من عنوان قسم البطل"
+  },
+  "heroDescription": "منصة شاملة تساعدك في تحديد مهاراتك وبناء مسارك المهني من خلال التوجيه الذكي والدورات المخصصة",
+  "@heroDescription": {
+    "description": "نص الوصف في قسم البطل"
+  },
+  "heroStartNow": "ابدأ الآن ←",
+  "@heroStartNow": {
+    "description": "نص زر ابدأ الآن في قسم البطل"
+  },
+  "heroLogin": "تسجيل الدخول",
+  "@heroLogin": {
+    "description": "نص زر تسجيل الدخول في قسم البطل"
+  }
+
+,
+
+  "howItWorksTitle": "كيف يعمل Multiverse Mentor؟",
+  "@howItWorksTitle": {
+    "description": "عنوان قسم 'كيف يعمل'"
+  },
+  "howItWorksSubtitle": "ثلاث خطوات بسيطة للوصول إلى مسارك المهني المثالي",
+  "@howItWorksSubtitle": {
+    "description": "العنوان الفرعي لقسم 'كيف يعمل'"
+  },
+  "featureContinuousGuidanceTitle": "إرشاد مستمر",
+  "@featureContinuousGuidanceTitle": {
+    "description": "عنوان بطاقة ميزة الإرشاد المستمر"
+  },
+  "featureContinuousGuidanceDescription": "متابعة مستمرة مع مرشد ذكي لمساعدتك على تطوير مهاراتك وتحقيق أهدافك",
+  "@featureContinuousGuidanceDescription": {
+    "description": "وصف بطاقة ميزة الإرشاد المستمر"
+  },
+  "featureSmartRecommendationsTitle": "توصيات ذكية",
+  "@featureSmartRecommendationsTitle": {
+    "description": "عنوان بطاقة ميزة التوصيات الذكية"
+  },
+  "featureSmartRecommendationsDescription": "احصل على توصيات مخصصة للمهارات والدورات بناءً على تحليل شخصيتك",
+  "@featureSmartRecommendationsDescription": {
+    "description": "وصف بطاقة ميزة التوصيات الذكية"
+  },
+  "featurePersonalityAnalysisTitle": "تحليل الشخصية",
+  "@featurePersonalityAnalysisTitle": {
+    "description": "عنوان بطاقة ميزة تحليل الشخصية"
+  },
+  "featurePersonalityAnalysisDescription": "استبيان متقدم لتحليل شخصيتك وأنماط تعلمك لتحديد المسار الأنسب لك",
+  "@featurePersonalityAnalysisDescription": {
+    "description": "وصف بطاقة ميزة تحليل الشخصية"
+  } 
+
+  ,
+
+  
+  "footerServices": "الخدمات",
+  "@footerServices": {
+    "description": "عنوان قسم الخدمات في التذييل"
+  },
+  "footerServiceGuidance": "الإرشاد",
+  "@footerServiceGuidance": {
+    "description": "عنصر خدمة في التذييل: الإرشاد"
+  },
+  "footerServicePersonalityAnalysis": "تحليل الشخصية",
+  "@footerServicePersonalityAnalysis": {
+    "description": "عنصر خدمة في التذييل: تحليل الشخصية"
+  },
+  "footerServiceCourses": "الدورات",
+  "@footerServiceCourses": {
+    "description": "عنصر خدمة في التذييل: الدورات"
+  },
+  "footerQuickLinks": "روابط سريعة",
+  "@footerQuickLinks": {
+    "description": "عنوان قسم الروابط السريعة في التذييل"
+  },
+  "footerQuickLinksDashboard": "لوحة التحكم",
+  "@footerQuickLinksDashboard": {
+    "description": "رابط سريع في التذييل: لوحة التحكم"
+  },
+  "footerQuickLinksProjects": "المشروعات",
+  "@footerQuickLinksProjects": {
+    "description": "رابط سريع في التذييل: المشروعات"
+  },
+  "footerQuickLinksMentoring": "الإرشاد الأكاديمي",
+  "@footerQuickLinksMentoring": {
+    "description": "رابط سريع في التذييل: الإرشاد الأكاديمي"
+  },
+  "footerPlatformDescription": "منصة شاملة لتطوير المهارات والإرشاد المهني",
+  "@footerPlatformDescription": {
+    "description": "وصف المنصة في التذييل"
+  },
+  "footerContactUs": "تواصل معنا",
+  "@footerContactUs": {
+    "description": "عنوان التواصل معنا في التذييل"
+  },
+  "footerContactEmail": "info@multiversementor.com",
+  "@footerContactEmail": {
+    "description": "البريد الإلكتروني للتواصل في التذييل"
+  },
+  "footerContactPhone": "+966 13 123 4567",
+  "@footerContactPhone": {
+    "description": "رقم الهاتف للتواصل في التذييل"
+  },
+
+  
+
+  "loginTitle": "تسجيل الدخول",
+  "@loginTitle": {
+    "description": "عنوان شاشة تسجيل الدخول"
+  },
+  "loginSubtitle": "مرحبًا بعودتك! ادخل إلى حسابك",
+  "@loginSubtitle": {
+    "description": "نص ترحيبي أسفل عنوان تسجيل الدخول"
+  },
+  "emailLabel": "البريد الإلكتروني",
+  "@emailLabel": {
+    "description": "عنوان حقل البريد الإلكتروني"
+  },
+  "emailHint": "أدخل بريدك الإلكتروني",
+  "@emailHint": {
+    "description": "النص الإرشادي لحقل البريد الإلكتروني"
+  },
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "@emailRequired": {
+    "description": "رسالة خطأ عند عدم إدخال البريد الإلكتروني"
+  },
+  "emailInvalid": "أدخل بريد إلكتروني صحيح",
+  "@emailInvalid": {
+    "description": "رسالة خطأ عند إدخال بريد غير صالح"
+  },
+  "passwordLabel": "كلمة المرور",
+  "@passwordLabel": {
+    "description": "عنوان حقل كلمة المرور"
+  },
+  "passwordHint": "أدخل كلمة المرور",
+  "@passwordHint": {
+    "description": "النص الإرشادي لحقل كلمة المرور"
+  }
+,
+    "rememberMe": "تذكرني",
+  "@rememberMe": {
+    "description": "خيار تذكرني في شاشة تسجيل الدخول"
+  },
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "@forgotPassword": {
+    "description": "زر نسيت كلمة المرور"
+  }
+,
+  "orLoginWith": "أو سجل باستخدام",
+  "@orLoginWith": {
+    "description": "نص بين خيارات تسجيل الدخول التقليدية والاجتماعية"
+  }
+
+  ,  "noAccount": "ليس لديك حساب؟",
+  "@noAccount": {
+    "description": "نص يُعرض للمستخدم الذي لا يملك حسابًا"
+  },
+  "createAccount": "إنشاء حساب جديد",
+  "@createAccount": {
+    "description": "زر لإنشاء حساب جديد"
+  }
+,
+
+   "signUpTitle": "إنشاء حساب جديد",
+  "@signUpTitle": {
+    "description": "عنوان شاشة إنشاء حساب جديد"
+  },
+  "signUpSubtitle": "انضم إلينا وابدأ رحلتك نحو مسيرة مهنية ناجحة",
+  "@signUpSubtitle": {
+    "description": "رسالة ترحيبية أسفل عنوان إنشاء حساب جديد"
+  } 
+
+  ,
+
+  "labelFullname": "الاسم الكامل",
+  "@labelFullname": {
+    "description": "عنوان حقل الاسم الكامل"
+  },
+
+
+
+
+  "confirmPassword": "تأكيد كلمة المرور",
+  "@confirmPassword": {
+    "description": "عنوان حقل تأكيد كلمة المرور"
+  }
+,  "fullNameHint": "أدخل اسمك الكامل",
+  "@fullNameHint": {
+    "description": "النص الإرشادي لحقل الاسم الكامل"
+  },
+  "fullNameRequired": "الاسم الكامل مطلوب",
+  "@fullNameRequired": {
+    "description": "رسالة الخطأ عند عدم إدخال الاسم الكامل"
+  },
+  "fullNameInvalid": "الاسم الكامل غير صالح",
+  "@fullNameInvalid": {
+    "description": "رسالة الخطأ عند إدخال اسم غير صالح"
+  },
+  
+  "confirmPasswordHint": "أدخل كلمة المرور مرة أخرى",
+  "@confirmPasswordHint": {
+    "description": "النص الإرشادي لحقل تأكيد كلمة المرور"
+  },
+  "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+  "@alreadyHaveAccount": {
+    "description": "النص المعروض للمستخدمين الذين لديهم حساب بالفعل"
+  } ,
+  
+  "fullNameMinLength": "يجب أن يتكون الاسم الكامل من 3 أحرف على الأقل",
+  "@fullNameMinLength": {
+    "description": "رسالة الخطأ عند إدخال اسم أقل من 3 أحرف"
+  },
+
+
+  "passwordMismatch": "كلمات المرور غير متطابقة",
+  "@passwordMismatch": {
+    "description": "رسالة الخطأ لعدم تطابق كلمات المرور"
+  }
+
+,  
+  "heroShortDescription": "حدد مهاراتك وتطور مع الذكاء الاصطناعي.",
+  "@heroShortDescription": {
+    "description": "نص الوصف في قسم البطل"
+  }
+,
+
+ "level1Title": "المستوى 1 – فحص سريع",
+  "@level1Title": { "description": "عنوان بطاقة المستوى 1" },
+
+  "level1Description": "الأسئلة: 20\nالمدة: 15 – 20 دقيقة\nالتركيز: التواصل، المبادرة، حل المشكلات، المسؤولية، الفضول",
+  "@level1Description": { "description": "وصف المستوى 1 (للموبايل/الديسكتوب)" },
+
+  "level2Title": "المستوى 2 – تحليل معمق",
+  "@level2Title": { "description": "عنوان بطاقة المستوى 2" },
+
+  "level2DescriptionMobile": "الأسئلة: 40\nالمدة: 30 – 40 دقيقة\nالتركيز: التعاون، القيادة، المرونة، إدارة الوقت، التعامل مع العملاء",
+  "@level2DescriptionMobile": { "description": "وصف المستوى 2 في تصميم الموبايل" },
+
+  "level2DescriptionDesktop": "الأسئلة: 60\nالمدة: 30 – 40 دقيقة\nالتركيز: التعاون، القيادة، المرونة، إدارة الوقت، التعامل مع العملاء",
+  "@level2DescriptionDesktop": { "description": "وصف المستوى 2 في تصميم الديسكتوب" },
+
+  "level2CardGradientNote": "تستخدم البطاقة تدرجًا لونيًا أخضر",
+  "@level2CardGradientNote": { "description": "ملاحظة بأن بطاقة المستوى 2 تحتوي على تدرج لوني أخضر في الواجهة" },
+
+  "level3Title": "المستوى 3 – التحدي المهني",
+  "@level3Title": { "description": "عنوان بطاقة المستوى 3" },
+
+  "level3DescriptionMobile": "الأسئلة: 60\nالمدة: أكثر من ساعة\nالتركيز: التفكير الاستراتيجي، الابتكار، التخطيط طويل المدى، عقلية ريادية",
+  "@level3DescriptionMobile": { "description": "وصف المستوى 3 في تصميم الموبايل" },
+
+  "level3DescriptionDesktop": "الأسئلة: +100\nالمدة: أكثر من ساعة\nالتركيز: التفكير الاستراتيجي، الابتكار، التخطيط طويل المدى، عقلية ريادية",
+  "@level3DescriptionDesktop": { "description": "وصف المستوى 3 في تصميم الديسكتوب" },
+
+  "startLevelAction": "ابدأ",
+  "@startLevelAction": { "description": "نص زر أو فعل بدء المستوى" }
+}
+
+
+
+
+
+
+    
+    
+  

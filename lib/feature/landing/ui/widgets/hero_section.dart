@@ -19,12 +19,16 @@ class HeroSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Left side text area
-          Expanded(flex: 6, child: HeroTextArea()),
-          Gap(56.w),
           Expanded(
             flex: 5,
             child: HeroImage(width: 720.w, height: 280.h),
           ),
+
+
+          Gap(56.w),
+
+                    Expanded(flex: 6, child: HeroTextArea()),
+
         ],
       ),
     );

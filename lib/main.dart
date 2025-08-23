@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'منتور المتعدد العوالم',
+      title : "Multiverse Mentor" , 
       locale: const Locale('ar'), // 👈 إجبار التطبيق على العربية
       supportedLocales: const [Locale('ar')],
       localizationsDelegates: [

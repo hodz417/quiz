@@ -48,7 +48,9 @@ class _QuizPageState extends State<QuizPage> {
         body: BlocConsumer<ChatBloc, ChatState>(
           listener: (ctx, state) {
             if (state is ChatError) {
-              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(
+                ctx,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
             if (state is AnalysisCompleteState) {
               // Delay navigation to avoid building during build
@@ -56,7 +58,7 @@ class _QuizPageState extends State<QuizPage> {
                 Navigator.push(
                   ctx,
                   MaterialPageRoute(
-                    builder: (_) => ResultPage(result: state.result),
+                    builder: (_) => ResultPageWeb(result: state.result),
                   ),
                 ).then((_) {
                   ctx.read<ChatBloc>().add(ResetChat());
@@ -97,9 +99,7 @@ class _QuizPageState extends State<QuizPage> {
                                   textAlign: TextAlign.center,
                                 ),
                                 const Gap(35),
-                                Expanded(
-                                  child: _inputForQuestion(currentQ),
-                                ),
+                                Expanded(child: _inputForQuestion(currentQ)),
                               ],
                             ),
                           ),
@@ -127,7 +127,6 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-
   Widget _inputForQuestion(AssessmentQuestion q) {
     final bloc = context.read<ChatBloc>();
     final prevAnswer = bloc.answers[q.id] ?? '';
@@ -149,7 +148,9 @@ class _QuizPageState extends State<QuizPage> {
             borderRadius: BorderRadius.circular(16),
           ),
           options: _buildLikertOptions(),
-          validator: FormBuilderValidators.required(errorText: 'Please choose a rating'),
+          validator: FormBuilderValidators.required(
+            errorText: 'Please choose a rating',
+          ),
         );
 
       case QuestionKind.multipleChoice:
@@ -167,17 +168,26 @@ class _QuizPageState extends State<QuizPage> {
             border: Border.all(color: Colors.grey.shade200),
             borderRadius: BorderRadius.circular(16),
           ),
-          options: opts.map((text) => FormBuilderFieldOption<String>(
-                value: text,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
-                    child: Text(text, style: AppTextStyles.font14Black),
+          options: opts
+              .map(
+                (text) => FormBuilderFieldOption<String>(
+                  value: text,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 12,
+                      ),
+                      child: Text(text, style: AppTextStyles.font14Black),
+                    ),
                   ),
                 ),
-              )).toList(),
-          validator: FormBuilderValidators.required(errorText: 'Please select an option'),
+              )
+              .toList(),
+          validator: FormBuilderValidators.required(
+            errorText: 'Please select an option',
+          ),
         );
 
       case QuestionKind.openEnded:
@@ -200,37 +210,44 @@ class _QuizPageState extends State<QuizPage> {
 
   List<FormBuilderFieldOption<String>> _buildLikertOptions() {
     const options = [
-      {'value': '5', 'label': 'أوافق بشدة'},
-      {'value': '4', 'label': 'أوافق'},
-      {'value': '3', 'label': 'محايد'},
-      {'value': '2', 'label': 'لا أوافق'},
-      {'value': '1', 'label': 'لا أوافق بشدة'},
+      {'value': '5', 'label': 'Strongly Agree'},
+      {'value': '4', 'label': 'Agree'},
+      {'value': '3', 'label': 'Neutral'},
+      {'value': '2', 'label': 'Disagree'},
+      {'value': '1', 'label': 'Strongly Disagree'},
     ];
 
-    return options.map((option) => FormBuilderFieldOption<String>(
-          value: option['value']!,
-          child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
-              child: Text(option['label']!, style: AppTextStyles.font14Black),
+    return options
+        .map(
+          (option) => FormBuilderFieldOption<String>(
+            value: option['value']!,
+            child: SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 12,
+                ),
+                child: Text(option['label']!, style: AppTextStyles.font14Black),
+              ),
             ),
           ),
-        )).toList();
+        )
+        .toList();
   }
 
   void _onNextPressed(AssessmentQuestion currentQ) {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      final val = _formKey.currentState!.fields['answer']!.value.toString().trim();
-      context.read<ChatBloc>().add(AnswerSubmitted(currentQ.id, val)); // Bloc sends to Gemini or backend
+      final val = _formKey.currentState!.fields['answer']!.value
+          .toString()
+          .trim();
+      context.read<ChatBloc>().add(
+        AnswerSubmitted(currentQ.id, val),
+      ); // Bloc sends to Gemini or backend
       _formKey.currentState?.reset();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fix the errors')));
-    }
+    } else {}
   }
 }
-
-
 
 class QuizControlButtons extends StatelessWidget {
   final VoidCallback onPrevious;
@@ -249,7 +266,7 @@ class QuizControlButtons extends StatelessWidget {
       children: [
         TextButton.icon(
           onPressed: onPrevious,
-          label: Text('السابق', style: AppTextStyles.font14Black),
+          label: Text('Previous', style: AppTextStyles.font14Black),
           icon: const Icon(Icons.arrow_back, color: Colors.black),
         ),
         ElevatedButton(
@@ -262,7 +279,7 @@ class QuizControlButtons extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
           ),
           child: Text(
-            'التالي',
+            'Next',
             style: AppTextStyles.font14Black.copyWith(color: Colors.white),
           ),
         ),
@@ -271,7 +288,6 @@ class QuizControlButtons extends StatelessWidget {
   }
 }
 
-
 class QuizHeader extends StatelessWidget {
   const QuizHeader({super.key});
 
@@ -279,10 +295,10 @@ class QuizHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("اختبار الشخصيه", style: AppTextStyles.font26BoldBlack),
+        Text("Personality Test", style: AppTextStyles.font26BoldBlack),
         const Gap(15),
         Text(
-          "سنقوم بتحليل شخصيتك لمساعدتك في اختيار مسارك المهني المناسب",
+          "We will analyze your personality to help you choose the right career path",
           style: AppTextStyles.font17Grey,
           textAlign: TextAlign.center,
         ),
@@ -290,7 +306,6 @@ class QuizHeader extends StatelessWidget {
     );
   }
 }
-
 
 class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
   const ProgressBar({super.key});
@@ -302,24 +317,24 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (ctx, state) {
-        // القيم الافتراضية
+        // default values
         int currentStep = 0;
         int totalSteps = 1;
         double realProgress = 0.0;
         String progressText = '0%';
 
-        // الحصول على حالة البلوك
+        // get bloc instance
         final bloc = BlocProvider.of<ChatBloc>(context);
-        
+
         if (state is ChatLoaded) {
           totalSteps = bloc.levelQuestions.length;
           currentStep = state.currentIndex + 1;
-          
-          // حساب التقدم الحقيقي (المرجح)
+
+          // weighted progress
           realProgress = bloc.progress;
           progressText = '${(realProgress * 100).toStringAsFixed(0)}%';
         } else if (state is AnalysisCompleteState) {
-          // عند اكتمال التحليل
+          // when analysis is complete
           realProgress = 1.0;
           progressText = '100%';
           totalSteps = bloc.levelQuestions.length;
@@ -340,20 +355,17 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'السؤال $currentStep',
+                      'Question $currentStep',
                       style: AppTextStyles.font14Black,
                     ),
                     Text(
-                      progressText, // عرض النسبة المئوية
+                      progressText, // percentage display
                       style: AppTextStyles.font14Black.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.blueColor,
                       ),
                     ),
-                    Text(
-                      'من $totalSteps',
-                      style: AppTextStyles.font14Black,
-                    ),
+                    Text('of $totalSteps', style: AppTextStyles.font14Black),
                   ],
                 ),
               ),

@@ -1,11 +1,16 @@
+// lib/feature/chat/data/models/analysis_result.dart
 class AnalysisResult {
   final String summary;
-  final String personality; // new
+  final String personality;
   final Map<String, int> learningStylePercentages;
-  final List<String> goals; // new
+  final List<String> goals;
   final List<String> strengths;
   final List<String> developmentAreas;
   final List<String> careerSuggestions;
+
+  // NEW fields
+  final List<String> suggestedSkills; // skills to learn (short actionable)
+  final List<String> freelanceJobs; // suggested freelance job titles / gigs
 
   AnalysisResult({
     required this.summary,
@@ -15,6 +20,8 @@ class AnalysisResult {
     required this.strengths,
     required this.developmentAreas,
     required this.careerSuggestions,
+    required this.suggestedSkills,
+    required this.freelanceJobs,
   });
 
   factory AnalysisResult.empty() => AnalysisResult(
@@ -25,27 +32,44 @@ class AnalysisResult {
         strengths: [],
         developmentAreas: [],
         careerSuggestions: [],
+        suggestedSkills: [],
+        freelanceJobs: [],
       );
 
   factory AnalysisResult.fromJson(Map<String, dynamic> json) {
-    // helper to ensure int values
     Map<String, int> parseLearning(Map<String, dynamic>? m) {
       if (m == null) return {'Visual': 0, 'Verbal': 0, 'Kinesthetic': 0};
+      int toInt(dynamic v) {
+        if (v == null) return 0;
+        if (v is int) return v;
+        if (v is double) return v.round();
+        if (v is String) return int.tryParse(v.replaceAll('%', '').trim()) ?? 0;
+        return 0;
+      }
+
       return {
-        'Visual': (m['Visual'] ?? 0) is int ? (m['Visual'] ?? 0) as int : int.tryParse((m['Visual'] ?? '0').toString()) ?? 0,
-        'Verbal': (m['Verbal'] ?? 0) is int ? (m['Verbal'] ?? 0) as int : int.tryParse((m['Verbal'] ?? '0').toString()) ?? 0,
-        'Kinesthetic': (m['Kinesthetic'] ?? 0) is int ? (m['Kinesthetic'] ?? 0) as int : int.tryParse((m['Kinesthetic'] ?? '0').toString()) ?? 0,
+        'Visual': toInt(m['Visual']),
+        'Verbal': toInt(m['Verbal']),
+        'Kinesthetic': toInt(m['Kinesthetic']),
       };
     }
 
+    List<String> toStringList(dynamic v) {
+      if (v == null) return [];
+      if (v is List) return v.map((e) => e.toString()).toList();
+      return [v.toString()];
+    }
+
     return AnalysisResult(
-      summary: json['summary'] as String? ?? '',
-      personality: json['personality'] as String? ?? '',
+      summary: json['summary']?.toString() ?? '',
+      personality: json['personality']?.toString() ?? '',
       learningStylePercentages: parseLearning(json['learningStylePercentages'] as Map<String, dynamic>?),
-      goals: (json['goals'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-      strengths: (json['strengths'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-      developmentAreas: (json['developmentAreas'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-      careerSuggestions: (json['careerSuggestions'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      goals: toStringList(json['goals']),
+      strengths: toStringList(json['strengths']),
+      developmentAreas: toStringList(json['developmentAreas']),
+      careerSuggestions: toStringList(json['careerSuggestions']),
+      suggestedSkills: toStringList(json['suggestedSkills']),
+      freelanceJobs: toStringList(json['freelanceJobs']),
     );
   }
 }

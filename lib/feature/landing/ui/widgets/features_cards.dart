@@ -28,26 +28,32 @@ class FeaturesCards extends StatelessWidget {
         FeatureCardItem(
           icon: Icons.bolt_outlined,
           iconBgColor: AppColors.blueColor,
-          title: "المستوى الأول – الفحص السريع",
+          title: "Level 1 – Quick Check",
           description:
-              "عدد الأسئلة: 20\nالمدة: 15 – 20 دقيقة\nالتركيز: التواصل، المبادرة، حل المشكلات، المسؤولية، الفضول",
+              "Questions: 20\n"
+              "Duration: 15 – 20 minutes\n"
+              "Focus: Communication, Initiative, Problem-Solving, Responsibility, Curiosity",
           onTap: () => _startLevel(context, "Level 1"),
         ),
         FeatureCardItem(
           icon: Icons.insights_outlined,
           iconBgColor: AppColors.greenColor,
-          title: "المستوى الثاني – التعمق",
+          title: "Level 2 – In-Depth",
           description:
-              "عدد الأسئلة: 40\nالمدة: 30 – 40 دقيقة\nالتركيز: التعاون، القيادة، المرونة، إدارة الوقت، التعامل مع العملاء",
+              "Questions: 40\n"
+              "Duration: 30 – 40 minutes\n"
+              "Focus: Collaboration, Leadership, Flexibility, Time Management, Customer Handling",
           cardGradient: AppColors.greenLinearGradient,
           onTap: () => _startLevel(context, "Level 2"),
         ),
         FeatureCardItem(
           icon: Icons.star_border_outlined,
           iconBgColor: AppColors.blueColor,
-          title: "المستوى الثالث – التحدي الاحترافي",
+          title: "Level 3 – Professional Challenge",
           description:
-              "عدد الأسئلة: 60\nالمدة: أكثر من ساعة\nالتركيز: التفكير الاستراتيجي، الابتكار، التخطيط طويل المدى، العقلية الريادية",
+              "Questions: 60\n"
+              "Duration: More than 1 hour\n"
+              "Focus: Strategic Thinking, Innovation, Long-Term Planning, Entrepreneurial Mindset",
           onTap: () => _startLevel(context, "Level 3"),
         ),
       ],

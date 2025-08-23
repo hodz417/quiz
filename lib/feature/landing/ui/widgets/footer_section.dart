@@ -21,26 +21,26 @@ class FooterSection extends StatelessWidget {
         vertical: verticalPadding,
       ),
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: TextDirection.ltr,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
             FooterLogoAndContact(),
             FooterLinks(
-              title: "الخدمات",
+              title: "Services",
               items: [
-                "الإرشاد",
-                "تحليل الشخصية",
-                "الدورات",
+                "Mentorship",
+                "Personality Analysis",
+                "Courses",
               ],
             ),
             FooterLinks(
-              title: "روابط سريعة",
+              title: "Quick Links",
               items: [
-                "لوحة التحكم",
-                "المشروعات",
-                "الإرشاد الأكاديمي",
+                "Dashboard",
+                "Projects",
+                "Academic Mentorship",
               ],
             ),
           ],
@@ -72,7 +72,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(12.h),
           Text(
-            "منصة شاملة لتطوير المهارات والإرشاد المهني",
+            "A comprehensive platform for skill development and career mentorship",
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16.sp,
@@ -82,7 +82,7 @@ class FooterLogoAndContact extends StatelessWidget {
           ),
           Gap(44.h),
           Text(
-            "تواصل معنا",
+            "Contact Us",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.sp,
@@ -126,7 +126,7 @@ class FooterLinks extends StatelessWidget {
     return SizedBox(
       width: 220.w,
       child: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: TextDirection.ltr,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

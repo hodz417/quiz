@@ -56,41 +56,63 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _onChatStarted(ChatStarted event, Emitter<ChatState> emit) {
     selectedLevel = event.level ?? 'Level 1';
-    
-    // تصفية الأسئلة حسب المستوى المحدد
-    switch (selectedLevel) {
-      case 'Level 1':
-        levelQuestions = questions.where((q) => (q).id.startsWith('Q') && int.parse((q).id.substring(1)) <= 20).cast<AssessmentQuestion>().toList();
-        break;
-      case 'Level 2':
-        levelQuestions = questions.where((q) => (q).id.startsWith('Q') && int.parse((q).id.substring(1)) >= 21 && int.parse((q).id.substring(1)) <= 80).cast<AssessmentQuestion>().toList();
-        break;
-      case 'Level 3':
-        levelQuestions = questions.where((q) => (q).id.startsWith('Q') && int.parse((q).id.substring(1)) >= 1).cast<AssessmentQuestion>().toList();
-        break;
-      default:
-        levelQuestions = questions.whereType<AssessmentQuestion>().cast<AssessmentQuestion>().toList();
-    }
+
+    // Filter questions by selected level
+   switch (selectedLevel) {
+  case 'Level 1':
+    // Q1 .. Q20
+    levelQuestions = questions
+        .where((q) =>
+            q.id.startsWith('Q') &&
+            int.parse(q.id.substring(1)) >= 1 &&
+            int.parse(q.id.substring(1)) <= 20)
+        .cast<AssessmentQuestion>()
+        .toList();
+    break;
+  case 'Level 2':
+    // Q1 .. Q60
+    levelQuestions = questions
+        .where((q) =>
+            q.id.startsWith('Q') &&
+            int.parse(q.id.substring(1)) >= 1 &&
+            int.parse(q.id.substring(1)) <= 60)
+        .cast<AssessmentQuestion>()
+        .toList();
+    break;
+  case 'Level 3':
+    // Q1 .. Q131 (all questions up to Q131)
+    levelQuestions = questions
+        .where((q) =>
+            q.id.startsWith('Q') &&
+            int.parse(q.id.substring(1)) >= 1 &&
+            int.parse(q.id.substring(1)) <= 131)
+        .cast<AssessmentQuestion>()
+        .toList();
+    break;
+  default:
+    levelQuestions =
+        questions.whereType<AssessmentQuestion>().cast<AssessmentQuestion>().toList();
+}
+
 
     messages.clear();
     answers.clear();
     currentQuestionIndex = 0;
     analysisComplete = false;
 
-    _addBot("بدء تقييم $selectedLevel. ${levelQuestions.length} أسئلة.");
+    _addBot("Starting $selectedLevel assessment. ${levelQuestions.length} questions.");
     if (levelQuestions.isNotEmpty) {
       final q = levelQuestions[currentQuestionIndex];
-      _addBot("[${q.level}] ${q.text}\n(مقدر: ${q.timeSeconds} ثانية)");
+      _addBot("[${q.level}] ${q.text}\n(Estimated: ${q.timeSeconds} seconds)");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: q, progress: progress, currentIndex: currentQuestionIndex));
     } else {
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: 0.0, currentIndex: 0));
     }
   }
 
-  // باقي الدوال تبقى كما هي دون تغيير
   FutureOr<void> _onAnswerSubmitted(AnswerSubmitted event, Emitter<ChatState> emit) async {
     if (analysisComplete) {
-      _addBot("تم الانتهاء من التحليل بالفعل. لا يمكن تعديل الإجابات.");
+      _addBot("Analysis is already complete. Answers cannot be modified.");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
       return;
     }
@@ -107,7 +129,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     currentQuestionIndex++;
     if (currentQuestionIndex < levelQuestions.length) {
       final next = levelQuestions[currentQuestionIndex];
-      _addBot("[${next.level}] ${next.text}\n(مقدر: ${next.timeSeconds} ثانية)");
+      _addBot("[${next.level}] ${next.text}\n(Estimated: ${next.timeSeconds} seconds)");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: next, progress: progress, currentIndex: currentQuestionIndex));
     } else {
       add(AnalysisRequested());
@@ -116,23 +138,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _onPrevQuestion(PrevQuestion event, Emitter<ChatState> emit) {
     if (analysisComplete) {
-      _addBot("تم الانتهاء من التحليل بالفعل. لا يمكن الرجوع للخلف.");
+      _addBot("Analysis is already complete. You cannot go back.");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
       return null;
     }
     if (currentQuestionIndex > 0) {
       currentQuestionIndex--;
       final q = levelQuestions[currentQuestionIndex];
-      _addBot("العودة إلى السؤال السابق:\n[${q.level}] ${q.text}");
+      _addBot("Returning to the previous question:\n[${q.level}] ${q.text}");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: q, progress: progress, currentIndex: currentQuestionIndex));
     } else {
-      _addBot("أنت بالفعل في السؤال الأول.");
+      _addBot("You are already at the first question.");
       emit(ChatLoaded(messages: List.from(messages), currentQuestion: levelQuestions.isNotEmpty ? levelQuestions.first : null, progress: progress, currentIndex: currentQuestionIndex));
     }
   }
 
   Future<void> _onAnalysisRequested(AnalysisRequested event, Emitter<ChatState> emit) async {
-    _addBot("جارٍ تحليل الإجابات...", isLoading: true);
+    _addBot("Analyzing responses...", isLoading: true);
     emit(ChatLoaded(messages: List.from(messages), currentQuestion: null, progress: progress, currentIndex: currentQuestionIndex));
 
     try {
@@ -149,7 +171,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       add(AnalysisComplete(result));
     } catch (e) {
       if (messages.isNotEmpty && messages.last['isLoading'] == true) messages.removeLast();
-      _addBot("فشل التحليل: ${e.toString()}");
+      _addBot("Analysis failed: ${e.toString()}");
       emit(ChatError(e.toString()));
     }
   }
@@ -159,24 +181,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final formatted = '''
 ${event.result.summary}
 
-الشخصية:
+Personality:
 ${event.result.personality}
 
-أسلوب التعلم:
-- بصري: ${event.result.learningStylePercentages['Visual']}%
-- لفظي: ${event.result.learningStylePercentages['Verbal']}%
-- حركي: ${event.result.learningStylePercentages['Kinesthetic']}
+Learning Style:
+- Visual: ${event.result.learningStylePercentages['Visual']}%
+- Verbal: ${event.result.learningStylePercentages['Verbal']}%
+- Kinesthetic: ${event.result.learningStylePercentages['Kinesthetic']}
 
-الأهداف:
+Goals:
 ${event.result.goals.map((g) => '- $g').join('\n')}
 
-نقاط القوة:
+Strengths:
 ${event.result.strengths.map((s) => '- $s').join('\n')}
 
-مجالات التطوير:
+Development Areas:
 ${event.result.developmentAreas.map((d) => '- $d').join('\n')}
 
-اقتراحات مهنية:
+Career Suggestions:
 ${event.result.careerSuggestions.map((c) => '- $c').join('\n')}
 ''';
     _addBot(formatted);

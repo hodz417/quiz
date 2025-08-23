@@ -1,148 +1,265 @@
-import 'package:docx_template/docx_template.dart';
+// lib/feature/result/ui/result_page_web.dart
+import 'dart:typed_data';
+import 'dart:convert' show utf8;
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:gap/gap.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
-import 'dart:io';
-import 'dart:html' as html;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:universal_html/html.dart' as html;
 
-class ResultPage extends StatelessWidget {
+/// Web-only Result page that:
+/// - shows compact (1-2 word) cards
+/// - builds a minimal .docx file programmatically (no template)
+/// - triggers browser download (saves to Downloads or according to browser settings)
+class ResultPageWeb extends StatelessWidget {
   final AnalysisResult result;
+  const ResultPageWeb({super.key, required this.result});
 
-  const ResultPage({super.key, required this.result});
-
-  // Helper function to extract 2-word summaries
-  String getTwoWordSummary(String text) {
-    final words = text.split(' ');
-    if (words.length <= 2) return text;
-    return '${words[0]} ${words[1]}';
+  // ---------- Utilities for UI ----------
+  String _twoWords(String text) {
+    final words = text.trim().split(RegExp(r'\s+'));
+    if (words.isEmpty) return '';
+    return words.take(4).join(' ');
   }
 
-  // Helper function to extract first word
-  String getOneWordSummary(String text) {
-    final words = text.split(' ');
-    return words.isNotEmpty ? words[0] : text;
+  String _oneWord(String text) {
+    final words = text.trim().split(RegExp(r'\s+'));
+    return words.isNotEmpty ? words.first : '';
   }
 
-  Future<void> _downloadWordFile() async {
-    try {
-      // Load template
-      final data = await rootBundle.load('assets/template.docx');
-      final bytes = data.buffer.asUint8List();
-      final docx = await DocxTemplate.fromBytes(bytes);
+  // ---------- Build simple docx bytes (minimal WordprocessingML) ----------
+  Uint8List _buildSimpleDocxBytes(AnalysisResult r) {
+    // escape XML special chars
+    String esc(String s) => s
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&apos;');
 
-      // Populate content with full details
-      Content c = Content();
-      c.add(TextContent('summary', result.summary));
-      c.add(TextContent('personality', result.personality));
-      c.add(TextContent('learning_visual', '${result.learningStylePercentages['Visual'] ?? 0}% بصري'));
-      c.add(TextContent('learning_verbal', '${result.learningStylePercentages['Verbal'] ?? 0}% لفظي'));
-      c.add(TextContent('learning_kinesthetic', '${result.learningStylePercentages['Kinesthetic'] ?? 0}% حركي'));
-      
-      // Add all goals, strengths, etc. with full details
-      c.add(ListContent('goals', 
-          result.goals.map((g) => PlainContent(TextContent('goal', g) as String)).toList()));
-      c.add(ListContent('strengths', 
-          result.strengths.map((s) => PlainContent(TextContent('strength', s) as String)).toList()));
-      c.add(ListContent('development_areas', 
-          result.developmentAreas.map((d) => PlainContent(TextContent('area', d) as String)).toList()));
-      c.add(ListContent('career_suggestions', 
-          result.careerSuggestions.map((c) => PlainContent(TextContent('suggestion', c) as String)).toList()));
+    final header =
+        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>''';
+    final docXml = StringBuffer()
+      ..writeln(header)
+      ..writeln(
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
+      )
+      ..writeln('<w:body>');
 
-      // Generate docx
-      final docGenerated = await docx.generate(c);
-      final fileBytes = docGenerated ?? bytes;
-
-      // Download or save
-      if (kIsWeb) {
-        final blob = html.Blob([fileBytes]);
-        final url = html.Url.createObjectUrlFromBlob(blob);
-        final anchor = html.AnchorElement(href: url)
-          ..download = 'تقرير_التقييم_الشامل.docx'
-          ..click();
-        html.Url.revokeObjectUrl(url);
-      } else {
-        final directory = await getApplicationDocumentsDirectory();
-        final path = '${directory.path}/تقرير_التقييم_الشامل.docx';
-        await File(path).writeAsBytes(fileBytes);
-        // Show success message
-       
-      }
-    } catch (e) {
-      // Show error message
+    void addParagraph(String text) {
+      docXml.writeln(
+        '<w:p><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>',
+      );
     }
+
+    addParagraph('Assessment Report');
+    addParagraph('');
+    addParagraph('Summary:');
+    addParagraph(r.summary);
+    addParagraph('');
+    addParagraph('Personality:');
+    addParagraph(r.personality);
+    addParagraph('');
+    addParagraph('Learning Style:');
+    addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
+    addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
+    addParagraph('Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addParagraph('');
+
+    addParagraph('Goals:');
+    if (r.goals.isEmpty) {
+      addParagraph('No goals provided');
+    } else {
+      for (var g in r.goals) addParagraph('- $g');
+    }
+    addParagraph('');
+
+    addParagraph('Strengths:');
+    if (r.strengths.isEmpty) {
+      addParagraph('No strengths listed');
+    } else {
+      for (var s in r.strengths) addParagraph('- $s');
+    }
+    addParagraph('');
+
+    addParagraph('Development Areas:');
+    if (r.developmentAreas.isEmpty) {
+      addParagraph('No development areas listed');
+    } else {
+      for (var d in r.developmentAreas) addParagraph('- $d');
+    }
+    addParagraph('');
+
+    addParagraph('Career Suggestions:');
+    if (r.careerSuggestions.isEmpty) {
+      addParagraph('No career suggestions');
+    } else {
+      for (var c in r.careerSuggestions) addParagraph('- $c');
+    }
+
+    // closing
+    docXml.writeln('<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>');
+    docXml.writeln('</w:body>');
+    docXml.writeln('</w:document>');
+
+    final documentXml = docXml.toString();
+
+    final contentTypes =
+        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>
+''';
+
+    final rels = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>
+''';
+
+    final core = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:creator>Multiverse Mentor</dc:creator>
+  <dc:title>Assessment Report</dc:title>
+  <dc:description>Assessment report generated by the app</dc:description>
+</cp:coreProperties>
+''';
+
+    final app = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Multiverse Mentor</Application>
+</Properties>
+''';
+
+    final archive = Archive();
+    archive.addFile(
+      ArchiveFile(
+        '[Content_Types].xml',
+        utf8.encode(contentTypes).length,
+        utf8.encode(contentTypes),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/core.xml',
+        utf8.encode(core).length,
+        utf8.encode(core),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/app.xml',
+        utf8.encode(app).length,
+        utf8.encode(app),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'word/document.xml',
+        utf8.encode(documentXml).length,
+        utf8.encode(documentXml),
+      ),
+    );
+
+    final encoder = ZipEncoder();
+    final zipData = encoder.encode(archive)!;
+    return Uint8List.fromList(zipData);
+  }
+
+  // ---------- Trigger browser download ----------
+  void _downloadDocxInBrowser(Uint8List bytes, String filename) {
+    final blob = html.Blob(
+      [bytes],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    );
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.document.createElement('a') as html.AnchorElement;
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.style.display = 'none';
+    html.document.body!.append(anchor);
+    anchor.click();
+    anchor.remove();
+    Future.delayed(
+      const Duration(milliseconds: 300),
+      () => html.Url.revokeObjectUrl(url),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final containerWidth = mediaQuery.size.width > 800 
-        ? mediaQuery.size.width * 0.5 
+    final containerWidth = mediaQuery.size.width > 900
+        ? mediaQuery.size.width * 0.55
         : mediaQuery.size.width * 0.95;
 
-    // Prepare data with 2-word summaries for UI
-    final List<Map<String, dynamic>> resultsData = [
+    final resultsData = <Map<String, dynamic>>[
       {
-        'title': 'الشخصية',
+        'title': 'Personality',
         'icon': Icons.psychology,
         'iconColor': AppColors.blueColor,
-        'gradientColors': [const Color(0XFFE7F3FF), Colors.white],
+        'gradient': [const Color(0xFFE7F3FF), Colors.white],
         'items': [
           {
-            'value': getTwoWordSummary(result.personality), 
+            'value': _twoWords(result.personality),
             'label': '',
-            'fullValue': result.personality
+            'full': result.personality,
           },
         ],
       },
       {
-        'title': 'التعلم',
+        'title': 'Learning',
         'icon': Icons.school,
-        'iconColor': const Color(0XFF16A34A),
-        'gradientColors': [const Color(0XFFDCFCE7), Colors.white],
+        'iconColor': const Color(0xFF16A34A),
+        'gradient': [const Color(0xFFDCFCE7), Colors.white],
         'items': [
           {
-            'value': '${result.learningStylePercentages['Visual'] ?? 0}%', 
-            'label': 'بصري',
-            'fullValue': '${result.learningStylePercentages['Visual'] ?? 0}% بصري'
+            'value': '${result.learningStylePercentages['Visual'] ?? 0}%',
+            'label': 'Visual',
+            'full': '${result.learningStylePercentages['Visual'] ?? 0}% Visual',
           },
           {
-            'value': '${result.learningStylePercentages['Verbal'] ?? 0}%', 
-            'label': 'لفظي',
-            'fullValue': '${result.learningStylePercentages['Verbal'] ?? 0}% لفظي'
+            'value': '${result.learningStylePercentages['Verbal'] ?? 0}%',
+            'label': 'Verbal',
+            'full': '${result.learningStylePercentages['Verbal'] ?? 0}% Verbal',
           },
           {
-            'value': '${result.learningStylePercentages['Kinesthetic'] ?? 0}%', 
-            'label': 'حركي',
-            'fullValue': '${result.learningStylePercentages['Kinesthetic'] ?? 0}% حركي'
+            'value': '${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
+            'label': 'Kinesthetic',
+            'full':
+                '${result.learningStylePercentages['Kinesthetic'] ?? 0}% Kinesthetic',
           },
         ],
       },
       {
-        'title': 'الأهداف',
+        'title': 'Goals',
         'icon': Icons.flag,
         'iconColor': Colors.black,
-        'gradientColors': [Colors.white, Colors.white],
-        'items': result.goals.take(3).map((g) => {
-          'value': getTwoWordSummary(g),
-          'label': '',
-          'fullValue': g
-        }).toList(),
+        'gradient': [Colors.white, Colors.white],
+        'items': result.goals
+            .take(3)
+            .map((g) => {'value': _twoWords(g), 'label': '', 'full': g})
+            .toList(),
       },
       {
-        'title': 'نقاط القوة',
+        'title': 'Strengths',
         'icon': Icons.star,
         'iconColor': Colors.amber,
-        'gradientColors': [Colors.white, Colors.white],
-        'items': result.strengths.take(3).map((s) => {
-          'value': getTwoWordSummary(s),
-          'label': '',
-          'fullValue': s
-        }).toList(),
+        'gradient': [Colors.white, Colors.white],
+        'items': result.strengths
+            .take(3)
+            .map((s) => {'value': _twoWords(s), 'label': '', 'full': s})
+            .toList(),
       },
     ];
 
@@ -150,90 +267,112 @@ class ResultPage extends StatelessWidget {
       backgroundColor: AppColors.kPrimaryBg,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 18),
           child: Center(
             child: Container(
               width: containerWidth,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(14),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 child: Directionality(
-                  textDirection: TextDirection.rtl,
+                  textDirection: TextDirection.ltr,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundColor: const Color(0XFFDCFCE7),
+                          backgroundColor: const Color(0xFFDCFCE7),
                           child: const Icon(
                             Icons.check_rounded,
+                            color: Color(0xFF16A34A),
                             size: 40,
-                            color: Color(0XFF16A34A),
                           ),
                         ),
                       ),
-                      const Gap(10),
+                      const Gap(12),
                       Center(
                         child: Text(
-                          "تهانينا!",
+                          'Congratulations!',
                           style: AppTextStyles.font26BoldBlack,
                         ),
                       ),
-                      const Gap(5),
+                      const Gap(8),
                       Center(
                         child: Text(
-                          getTwoWordSummary(result.summary),
+                          _twoWords(result.summary),
                           style: AppTextStyles.font17Grey,
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const Gap(10),
+                      const Gap(14),
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: resultsData.length,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 3.0,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
-                        itemBuilder: (context, index) {
-                          return ResultCardItem(
-                            title: resultsData[index]['title'],
-                            icon: resultsData[index]['icon'],
-                            iconColor: resultsData[index]['iconColor'],
-                            gradientColors: List<Color>.from(resultsData[index]['gradientColors']),
-                            items: List<Map<String, String>>.from(resultsData[index]['items']),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 3.2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                        itemBuilder: (context, idx) {
+                          final item = resultsData[idx];
+                          final items = (item['items'] as List).map((m) {
+                            final v = (m['value'] ?? '').toString();
+                            final short = v
+                                .split(RegExp(r'\s+'))
+                                .take(2)
+                                .join(' ');
+                            return {
+                              'value': short,
+                              'label': (m['label'] ?? '').toString(),
+                              'full': (m['full'] ?? '').toString(),
+                            };
+                          }).toList();
+                          return _ResultCard(
+                            title: item['title'],
+                            icon: item['icon'],
+                            iconColor: item['iconColor'],
+                            gradient: List<Color>.from(item['gradient']),
+                            items: List<Map<String, String>>.from(items),
                           );
                         },
                       ),
-                      const Gap(10),
+                      const Gap(12),
                       Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [const Color(0xFF0068CC), const Color(0xFF00CB9A)],
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF0068CC), Color(0xFF00CB9A)],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           ),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.all(12),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.star_outline, color: Colors.white, size: 20),
-                                const Gap(4),
-                                const Text(
-                                  "التوصيات",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Icon(
+                                  Icons.star_outline,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                Gap(6),
+                                Text(
+                                  'Recommendations',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ],
                             ),
@@ -241,48 +380,57 @@ class ResultPage extends StatelessWidget {
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
-                              children: result.careerSuggestions.take(4).map((suggestion) {
-                                return _buildTopicCard(
-                                  getOneWordSummary(suggestion),
-                                  getTwoWordSummary(suggestion),
-                                );
+                              children: result.careerSuggestions.take(4).map((
+                                s,
+                              ) {
+                                return _topicCard(_oneWord(s), _twoWords(s));
                               }).toList(),
                             ),
                           ],
                         ),
                       ),
-                      const Gap(20),
+                      const Gap(18),
                       Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [const Color(0xFF0068CC), const Color(0xFF00CB9A)],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final bytes = _buildSimpleDocxBytes(result);
+                            _downloadDocxInBrowser(
+                              bytes,
+                              'assessment_report.docx',
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Report download started — check your browser\'s Downloads folder.',
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0068CC),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28,
+                              vertical: 14,
                             ),
-                            borderRadius: BorderRadius.circular(12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          child: ElevatedButton(
-                            onPressed: _downloadWordFile,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                            child: const Text(
-                              'تحميل التقرير',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          child: const Text(
+                            'Download Report',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
                         ),
                       ),
-                      const Gap(5),
+                      const Gap(8),
                       const Center(
                         child: Text(
-                          'تقرير مفصل بكافة النتائج',
+                          'A detailed report with full results',
                           style: TextStyle(fontSize: 12, color: Colors.grey),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -296,23 +444,28 @@ class ResultPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopicCard(String title, String label) {
+  // helper widgets
+  static Widget _topicCard(String title, String label) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.white.withOpacity(0.12),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-          const Gap(2),
+          const Gap(4),
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: Colors.white),
+            style: const TextStyle(fontSize: 12, color: Colors.white70),
             textAlign: TextAlign.center,
           ),
         ],
@@ -321,19 +474,17 @@ class ResultPage extends StatelessWidget {
   }
 }
 
-class ResultCardItem extends StatelessWidget {
+class _ResultCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color iconColor;
-  final List<Color> gradientColors;
+  final List<Color> gradient;
   final List<Map<String, String>> items;
-
-  const ResultCardItem({
-    super.key,
+  const _ResultCard({
     required this.title,
     required this.icon,
     required this.iconColor,
-    required this.gradientColors,
+    required this.gradient,
     required this.items,
   });
 
@@ -346,7 +497,7 @@ class ResultCardItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
-            colors: gradientColors,
+            colors: gradient,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -359,18 +510,20 @@ class ResultCardItem extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: iconColor, size: 24),
-                  const Gap(5),
+                  Icon(icon, color: iconColor, size: 22),
+                  const Gap(6),
                   Expanded(
                     child: Text(
                       title,
-                      style: AppTextStyles.font20SemiBoldBlack.copyWith(fontSize: 16),
+                      style: AppTextStyles.font20SemiBoldBlack.copyWith(
+                        fontSize: 15,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              const Gap(5),
+              const Gap(6),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -378,26 +531,30 @@ class ResultCardItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (items[i]['label']?.isNotEmpty ?? false)
+                        if ((items[i]['label']?.isNotEmpty ?? false))
                           Flexible(
                             child: Text(
                               items[i]['label'] ?? '',
-                              style: AppTextStyles.font14Grey.copyWith(fontSize: 12),
+                              style: AppTextStyles.font14Grey.copyWith(
+                                fontSize: 12,
+                              ),
                               textAlign: TextAlign.right,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        const Gap(4),
+                        const Gap(6),
                         Flexible(
                           child: Text(
                             items[i]['value'] ?? '',
-                            style: AppTextStyles.font14Grey.copyWith(fontSize: 12),
+                            style: AppTextStyles.font14Grey.copyWith(
+                              fontSize: 12,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    if (i != items.length - 1) const SizedBox(height: 4),
+                    if (i != items.length - 1) const SizedBox(height: 6),
                   ],
                 ],
               ),

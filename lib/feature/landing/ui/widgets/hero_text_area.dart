@@ -10,16 +10,16 @@ class HeroTextArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl, // علشان العربي
+      textDirection: TextDirection.ltr, // English
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("اكتشف مسارك\nالمهني", style: AppTextStyles.font56BoldBlack),
+          Text("Discover Your\nCareer Path", style: AppTextStyles.font56BoldBlack),
           Gap(8.h),
-          Text("مع الذكاء الاصطناعي", style: AppTextStyles.font56BoldBlack),
+          Text("With Artificial Intelligence", style: AppTextStyles.font56BoldBlack),
           Gap(24.h),
           Text(
-            "منصة شاملة تساعدك في تحديد مهاراتك وبناء مسارك المهني من خلال التوجيه الذكي والدورات المخصصة",
+            "A comprehensive platform that helps you identify your skills and build your career path through smart guidance and personalized courses.",
             style: AppTextStyles.font20Grey,
           ),
           Gap(36.h),
@@ -36,11 +36,10 @@ class HeroTextArea extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  "ابدأ الآن ←",
+                  "Get Started →",
                   style: AppTextStyles.font22White,
                 ),
               ),
-             
             ],
           ),
         ],

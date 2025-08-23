@@ -14,4 +14,6 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [Color.fromARGB(255, 203, 252, 206), Colors.white],
   );
+  static Color blackColor = Colors.black;
+
 }

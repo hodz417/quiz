@@ -1,200 +1,16 @@
-// lib/feature/result/ui/result_page_web.dart
-import 'dart:typed_data';
-import 'dart:convert' show utf8;
-import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
-import 'package:universal_html/html.dart' as html;
+import 'package:quiz/feature/result/data/result_exporter.dart';
+import 'package:quiz/feature/result/ui/widgets/result_card.dart';
+import 'package:quiz/feature/result/ui/widgets/topic_chip.dart';
 
-/// Web-only Result page that:
-/// - shows compact (1-2 word) cards
-/// - builds a minimal .docx file programmatically (no template)
-/// - triggers browser download (saves to Downloads or according to browser settings)
 class ResultPageWeb extends StatelessWidget {
   final AnalysisResult result;
   const ResultPageWeb({super.key, required this.result});
-
-  // ---------- Utilities for UI ----------
-  String _twoWords(String text) {
-    final words = text.trim().split(RegExp(r'\s+'));
-    if (words.isEmpty) return '';
-    return words.take(4).join(' ');
-  }
-
-  String _oneWord(String text) {
-    final words = text.trim().split(RegExp(r'\s+'));
-    return words.isNotEmpty ? words.first : '';
-  }
-
-  // ---------- Build simple docx bytes (minimal WordprocessingML) ----------
-  Uint8List _buildSimpleDocxBytes(AnalysisResult r) {
-    // escape XML special chars
-    String esc(String s) => s
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&apos;');
-
-    final header =
-        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>''';
-    final docXml = StringBuffer()
-      ..writeln(header)
-      ..writeln(
-        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
-      )
-      ..writeln('<w:body>');
-
-    void addParagraph(String text) {
-      docXml.writeln(
-        '<w:p><w:r><w:t xml:space="preserve">${esc(text)}</w:t></w:r></w:p>',
-      );
-    }
-
-    addParagraph('Assessment Report');
-    addParagraph('');
-    addParagraph('Summary:');
-    addParagraph(r.summary);
-    addParagraph('');
-    addParagraph('Personality:');
-    addParagraph(r.personality);
-    addParagraph('');
-    addParagraph('Learning Style:');
-    addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
-    addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph('Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%');
-    addParagraph('');
-
-    addParagraph('Goals:');
-    if (r.goals.isEmpty) {
-      addParagraph('No goals provided');
-    } else {
-      for (var g in r.goals) addParagraph('- $g');
-    }
-    addParagraph('');
-
-    addParagraph('Strengths:');
-    if (r.strengths.isEmpty) {
-      addParagraph('No strengths listed');
-    } else {
-      for (var s in r.strengths) addParagraph('- $s');
-    }
-    addParagraph('');
-
-    addParagraph('Development Areas:');
-    if (r.developmentAreas.isEmpty) {
-      addParagraph('No development areas listed');
-    } else {
-      for (var d in r.developmentAreas) addParagraph('- $d');
-    }
-    addParagraph('');
-
-    addParagraph('Career Suggestions:');
-    if (r.careerSuggestions.isEmpty) {
-      addParagraph('No career suggestions');
-    } else {
-      for (var c in r.careerSuggestions) addParagraph('- $c');
-    }
-
-    // closing
-    docXml.writeln('<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>');
-    docXml.writeln('</w:body>');
-    docXml.writeln('</w:document>');
-
-    final documentXml = docXml.toString();
-
-    final contentTypes =
-        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-  <Default Extension="xml" ContentType="application/xml"/>
-  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
-</Types>
-''';
-
-    final rels = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
-</Relationships>
-''';
-
-    final core = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns:dcterms="http://purl.org/dc/terms/"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <dc:creator>Multiverse Mentor</dc:creator>
-  <dc:title>Assessment Report</dc:title>
-  <dc:description>Assessment report generated by the app</dc:description>
-</cp:coreProperties>
-''';
-
-    final app = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
-  <Application>Multiverse Mentor</Application>
-</Properties>
-''';
-
-    final archive = Archive();
-    archive.addFile(
-      ArchiveFile(
-        '[Content_Types].xml',
-        utf8.encode(contentTypes).length,
-        utf8.encode(contentTypes),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'docProps/core.xml',
-        utf8.encode(core).length,
-        utf8.encode(core),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'docProps/app.xml',
-        utf8.encode(app).length,
-        utf8.encode(app),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'word/document.xml',
-        utf8.encode(documentXml).length,
-        utf8.encode(documentXml),
-      ),
-    );
-
-    final encoder = ZipEncoder();
-    final zipData = encoder.encode(archive)!;
-    return Uint8List.fromList(zipData);
-  }
-
-  // ---------- Trigger browser download ----------
-  void _downloadDocxInBrowser(Uint8List bytes, String filename) {
-    final blob = html.Blob(
-      [bytes],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    );
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.document.createElement('a') as html.AnchorElement;
-    anchor.href = url;
-    anchor.download = filename;
-    anchor.style.display = 'none';
-    html.document.body!.append(anchor);
-    anchor.click();
-    anchor.remove();
-    Future.delayed(
-      const Duration(milliseconds: 300),
-      () => html.Url.revokeObjectUrl(url),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +27,7 @@ class ResultPageWeb extends StatelessWidget {
         'gradient': [const Color(0xFFE7F3FF), Colors.white],
         'items': [
           {
-            'value': _twoWords(result.personality),
+            'value': WordHelper.shortPreview(result.personality),
             'label': '',
             'full': result.personality,
           },
@@ -248,7 +64,13 @@ class ResultPageWeb extends StatelessWidget {
         'gradient': [Colors.white, Colors.white],
         'items': result.goals
             .take(3)
-            .map((g) => {'value': _twoWords(g), 'label': '', 'full': g})
+            .map(
+              (g) => {
+                'value': WordHelper.shortPreview(g),
+                'label': '',
+                'full': g,
+              },
+            )
             .toList(),
       },
       {
@@ -258,7 +80,13 @@ class ResultPageWeb extends StatelessWidget {
         'gradient': [Colors.white, Colors.white],
         'items': result.strengths
             .take(3)
-            .map((s) => {'value': _twoWords(s), 'label': '', 'full': s})
+            .map(
+              (s) => {
+                'value': WordHelper.shortPreview(s),
+                'label': '',
+                'full': s,
+              },
+            )
             .toList(),
       },
     ];
@@ -297,50 +125,92 @@ class ResultPageWeb extends StatelessWidget {
                       Center(
                         child: Text(
                           'Congratulations!',
-                          style: AppTextStyles.font26BoldBlack,
+                          style: AppTextStyles.font30BoldBlack,
                         ),
                       ),
                       const Gap(8),
                       Center(
                         child: Text(
-                          _twoWords(result.summary),
+                          WordHelper.shortPreview(result.summary),
                           style: AppTextStyles.font17Grey,
                           textAlign: TextAlign.center,
                         ),
                       ),
                       const Gap(14),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: resultsData.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 3.2,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                            ),
-                        itemBuilder: (context, idx) {
-                          final item = resultsData[idx];
-                          final items = (item['items'] as List).map((m) {
-                            final v = (m['value'] ?? '').toString();
-                            final short = v
-                                .split(RegExp(r'\s+'))
-                                .take(2)
-                                .join(' ');
-                            return {
-                              'value': short,
-                              'label': (m['label'] ?? '').toString(),
-                              'full': (m['full'] ?? '').toString(),
-                            };
-                          }).toList();
-                          return _ResultCard(
-                            title: item['title'],
-                            icon: item['icon'],
-                            iconColor: item['iconColor'],
-                            gradient: List<Color>.from(item['gradient']),
-                            items: List<Map<String, String>>.from(items),
-                          );
+                      // Responsive card layout
+                      ResponsiveBuilder(
+                        builder: (context, sizingInformation) {
+                          // For mobile devices - vertical layout
+
+                          if (sizingInformation.deviceScreenType ==
+                              DeviceScreenType.mobile) {
+                            return Column(
+                              children: [
+                                for (var item in resultsData)
+                                  ResultCard(
+                                    title: item['title'],
+                                    icon: item['icon'],
+                                    iconColor: item['iconColor'],
+                                    gradient: List<Color>.from(
+                                      item['gradient'],
+                                    ),
+                                    items: List<Map<String, String>>.from(
+                                      (item['items'] as List).map((m) {
+                                        final v = (m['value'] ?? '').toString();
+                                        final short = v
+                                            .split(RegExp(r'\s+'))
+                                            .take(2)
+                                            .join(' ');
+                                        return {
+                                          'value': short,
+                                          'label': (m['label'] ?? '')
+                                              .toString(),
+                                          'full': (m['full'] ?? '').toString(),
+                                        };
+                                      }).toList(),
+                                    ),
+                                  ),
+                                const Gap(10),
+                              ],
+                            );
+                          }
+                          // For desktop/tablet - grid layout
+                          else {
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: resultsData.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 3.2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
+                              itemBuilder: (context, idx) {
+                                final item = resultsData[idx];
+                                final items = (item['items'] as List).map((m) {
+                                  final v = (m['value'] ?? '').toString();
+                                  final short = v
+                                      .split(RegExp(r'\s+'))
+                                      .take(2)
+                                      .join(' ');
+                                  return {
+                                    'value': short,
+                                    'label': (m['label'] ?? '').toString(),
+                                    'full': (m['full'] ?? '').toString(),
+                                  };
+                                }).toList();
+                                return ResultCard(
+                                  title: item['title'],
+                                  icon: item['icon'],
+                                  iconColor: item['iconColor'],
+                                  gradient: List<Color>.from(item['gradient']),
+                                  items: List<Map<String, String>>.from(items),
+                                );
+                              },
+                            );
+                          }
                         },
                       ),
                       const Gap(12),
@@ -359,32 +229,59 @@ class ResultPageWeb extends StatelessWidget {
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Icon(
+                              children: [
+                                const Icon(
                                   Icons.star_outline,
                                   color: Colors.white,
                                   size: 20,
                                 ),
-                                Gap(6),
+                                const Gap(6),
                                 Text(
                                   'Recommendations',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
+                                  style: AppTextStyles.font16BoldWhite,
                                 ),
                               ],
                             ),
                             const Gap(8),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: result.careerSuggestions.take(4).map((
-                                s,
-                              ) {
-                                return _topicCard(_oneWord(s), _twoWords(s));
-                              }).toList(),
+                            // Responsive topic chips layout
+                            ResponsiveBuilder(
+                              builder: (context, sizingInformation) {
+                                // For mobile devices - vertical layout
+                                if (sizingInformation.deviceScreenType ==
+                                    DeviceScreenType.mobile) {
+                                  return Column(
+                                    children: [
+                                      for (var s
+                                          in result.careerSuggestions.take(4))
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8.0,
+                                          ),
+                                          child: TopicChip(
+                                            title: WordHelper.firstWord(s),
+                                            label: WordHelper.shortPreview(s),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                }
+                                // For desktop/tablet - wrap layout
+                                else {
+                                  return Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: result.careerSuggestions
+                                        .take(4)
+                                        .map((s) {
+                                          return TopicChip(
+                                            title: WordHelper.firstWord(s),
+                                            label: WordHelper.shortPreview(s),
+                                          );
+                                        })
+                                        .toList(),
+                                  );
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -393,8 +290,10 @@ class ResultPageWeb extends StatelessWidget {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            final bytes = _buildSimpleDocxBytes(result);
-                            _downloadDocxInBrowser(
+                            final bytes = ResultExporter.buildSimpleDocxBytes(
+                              result,
+                            );
+                            ResultExporter.downloadDocxInBrowser(
                               bytes,
                               'assessment_report.docx',
                             );
@@ -438,127 +337,6 @@ class ResultPageWeb extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // helper widgets
-  static Widget _topicCard(String title, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const Gap(4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: Colors.white70),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ResultCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color iconColor;
-  final List<Color> gradient;
-  final List<Map<String, String>> items;
-  const _ResultCard({
-    required this.title,
-    required this.icon,
-    required this.iconColor,
-    required this.gradient,
-    required this.items,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: gradient,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: iconColor, size: 22),
-                  const Gap(6),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: AppTextStyles.font20SemiBoldBlack.copyWith(
-                        fontSize: 15,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(6),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (var i = 0; i < items.length; i++) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if ((items[i]['label']?.isNotEmpty ?? false))
-                          Flexible(
-                            child: Text(
-                              items[i]['label'] ?? '',
-                              style: AppTextStyles.font14Grey.copyWith(
-                                fontSize: 12,
-                              ),
-                              textAlign: TextAlign.right,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        const Gap(6),
-                        Flexible(
-                          child: Text(
-                            items[i]['value'] ?? '',
-                            style: AppTextStyles.font14Grey.copyWith(
-                              fontSize: 12,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (i != items.length - 1) const SizedBox(height: 6),
-                  ],
-                ],
-              ),
-            ],
           ),
         ),
       ),

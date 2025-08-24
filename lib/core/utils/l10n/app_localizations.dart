@@ -475,6 +475,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start'**
   String get startLevelAction;
+
+  /// Label before current question number
+  ///
+  /// In en, this message translates to:
+  /// **'Question '**
+  String get progressQuestion;
+
+  /// Label after total steps in progress bar
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get progressOf;
+
+  /// Label for the button to go to the next question
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// Label for the button to go to the previous question
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previous;
+
+  /// Validator message when no likert rating is chosen
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a rating'**
+  String get pleaseChooseRating;
+
+  /// Validator message when no multiple choice option is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an option'**
+  String get pleaseSelectOption;
+
+  /// Hint text inside the open-ended text field
+  ///
+  /// In en, this message translates to:
+  /// **'Type your answer...'**
+  String get typeYourAnswer;
+
+  /// Validator message when open-ended answer is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Please type your answer'**
+  String get pleaseTypeYourAnswer;
+
+  /// Message shown when the answer is too short
+  ///
+  /// In en, this message translates to:
+  /// **'Answer must be at least 2 characters'**
+  String get minLengthError;
+
+  /// Likert option
+  ///
+  /// In en, this message translates to:
+  /// **'Strongly Agree'**
+  String get stronglyAgree;
+
+  /// Likert option
+  ///
+  /// In en, this message translates to:
+  /// **'Agree'**
+  String get agree;
+
+  /// Likert option
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get neutral;
+
+  /// Likert option
+  ///
+  /// In en, this message translates to:
+  /// **'Disagree'**
+  String get disagree;
+
+  /// Likert option
+  ///
+  /// In en, this message translates to:
+  /// **'Strongly Disagree'**
+  String get stronglyDisagree;
 }
 
 class _AppLocalizationsDelegate

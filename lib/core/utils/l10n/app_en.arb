@@ -268,5 +268,65 @@
 
   "startLevelAction": "Start",
   "@startLevelAction": { "description": "Short label used when starting a level (generic action text)" }
+
+,
+
+  "progressQuestion": "Question ",
+  "@progressQuestion": {
+    "description": "Label before current question number"
+  },
+  "progressOf": "of",
+  "@progressOf": {
+    "description": "Label after total steps in progress bar"
+  } ,  "next": "Next",
+  "@next": {
+    "description": "Label for the button to go to the next question"
+  },
+  "previous": "Previous",
+  "@previous": {
+    "description": "Label for the button to go to the previous question"
+  },  "pleaseChooseRating": "Please choose a rating",
+  "@pleaseChooseRating": {
+    "description": "Validator message when no likert rating is chosen"
+  },
+  "pleaseSelectOption": "Please select an option",
+  "@pleaseSelectOption": {
+    "description": "Validator message when no multiple choice option is selected"
+  },
+  "typeYourAnswer": "Type your answer...",
+  "@typeYourAnswer": {
+    "description": "Hint text inside the open-ended text field"
+  },
+  "pleaseTypeYourAnswer": "Please type your answer",
+  "@pleaseTypeYourAnswer": {
+    "description": "Validator message when open-ended answer is empty"
+  },
+  "minLengthError": "Answer must be at least 2 characters",
+  "@minLengthError": {
+    "description": "Message shown when the answer is too short"
+  },
+  "stronglyAgree": "Strongly Agree",
+  "@stronglyAgree": {
+    "description": "Likert option"
+  },
+  "agree": "Agree",
+  "@agree": {
+    "description": "Likert option"
+  },
+  "neutral": "Neutral",
+  "@neutral": {
+    "description": "Likert option"
+  },
+  "disagree": "Disagree",
+  "@disagree": {
+    "description": "Likert option"
+  },
+  "stronglyDisagree": "Strongly Disagree",
+  "@stronglyDisagree": {
+    "description": "Likert option"
+  }
 }
+
+
+
 

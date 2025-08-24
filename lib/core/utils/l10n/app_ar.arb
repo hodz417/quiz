@@ -277,7 +277,70 @@
 
   "startLevelAction": "ابدأ",
   "@startLevelAction": { "description": "نص زر أو فعل بدء المستوى" }
+,
+  "progressQuestion": "السؤال",
+  "@progressQuestion": {
+    "description": "النص قبل رقم السؤال الحالي"
+  },
+  "progressOf": "من",
+  "@progressOf": {
+    "description": "النص بعد إجمالي عدد الخطوات في شريط التقدم"
+  } , 
+
+    "next": "التالي",
+  "@next": {
+    "description": "زر للانتقال إلى السؤال التالي"
+  },
+  "previous": "السابق",
+  "@previous": {
+    "description": "زر للرجوع إلى السؤال السابق"
+  } ,
+  
+  "pleaseChooseRating": "يرجى اختيار تقييم",
+  "@pleaseChooseRating": {
+    "description": "رسالة التحقق عند عدم اختيار تقييم ليكرت"
+  },
+  "pleaseSelectOption": "يرجى اختيار خيار",
+  "@pleaseSelectOption": {
+    "description": "رسالة التحقق عند عدم اختيار خيار في الاختيارات المتعددة"
+  },
+  "typeYourAnswer": "اكتب إجابتك...",
+  "@typeYourAnswer": {
+    "description": "نص تلميحي داخل حقل الإجابة النصية"
+  },
+  "pleaseTypeYourAnswer": "يرجى كتابة إجابتك",
+  "@pleaseTypeYourAnswer": {
+    "description": "رسالة التحقق عند ترك حقل الإجابة الفارغ"
+  },
+  "minLengthError": "يجب أن تكون الإجابة 2 أحرف على الأقل",
+  "@minLengthError": {
+    "description": "رسالة عند قصر طول الإجابة"
+  },
+  "stronglyAgree": "موافق بشدة",
+  "@stronglyAgree": {
+    "description": "خيار ليكرت"
+  },
+  "agree": "موافق",
+  "@agree": {
+    "description": "خيار ليكرت"
+  },
+  "neutral": "محايد",
+  "@neutral": {
+    "description": "خيار ليكرت"
+  },
+  "disagree": "غير موافق",
+  "@disagree": {
+    "description": "خيار ليكرت"
+  },
+  "stronglyDisagree": "غير موافق بشدة",
+  "@stronglyDisagree": {
+    "description": "خيار ليكرت"
+  }
 }
+
+
+
+
 
 
 

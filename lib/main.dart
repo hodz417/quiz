@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
-              title: 'EDM System',
+              title: 'Mentor',
               routerConfig: appRouter.router,
               locale: Locale(state.local),
               theme: state.lightTheme,

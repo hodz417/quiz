@@ -208,4 +208,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startLevelAction => 'Start';
+
+  @override
+  String get progressQuestion => 'Question ';
+
+  @override
+  String get progressOf => 'of';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get previous => 'Previous';
+
+  @override
+  String get pleaseChooseRating => 'Please choose a rating';
+
+  @override
+  String get pleaseSelectOption => 'Please select an option';
+
+  @override
+  String get typeYourAnswer => 'Type your answer...';
+
+  @override
+  String get pleaseTypeYourAnswer => 'Please type your answer';
+
+  @override
+  String get minLengthError => 'Answer must be at least 2 characters';
+
+  @override
+  String get stronglyAgree => 'Strongly Agree';
+
+  @override
+  String get agree => 'Agree';
+
+  @override
+  String get neutral => 'Neutral';
+
+  @override
+  String get disagree => 'Disagree';
+
+  @override
+  String get stronglyDisagree => 'Strongly Disagree';
 }

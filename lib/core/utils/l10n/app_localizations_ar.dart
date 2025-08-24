@@ -208,4 +208,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get startLevelAction => 'ابدأ';
+
+  @override
+  String get progressQuestion => 'السؤال';
+
+  @override
+  String get progressOf => 'من';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get previous => 'السابق';
+
+  @override
+  String get pleaseChooseRating => 'يرجى اختيار تقييم';
+
+  @override
+  String get pleaseSelectOption => 'يرجى اختيار خيار';
+
+  @override
+  String get typeYourAnswer => 'اكتب إجابتك...';
+
+  @override
+  String get pleaseTypeYourAnswer => 'يرجى كتابة إجابتك';
+
+  @override
+  String get minLengthError => 'يجب أن تكون الإجابة 2 أحرف على الأقل';
+
+  @override
+  String get stronglyAgree => 'موافق بشدة';
+
+  @override
+  String get agree => 'موافق';
+
+  @override
+  String get neutral => 'محايد';
+
+  @override
+  String get disagree => 'غير موافق';
+
+  @override
+  String get stronglyDisagree => 'غير موافق بشدة';
 }

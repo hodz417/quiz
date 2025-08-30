@@ -16,4 +16,6 @@ class AppColors {
   );
   static Color blackColor = Colors.black;
 
+  static Color darkBlackColor = Color(0xFF0B1426);
+
 }

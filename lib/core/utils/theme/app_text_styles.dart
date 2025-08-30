@@ -143,16 +143,34 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
   );
 
-
   static TextStyle font12White70 = TextStyle(
     fontSize: 12.sp,
     color: Colors.white.withOpacity(0.7),
   );
 
-
   static TextStyle font16BoldWhite = TextStyle(
     fontSize: 16.sp,
     color: Colors.white,
     fontWeight: FontWeight.bold,
+  );
+
+  static TextStyle font16Grey = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 16.sp,
+    color: Colors.grey.shade300,
+    height: 1.4,
+  );
+
+  static TextStyle font18BoldBlue300 = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18.sp,
+    color: Colors.blue.shade300,
+  );
+
+  static TextStyle font18Grey300 = TextStyle(
+    fontWeight: FontWeight.w400,
+    color: Colors.grey.shade400,
+    fontSize: 18.sp,
+    height: 1.3,
   );
 }

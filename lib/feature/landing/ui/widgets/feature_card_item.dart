@@ -9,7 +9,7 @@ class FeatureCardItem extends StatefulWidget {
   final String description;
   final Gradient? cardGradient;
   final VoidCallback? onTap;
-  final bool isMobile; // معيار جديد لتحديد إذا كان على الموبايل
+  final bool isMobile; 
 
   const FeatureCardItem({
     super.key,

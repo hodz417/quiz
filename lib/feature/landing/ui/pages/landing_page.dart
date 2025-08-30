@@ -24,7 +24,7 @@ class LandingPage extends StatelessWidget {
               children: [
                 HeaderBar(),
                 HeroSection(),
-                Gap(isMobile ? 24.h : 48.h), // فراغ أقل في الموبايل
+                Gap(isMobile ? 24.h : 48.h), 
                 HowItWorksSection(),
                 Gap(isMobile ? 36.h : 72.h),
 

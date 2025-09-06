@@ -1,10 +1,11 @@
 // assessment_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart'; // ← added
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
@@ -110,48 +111,69 @@ class _QuizPageState extends State<QuizPage> {
                   }
 
                   return Center(
-                    child: Container(
-                      height: containerHeight,
-                      width: containerWidth,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: FormBuilder(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Gap(20.h),
-                                    Text(
-                                      currentQ.text,
-                                      style: isMobile
-                                          ? AppTextStyles.font45BoldBlack
-                                          : AppTextStyles.font20SemiBoldBlack,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const Gap(35),
-                                    Expanded(
-                                      child: QuestionInputWidget(
-                                        question: currentQ,
+                    child: Focus(
+                      autofocus: true,
+                      onKey: (FocusNode node, RawKeyEvent event) {
+                        // only handle key down to avoid double firing
+                        if (event is RawKeyDownEvent) {
+                          final isEnter = event.logicalKey == LogicalKeyboardKey.enter ||
+                              event.logicalKey == LogicalKeyboardKey.numpadEnter;
+                          if (isEnter) {
+                            // Avoid submitting when question is open-ended (to allow newline)
+                            if (currentQ.kind == QuestionKind.openEnded) {
+                              return KeyEventResult.ignored;
+                            }
+
+                            // call your existing next handler which validates & submits
+                            _onNextPressed(currentQ);
+                            return KeyEventResult.handled;
+                          }
+                        }
+                        return KeyEventResult.ignored;
+                      },
+                      child: Container(
+                        height: containerHeight,
+                        width: containerWidth,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: FormBuilder(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Gap(20.h),
+                                      Text(
+                                        currentQ.text,
+                                        style: isMobile
+                                            ? AppTextStyles.font45BoldBlack
+                                            : AppTextStyles.font20SemiBoldBlack,
+                                        textAlign: TextAlign.center,
                                       ),
-                                    ),
-                                  ],
+                                      const Gap(35),
+                                      Expanded(
+                                        child: QuestionInputWidget(
+                                          question: currentQ,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              QuizControlButtons(
-                                onPrevious: () {
-                                  context.read<ChatBloc>().add(PrevQuestion());
-                                  _formKey.currentState?.reset();
-                                },
-                                onNext: () => _onNextPressed(currentQ),
-                              ),
-                            ],
+                                const SizedBox(height: 10),
+                                QuizControlButtons(
+                                  onPrevious: () {
+                                    context.read<ChatBloc>().add(PrevQuestion());
+                                    _formKey.currentState?.reset();
+                                  },
+                                  onNext: () => _onNextPressed(currentQ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

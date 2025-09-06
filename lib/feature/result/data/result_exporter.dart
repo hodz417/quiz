@@ -1,23 +1,22 @@
-
-
 import 'dart:convert' show utf8;
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
 /// Small utility helpers for trimming and styling short previews used across the UI.
 class WordHelper {
   /// Return a short preview of the text (default: up to 3 words). Trims
   /// punctuation at ends and collapses whitespace. Safe for empty input.
-  static String shortPreview(String? text, {int maxWords = 3}) {
+  static String shortPreview(String? text, {int maxWords = 2}) {
     if (text == null) return '';
     final cleaned = text.trim().replaceAll(RegExp(r'[\u200B\uFEFF]'), '');
     if (cleaned.isEmpty) return '';
     // remove repeated whitespace and trailing punctuation
     final parts = cleaned
-        .replaceAll(RegExp(r'[\p{P}+]', unicode: true), '').split(RegExp(r'\s+'));
+        .replaceAll(RegExp(r'[\p{P}+]', unicode: true), '')
+        .split(RegExp(r'\s+'));
     return parts.take(maxWords).join(' ');
   }
 
@@ -44,11 +43,15 @@ class ResultExporter {
     final header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
     final docXml = StringBuffer()
       ..writeln(header)
-      ..writeln('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">')
+      ..writeln(
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
+      )
       ..writeln('<w:body>');
 
     void addParagraph(String text) {
-      docXml.writeln('<w:p><w:r><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>');
+      docXml.writeln(
+        '<w:p><w:r><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
     }
 
     addParagraph('Assessment Report');
@@ -62,7 +65,9 @@ class ResultExporter {
     addParagraph('Learning Style:');
     addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
     addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph('Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addParagraph(
+      'Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%',
+    );
     addParagraph('');
 
     addParagraph('Goals:');
@@ -116,11 +121,37 @@ class ResultExporter {
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">\n  <Application>Multiverse Mentor</Application>\n</Properties>\n';
 
     final archive = Archive();
-    archive.addFile(ArchiveFile('[Content_Types].xml', utf8.encode(contentTypes).length, utf8.encode(contentTypes)));
-    archive.addFile(ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)));
-    archive.addFile(ArchiveFile('docProps/core.xml', utf8.encode(core).length, utf8.encode(core)));
-    archive.addFile(ArchiveFile('docProps/app.xml', utf8.encode(app).length, utf8.encode(app)));
-    archive.addFile(ArchiveFile('word/document.xml', utf8.encode(documentXml).length, utf8.encode(documentXml)));
+    archive.addFile(
+      ArchiveFile(
+        '[Content_Types].xml',
+        utf8.encode(contentTypes).length,
+        utf8.encode(contentTypes),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/core.xml',
+        utf8.encode(core).length,
+        utf8.encode(core),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/app.xml',
+        utf8.encode(app).length,
+        utf8.encode(app),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'word/document.xml',
+        utf8.encode(documentXml).length,
+        utf8.encode(documentXml),
+      ),
+    );
 
     final encoder = ZipEncoder();
     final zipData = encoder.encode(archive)!;
@@ -130,9 +161,10 @@ class ResultExporter {
   /// Triggers a browser download (web-only). Accepts the doc bytes and the
   /// suggested filename (e.g. "assessment_report.docx").
   static void downloadDocxInBrowser(Uint8List bytes, String filename) {
-    final blob = html.Blob([
-      bytes,
-    ], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    final blob = html.Blob(
+      [bytes],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    );
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.document.createElement('a') as html.AnchorElement;
     anchor.href = url;
@@ -141,7 +173,9 @@ class ResultExporter {
     html.document.body!.append(anchor);
     anchor.click();
     anchor.remove();
-    Future.delayed(const Duration(milliseconds: 300), () => html.Url.revokeObjectUrl(url));
+    Future.delayed(
+      const Duration(milliseconds: 300),
+      () => html.Url.revokeObjectUrl(url),
+    );
   }
 }
-

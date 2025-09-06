@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:quiz/core/utils/constants/questions_en.dart';
 import 'package:quiz/core/utils/constants/questions_ar.dart';
-import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
-import 'package:quiz/feature/chat/data/models/assessment_question/assessment_question.dart';
-import 'package:quiz/feature/chat/data/repositories/chat_repository.dart';
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
+import 'package:quiz/feature/assessment/data/repositories/chat_repository.dart';
 import 'package:quiz/core/utils/di.dart';
 import 'package:quiz/core/local_settings/local_settings_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart'; 
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -240,6 +241,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     AnalysisRequested event,
     Emitter<ChatState> emit,
   ) async {
+    // show easy loading overlay
+    EasyLoading.show(status: 'Analyzing responses...');
+
     _addBot("Analyzing responses...", isLoading: true);
     emit(
       ChatLoaded(
@@ -265,8 +269,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       final result = await repository.analyzeResponses(payload);
       analysisComplete = true;
+
+      // dismiss easy loading before emitting result
+      await EasyLoading.dismiss();
+
       add(AnalysisComplete(result));
     } catch (e) {
+      // dismiss easy loading on error as well
+      await EasyLoading.dismiss();
       if (messages.isNotEmpty && messages.last['isLoading'] == true)
         messages.removeLast();
       _addBot("Analysis failed: ${e.toString()}");

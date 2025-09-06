@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
-import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
 /// Build a minimal Word (docx) file bytes from plain text sections.

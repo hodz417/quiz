@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/chat/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ProgressBar extends StatelessWidget implements PreferredSizeWidget {

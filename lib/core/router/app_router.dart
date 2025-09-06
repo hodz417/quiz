@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz/feature/landing/ui/pages/landing_page.dart';
-import 'package:quiz/feature/chat/ui/pages/assessment_screen.dart';
-import 'package:quiz/feature/chat/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/ui/pages/assessment_screen.dart';
+import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
 import '../utils/constants/routes.dart';
 import '../utils/di.dart';
 

@@ -1,4 +1,4 @@
-import 'package:quiz/feature/chat/data/models/assessment_question/assessment_question.dart';
+import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
 
  final List<AssessmentQuestion> questionsAr = [
   // المستوى 1 (20 سؤال)

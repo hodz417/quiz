@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:quiz/core/config/config.dart';
-import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 
 class ChatRepository {
   final GenerativeModel chatModel;

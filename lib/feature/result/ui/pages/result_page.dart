@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/chat/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:quiz/feature/result/data/result_exporter.dart';
 import 'package:quiz/feature/result/ui/widgets/result_card.dart';
 import 'package:quiz/feature/result/ui/widgets/topic_chip.dart';

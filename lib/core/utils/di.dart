@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:quiz/feature/chat/bloc/chat_bloc.dart';
-import 'package:quiz/feature/chat/data/repositories/chat_repository.dart';
+import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/data/repositories/chat_repository.dart';
 import '../local_settings/local_settings_bloc.dart';
 
 final getIt = GetIt.instance;

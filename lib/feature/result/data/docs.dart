@@ -1,117 +1,182 @@
-// lib/feature/result/ui/docx_generator_web.dart
-import 'dart:convert';
+// lib/feature/result/data/result_exporter.dart
+import 'dart:convert' show utf8;
 import 'dart:typed_data';
+
 import 'package:archive/archive.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
-/// Build a minimal Word (docx) file bytes from plain text sections.
-/// The produced docx is very simple (plain paragraphs).
-Uint8List buildSimpleDocxBytes(AnalysisResult result) {
-  // Helper to escape XML characters
-  String esc(String s) => s
+/// Small utility helpers for trimming and styling short previews used across the UI.
+class WordHelper {
+  /// Return a short preview of the text (default: up to 3 words). Trims
+  /// punctuation at ends and collapses whitespace. Safe for empty input.
+  static String shortPreview(String? text, {int maxWords = 2}) {
+    if (text == null) return '';
+    final cleaned = text.trim().replaceAll(RegExp(r'[\u200B\uFEFF]'), '');
+    if (cleaned.isEmpty) return '';
+    // remove repeated whitespace and trailing punctuation
+    final parts = cleaned
+        .replaceAll(RegExp(r'[\p{P}+]', unicode: true), '')
+        .split(RegExp(r'\s+'));
+    return parts.take(maxWords).join(' ');
+  }
+
+  /// Return the very first word (used for the small topic title on chips)
+  static String firstWord(String? text) {
+    if (text == null) return '';
+    final t = text.trim();
+    if (t.isEmpty) return '';
+    return t.split(RegExp(r'\s+')).first;
+  }
+}
+
+/// Builds a minimal .docx (WordprocessingML) archive from an [AnalysisResult].
+/// Returns the bytes ready to be written to disk or offered as a download.
+class ResultExporter {
+  static String _escapeXml(String s) => s
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&apos;');
 
-  // Prepare document.xml content (WordprocessingML)
-  final docXml = '''
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:body>
-    <w:p><w:r><w:t xml:space="preserve">${esc("تقرير التقييم")}</w:t></w:r></w:p>
+  static Uint8List buildSimpleDocxBytes(AnalysisResult r) {
+    final header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    final docXml = StringBuffer()
+      ..writeln(header)
+      ..writeln(
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
+      )
+      ..writeln('<w:body>');
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("الملخص:")}</w:t></w:r></w:p>
-    <w:p><w:r><w:t xml:space="preserve">${esc(result.summary)}</w:t></w:r></w:p>
+    void addParagraph(String text) {
+      docXml.writeln(
+        '<w:p><w:r><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
+    }
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("الشخصية:")}</w:t></w:r></w:p>
-    <w:p><w:r><w:t xml:space="preserve">${esc(result.personality)}</w:t></w:r></w:p>
+    addParagraph('Assessment Report');
+    addParagraph('');
+    addParagraph('Summary:');
+    addParagraph(r.summary);
+    addParagraph('');
+    addParagraph('Personality:');
+    addParagraph(r.personality);
+    addParagraph('');
+    addParagraph('Learning Style:');
+    addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
+    addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
+    addParagraph(
+      'Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%',
+    );
+    addParagraph('');
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("أسلوب التعلم:")}</w:t></w:r></w:p>
-    <w:p><w:r><w:t xml:space="preserve">${esc("بصري: ${result.learningStylePercentages['Visual'] ?? 0}%")}</w:t></w:r></w:p>
-    <w:p><w:r><w:t xml:space="preserve">${esc("لفظي: ${result.learningStylePercentages['Verbal'] ?? 0}%")}</w:t></w:r></w:p>
-    <w:p><w:r><w:t xml:space="preserve">${esc("حركي: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%")}</w:t></w:r></w:p>
+    addParagraph('Goals:');
+    if (r.goals.isEmpty) {
+      addParagraph('No goals provided');
+    } else {
+      for (var g in r.goals) addParagraph('- $g');
+    }
+    addParagraph('');
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("الأهداف:")}</w:t></w:r></w:p>
-    ${result.goals.map((g) => '<w:p><w:r><w:t xml:space="preserve">${esc("- $g")}</w:t></w:r></w:p>').join("\n")}
+    addParagraph('Strengths:');
+    if (r.strengths.isEmpty) {
+      addParagraph('No strengths listed');
+    } else {
+      for (var s in r.strengths) addParagraph('- $s');
+    }
+    addParagraph('');
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("نقاط القوة:")}</w:t></w:r></w:p>
-    ${result.strengths.map((s) => '<w:p><w:r><w:t xml:space="preserve">${esc("- $s")}</w:t></w:r></w:p>').join("\n")}
+    addParagraph('Development Areas:');
+    if (r.developmentAreas.isEmpty) {
+      addParagraph('No development areas listed');
+    } else {
+      for (var d in r.developmentAreas) addParagraph('- $d');
+    }
+    addParagraph('');
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("مجالات التطوير:")}</w:t></w:r></w:p>
-    ${result.developmentAreas.map((d) => '<w:p><w:r><w:t xml:space="preserve">${esc("- $d")}</w:t></w:r></w:p>').join("\n")}
+    addParagraph('Career Suggestions:');
+    if (r.careerSuggestions.isEmpty) {
+      addParagraph('No career suggestions');
+    } else {
+      for (var c in r.careerSuggestions) addParagraph('- $c');
+    }
 
-    <w:p><w:r><w:t xml:space="preserve">${esc("اقتراحات مهنية:")}</w:t></w:r></w:p>
-    ${result.careerSuggestions.map((c) => '<w:p><w:r><w:t xml:space="preserve">${esc("- $c")}</w:t></w:r></w:p>').join("\n")}
+    // closing
+    docXml.writeln('<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>');
+    docXml.writeln('</w:body>');
+    docXml.writeln('</w:document>');
 
-    <w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>
-  </w:body>
-</w:document>
-''';
+    final documentXml = docXml.toString();
 
-  // Minimal [Content_Types].xml
-  final contentTypes = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-  <Default Extension="xml" ContentType="application/xml"/>
-  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
-</Types>
-''';
+    final contentTypes =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n  <Default Extension="xml" ContentType="application/xml"/>\n  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>\n</Types>\n';
 
-  // _rels/.rels
-  final rels = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
-</Relationships>
-''';
+    final rels =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\n  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>\n</Relationships>\n';
 
-  // docProps/core.xml (minimal, uses Dublin Core)
-  final core = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns:dcterms="http://purl.org/dc/terms/"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <dc:creator>Multiverse Mentor</dc:creator>
-  <dc:title>تقرير التقييم</dc:title>
-  <dc:description>تقرير التقييم المولد بواسطة التطبيق</dc:description>
-</cp:coreProperties>
-''';
+    final core =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"\n  xmlns:dc="http://purl.org/dc/elements/1.1/"\n  xmlns:dcterms="http://purl.org/dc/terms/"\n  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n  <dc:creator>Multiverse Mentor</dc:creator>\n  <dc:title>Assessment Report</dc:title>\n  <dc:description>Assessment report generated by the app</dc:description>\n</cp:coreProperties>\n';
 
-  // docProps/app.xml
-  final app = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
-  <Application>Multiverse Mentor</Application>
-</Properties>
-''';
+    final app =
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">\n  <Application>Multiverse Mentor</Application>\n</Properties>\n';
 
-  // Build archive
-  final archive = Archive();
+    final archive = Archive();
+    archive.addFile(
+      ArchiveFile(
+        '[Content_Types].xml',
+        utf8.encode(contentTypes).length,
+        utf8.encode(contentTypes),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/core.xml',
+        utf8.encode(core).length,
+        utf8.encode(core),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'docProps/app.xml',
+        utf8.encode(app).length,
+        utf8.encode(app),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'word/document.xml',
+        utf8.encode(documentXml).length,
+        utf8.encode(documentXml),
+      ),
+    );
 
-  archive.addFile(ArchiveFile('[Content_Types].xml', utf8.encode(contentTypes).length, utf8.encode(contentTypes)));
-  archive.addFile(ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)));
-  archive.addFile(ArchiveFile('docProps/core.xml', utf8.encode(core).length, utf8.encode(core)));
-  archive.addFile(ArchiveFile('docProps/app.xml', utf8.encode(app).length, utf8.encode(app)));
-  archive.addFile(ArchiveFile('word/document.xml', utf8.encode(docXml).length, utf8.encode(docXml)));
+    final encoder = ZipEncoder();
+    final zipData = encoder.encode(archive)!;
+    return Uint8List.fromList(zipData);
+  }
 
-  // Encode ZIP
-  final encoder = ZipEncoder();
-  final zipData = encoder.encode(archive)!; // List<int>
-
-  return Uint8List.fromList(zipData);
-}
-
-/// Trigger browser download (Web only)
-void downloadDocxInBrowser(Uint8List bytes, String filename) {
-  final blob = html.Blob([bytes], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-  final url = html.Url.createObjectUrlFromBlob(blob);
-  final anchor = html.document.createElement('a') as html.AnchorElement;
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.style.display = 'none';
-  html.document.body!.append(anchor);
-  anchor.click();
-  anchor.remove();
-  Future.delayed(const Duration(milliseconds: 300), () => html.Url.revokeObjectUrl(url));
+  /// Triggers a browser download (web-only). Accepts the doc bytes and the
+  /// suggested filename (e.g. "assessment_report.docx").
+  static void downloadDocxInBrowser(Uint8List bytes, String filename) {
+    final blob = html.Blob(
+      [bytes],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    );
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.document.createElement('a') as html.AnchorElement;
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.style.display = 'none';
+    html.document.body!.append(anchor);
+    anchor.click();
+    anchor.remove();
+    Future.delayed(
+      const Duration(milliseconds: 300),
+      () => html.Url.revokeObjectUrl(url),
+    );
+  }
 }

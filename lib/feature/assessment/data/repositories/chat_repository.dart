@@ -1,4 +1,3 @@
-// chat_repository.dart (only relevant method shown/modified)
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:quiz/core/config/config.dart';
@@ -20,45 +19,36 @@ class ChatRepository {
           generationConfig: AppConfig.analysisGenerationConfig,
         );
 
-  // ... getChatResponse unchanged ...
-
   Future<AnalysisResult> analyzeResponses(List<Map<String, dynamic>> responses) async {
     final payload = {'responses': responses};
     final prompt = '''
-You are Multiverse Mentor’s AI Assessment Analyzer. Your job is to:
-1. Ingest the provided JSON array of responses, each with id, level, question, answer, weight. Assume Likert answers are 1-5 scores (strongly disagree to strongly agree). For multiple-choice, infer sentiment/score if possible. For open-ended, use the text responses.
-2. Group questions into competencies (infer themes like Leadership, Communication, Problem-Solving, etc., based on question text).
-3. Compute aggregated weighted scores for each competency, normalize to 1-5 scale, and select top 3 competencies with descriptors (e.g., "Leadership: High" if avg >4, "Medium" 3-4, "Low" <3).
-4. From open-ended responses (longer answers), extract one key strength and one key area for improvement, with brief supporting quotes.
-5. Infer learning style percentages (Visual, Verbal, Kinesthetic) based on dominant competencies and response tones (e.g., descriptive=Visual, explanatory=Verbal, action-oriented=Kinesthetic). Percentages are integers summing to 100.
-6. Infer 2-3 realistic career goals from responses.
-7. Provide 2-3 tailored recommendations as practical next steps (courses, tasks, activities).
-8. Suggest 4-6 concrete **skills to learn** (short phrases, e.g., "React.js", "Figma", "Unit testing") prioritized for the candidate to reach their goals.
-9. Suggest 4-6 **freelance job titles or gig types** (e.g., "Frontend Developer - React", "UI/UX Designer - Figma prototyping", "Freelance Data Annotator") that are realistic entry points; optionally add a platform hint like (Upwork, Fiverr) in parentheses.
+You are Multiverse Mentor's AI Assessment Analyzer. Your job is to analyze assessment responses and provide output in ENGLISH ONLY.
 
-Produce a precise, insightful analysis in English and return ONLY valid JSON that exactly matches the schema below. Keep the report concise.
+Perform these tasks:
+1. Process the JSON array of responses with id, level, question, answer, weight
+2. Group questions into competencies (e.g., Leadership, Communication, Problem-Solving)
+3. Compute weighted scores for each competency (normalized to 1-5 scale)
+4. Extract key strengths and areas for improvement from open-ended responses
+5. Infer learning style percentages (Visual, Verbal, Kinesthetic)
+6. Infer realistic career goals
+7. Provide tailored recommendations
+8. Suggest specific skills to learn
+9. Suggest freelance job titles
 
-Required output JSON schema:
+OUTPUT REQUIREMENTS:
+- All output must be in ENGLISH only
+- Use exactly this JSON structure:
 {
-  "summary": "A concise 2-3 sentence summary describing the candidate's overall performance and profile, including top 3 competencies.",
-  "personality": "A short professional personality profile relevant to work behavior based on top competencies (e.g. detail-oriented problem solver).",
-  "learningStylePercentages": {
-    "Visual": 0,
-    "Verbal": 0,
-    "Kinesthetic": 0
-  },
-  "goals": ["List", "of", "realistic", "career_or_learning_goals"],
-  "strengths": ["List", "of", "core", "strengths with quotes if applicable"],
-  "developmentAreas": ["List", "of", "priority", "development", "areas with quotes if applicable"],
-  "careerSuggestions": ["List", "of", "suitable", "career", "paths or recommendations"],
-  "suggestedSkills": ["skill 1", "skill 2", "skill 3"],
-  "freelanceJobs": ["job 1", "job 2", "job 3"]
+  "summary": "English summary here",
+  "personality": "English personality description",
+  "learningStylePercentages": {"Visual": 0, "Verbal": 0, "Kinesthetic": 0},
+  "goals": ["English goal 1", "English goal 2"],
+  "strengths": ["English strength 1", "English strength 2"],
+  "developmentAreas": ["English area 1", "English area 2"],
+  "careerSuggestions": ["English suggestion 1", "English suggestion 2"],
+  "suggestedSkills": ["English skill 1", "English skill 2"],
+  "freelanceJobs": ["English job 1", "English job 2"]
 }
-
-Instructions:
-- Output ONLY the JSON object (no surrounding text).
-- Base inferences on the provided questions and answers.
-- Keep lists concise (3-6 items each) and practical.
 
 Input data (JSON):
 ${jsonEncode(payload)}
@@ -139,11 +129,8 @@ ${jsonEncode(payload)}
       sanitized['strengths'] = toStringList(parsedRaw['strengths']);
       sanitized['developmentAreas'] = toStringList(parsedRaw['developmentAreas']);
       sanitized['careerSuggestions'] = toStringList(parsedRaw['careerSuggestions']);
-
-      // NEW sanitization for added fields
       sanitized['suggestedSkills'] = toStringList(parsedRaw['suggestedSkills']);
       sanitized['freelanceJobs'] = toStringList(parsedRaw['freelanceJobs']);
-
       sanitized['summary'] = (parsedRaw['summary'] ?? '').toString();
       sanitized['personality'] = (parsedRaw['personality'] ?? '').toString();
 

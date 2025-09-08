@@ -1,6 +1,5 @@
 import 'dart:convert' show utf8;
 import 'dart:typed_data';
-
 import 'package:archive/archive.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
@@ -34,8 +33,8 @@ class WordHelper {
 class ResultExporter {
   static String _escapeXml(String s) => s
       .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
+      .replaceAll('<', '<')
+      .replaceAll('>', '>')
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&apos;');
 
@@ -54,71 +53,124 @@ class ResultExporter {
       );
     }
 
-    addParagraph('Assessment Report');
+    void addHeading(String text, {int level = 1}) {
+      // Simple heading using bold and size, as full styles are complex in raw XML
+      docXml.writeln(
+        '<w:p><w:pPr><w:outlineLvl w:val="$level"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="${40 - (level * 4)}"/></w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
+    }
+
+    addHeading('Multiverse Mentor Assessment Report');
     addParagraph('');
-    addParagraph('Summary:');
-    addParagraph(r.summary);
+    addHeading('Executive Summary', level: 2);
+    addParagraph(r.uiSummary); // Use concise UI summary here or detailed if preferred
     addParagraph('');
-    addParagraph('Personality:');
-    addParagraph(r.personality);
-    addParagraph('');
-    addParagraph('Learning Style:');
+
+    addHeading('Detailed Profile Analysis', level: 1);
+    addHeading('Personality Type', level: 2);
+    addParagraph('${r.personalityType} - ${r.personalityExplanation}');
+    addParagraph(r.personalityDetails); // Add detailed personality description
+
+    addHeading('Learning Style', level: 2);
     addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
     addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph(
-      'Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%',
-    );
-    addParagraph('');
+    addParagraph('Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addParagraph(r.learningStyleDetails); // Add detailed learning style explanation
 
-    addParagraph('Goals:');
-    if (r.goals.isEmpty) {
-      addParagraph('No goals provided');
+    addHeading('Goals', level: 2);
+    if (r.goalsDetails.isEmpty) {
+      addParagraph('No specific goals were detailed.');
     } else {
-      for (var g in r.goals) addParagraph('- $g');
+      for (var g in r.goalsDetails) {
+        addParagraph('- $g');
+      }
     }
-    addParagraph('');
 
-    addParagraph('Strengths:');
-    if (r.strengths.isEmpty) {
-      addParagraph('No strengths listed');
+    addHeading('Strengths', level: 2);
+    if (r.strengthsDetails.isEmpty) {
+      addParagraph('No specific strengths were detailed.');
     } else {
-      for (var s in r.strengths) addParagraph('- $s');
+      for (var s in r.strengthsDetails) {
+        addParagraph('- $s');
+      }
     }
-    addParagraph('');
 
-    addParagraph('Development Areas:');
+    addHeading('Areas for Development', level: 2);
     if (r.developmentAreas.isEmpty) {
-      addParagraph('No development areas listed');
+      addParagraph('No specific development areas were identified.');
     } else {
-      for (var d in r.developmentAreas) addParagraph('- $d');
+      for (var d in r.developmentAreas) {
+        addParagraph('- $d');
+      }
     }
-    addParagraph('');
 
-    addParagraph('Career Suggestions:');
+    addHeading('Career Suggestions', level: 2);
     if (r.careerSuggestions.isEmpty) {
-      addParagraph('No career suggestions');
+      addParagraph('No specific career suggestions were provided.');
     } else {
-      for (var c in r.careerSuggestions) addParagraph('- $c');
+      for (var c in r.careerSuggestions) {
+        addParagraph('- $c');
+      }
+    }
+
+    addHeading('Suggested Skills to Learn', level: 2);
+    if (r.suggestedSkills.isEmpty) {
+      addParagraph('No specific skills were suggested.');
+    } else {
+      for (var s in r.suggestedSkills) {
+        addParagraph('- $s');
+      }
+    }
+
+    addHeading('Freelance Opportunities', level: 2);
+    if (r.freelanceJobs['wordList']?.isEmpty ?? true) {
+      addParagraph('No specific freelance opportunities were suggested.');
+    } else {
+      for (var job in r.freelanceJobs['wordList']!) {
+        addParagraph('- $job');
+      }
     }
 
     // closing
     docXml.writeln('<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>');
     docXml.writeln('</w:body>');
     docXml.writeln('</w:document>');
-
     final documentXml = docXml.toString();
 
-    final contentTypes =
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\n  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\n  <Default Extension="xml" ContentType="application/xml"/>\n  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>\n</Types>\n';
+final contentTypes = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>
+''';
 
     final rels =
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\n  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>\n</Relationships>\n';
+        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>
+''';
 
     final core =
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"\n  xmlns:dc="http://purl.org/dc/elements/1.1/"\n  xmlns:dcterms="http://purl.org/dc/terms/"\n  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n  <dc:creator>Multiverse Mentor</dc:creator>\n  <dc:title>Assessment Report</dc:title>\n  <dc:description>Assessment report generated by the app</dc:description>\n</cp:coreProperties>\n';
+        """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:creator>Multiverse Mentor</dc:creator>
+  <dc:title>Assessment Report</dc:title>
+  <dc:description>Detailed assessment report generated by the app</dc:description>
+</cp:coreProperties>
+""";
 
     final app =
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">\n  <Application>Multiverse Mentor</Application>\n</Properties>\n';
+        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Multiverse Mentor</Application>
+</Properties>
+''';
 
     final archive = Archive();
     archive.addFile(

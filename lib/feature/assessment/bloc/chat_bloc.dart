@@ -292,10 +292,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       messages.removeLast();
     final formatted =
         '''
-${event.result.summary}
+${event.result.uiSummary}
 
 Personality:
-${event.result.personality}
+${event.result.personalityType}
 
 Learning Style:
 - Visual: ${event.result.learningStylePercentages['Visual']}%
@@ -303,10 +303,10 @@ Learning Style:
 - Kinesthetic: ${event.result.learningStylePercentages['Kinesthetic']}
 
 Goals:
-${event.result.goals.map((g) => '- $g').join('\n')}
+${event.result.inferredGoals.map((g) => '- $g').join('\n')}
 
 Strengths:
-${event.result.strengths.map((s) => '- $s').join('\n')}
+${event.result.keyStrengths.map((s) => '- $s').join('\n')}
 
 Development Areas:
 ${event.result.developmentAreas.map((d) => '- $d').join('\n')}

@@ -173,4 +173,36 @@ class AppTextStyles {
     fontSize: 18.sp,
     height: 1.3,
   );
+
+  
+    static TextStyle font14BoldBlack = TextStyle(
+    fontSize: 14.sp,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  );
+
+  static TextStyle font16BoldBlack = TextStyle(
+    fontSize: 16.sp,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  );
+
+
+    static TextStyle font12Grey = TextStyle(
+    fontSize: 12.sp,
+    color: Colors.grey,
+  );
+
+ 
+
+    static TextStyle  font16White = TextStyle(
+    fontSize: 16.sp,
+    color: Colors.white,
+  );
+
+    static TextStyle  font20BoldWhite = TextStyle(
+    fontSize: 20.sp,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  );
 }

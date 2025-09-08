@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
-import 'package:quiz/feature/result/data/result_exporter.dart';
-import 'package:quiz/feature/result/ui/widgets/result_card.dart';
-import 'package:quiz/feature/result/ui/widgets/topic_chip.dart';
+import 'package:quiz/core/utils/theme/app_theme.dart'; // Assuming AppColors is here
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart'; // Import the model
+import 'package:quiz/feature/result/data/result_exporter.dart'; // Import ResultExporter
+import 'package:quiz/feature/result/ui/widgets/result_card.dart'; // Import ResultCard
+import 'package:quiz/feature/result/ui/widgets/topic_chip.dart'; // Import TopicChip
+import 'package:responsive_builder/responsive_builder.dart'; // Import ResponsiveBuilder
 
 class ResultPageWeb extends StatelessWidget {
-  final AnalysisResult result;
+  final AnalysisResult result; // Expect the updated AnalysisResult object
+
   const ResultPageWeb({super.key, required this.result});
 
   @override
@@ -19,41 +20,46 @@ class ResultPageWeb extends StatelessWidget {
         ? mediaQuery.size.width * 0.55
         : mediaQuery.size.width * 0.95;
 
+    // Prepare data for ResultCards using new UI-specific fields
     final resultsData = <Map<String, dynamic>>[
       {
         'title': 'Personality',
         'icon': Icons.psychology,
-        'iconColor': AppColors.blueColor,
+        'iconColor':
+            AppColors.blueColor, // Ensure AppColors is defined/imported
         'gradient': [const Color(0xFFE7F3FF), Colors.white],
         'items': [
           {
-            'value': WordHelper.shortPreview(result.personality),
+            'value': result.personalityType, // Use personalityType
             'label': '',
-            'full': result.personality,
+          },
+          {
+            'value':
+                result.personalityExplanation, // Use personalityExplanation
+            'label': '',
           },
         ],
       },
       {
-        'title': 'Learning',
+        'title': 'Learning Style',
         'icon': Icons.school,
         'iconColor': const Color(0xFF16A34A),
         'gradient': [const Color(0xFFDCFCE7), Colors.white],
         'items': [
           {
-            'value': '${result.learningStylePercentages['Visual'] ?? 0}%',
-            'label': 'Visual',
-            'full': '${result.learningStylePercentages['Visual'] ?? 0}% Visual',
+            'value':
+                'Visual: ${result.learningStylePercentages['Visual'] ?? 0}%',
+            'label': '',
           },
           {
-            'value': '${result.learningStylePercentages['Verbal'] ?? 0}%',
-            'label': 'Verbal',
-            'full': '${result.learningStylePercentages['Verbal'] ?? 0}% Verbal',
+            'value':
+                'Verbal: ${result.learningStylePercentages['Verbal'] ?? 0}%',
+            'label': '',
           },
           {
-            'value': '${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
-            'label': 'Kinesthetic',
-            'full':
-                '${result.learningStylePercentages['Kinesthetic'] ?? 0}% Kinesthetic',
+            'value':
+                'Kinesthetic: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
+            'label': '',
           },
         ],
       },
@@ -62,29 +68,33 @@ class ResultPageWeb extends StatelessWidget {
         'icon': Icons.flag,
         'iconColor': Colors.black,
         'gradient': [Colors.white, Colors.white],
-        'items': result.goals
-            .take(3)
+        'items': result
+            .inferredGoals // Use inferredGoals
             .map(
               (g) => {
-                'value': WordHelper.shortPreview(g),
+                'value': WordHelper.shortPreview(
+                  g,
+                  maxWords: 4,
+                ), // Short preview for UI
                 'label': '',
-                'full': g,
               },
             )
             .toList(),
       },
       {
         'title': 'Strengths',
-        'icon': Icons.star,
+        'icon': Icons.star, // Changed icon
         'iconColor': Colors.amber,
         'gradient': [Colors.white, Colors.white],
-        'items': result.strengths
-            .take(3)
+        'items': result
+            .keyStrengths // Use keyStrengths
             .map(
               (s) => {
-                'value': WordHelper.shortPreview(s),
+                'value': WordHelper.shortPreview(
+                  s,
+                  maxWords: 4,
+                ), // Short preview for UI
                 'label': '',
-                'full': s,
               },
             )
             .toList(),
@@ -92,7 +102,8 @@ class ResultPageWeb extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.kPrimaryBg,
+      backgroundColor:
+          AppColors.kPrimaryBg, // Ensure AppColors is defined/imported
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 18),
@@ -106,7 +117,7 @@ class ResultPageWeb extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(18),
                 child: Directionality(
-                  textDirection: TextDirection.ltr,
+                  textDirection: TextDirection.ltr, // Adjust if needed
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -131,47 +142,31 @@ class ResultPageWeb extends StatelessWidget {
                       const Gap(8),
                       Center(
                         child: Text(
-                          WordHelper.shortPreview(result.summary),
+                          result
+                              .uiSummary, // Use uiSummary for the main summary
                           style: AppTextStyles.font17Grey,
                           textAlign: TextAlign.center,
                         ),
                       ),
                       const Gap(14),
-                      // Responsive card layout
+                      // Responsive card layout using the prepared data
                       ResponsiveBuilder(
                         builder: (context, sizingInformation) {
                           // For mobile devices - vertical layout
-
                           if (sizingInformation.deviceScreenType ==
                               DeviceScreenType.mobile) {
                             return Column(
-                              children: [
-                                for (var item in resultsData)
-                                  ResultCard(
-                                    title: item['title'],
-                                    icon: item['icon'],
-                                    iconColor: item['iconColor'],
-                                    gradient: List<Color>.from(
-                                      item['gradient'],
-                                    ),
-                                    items: List<Map<String, String>>.from(
-                                      (item['items'] as List).map((m) {
-                                        final v = (m['value'] ?? '').toString();
-                                        final short = v
-                                            .split(RegExp(r'\s+'))
-                                            .take(2)
-                                            .join(' ');
-                                        return {
-                                          'value': short,
-                                          'label': (m['label'] ?? '')
-                                              .toString(),
-                                          'full': (m['full'] ?? '').toString(),
-                                        };
-                                      }).toList(),
-                                    ),
+                              children: resultsData.map((item) {
+                                return ResultCard(
+                                  title: item['title'],
+                                  icon: item['icon'],
+                                  iconColor: item['iconColor'],
+                                  gradient: List<Color>.from(item['gradient']),
+                                  items: List<Map<String, String>>.from(
+                                    item['items'],
                                   ),
-                                const Gap(10),
-                              ],
+                                );
+                              }).toList(),
                             );
                           }
                           // For desktop/tablet - grid layout
@@ -183,30 +178,20 @@ class ResultPageWeb extends StatelessWidget {
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
-                                    childAspectRatio: 3.2,
+                                    childAspectRatio: 3.2, // Adjust if needed
                                     crossAxisSpacing: 10,
                                     mainAxisSpacing: 10,
                                   ),
                               itemBuilder: (context, idx) {
                                 final item = resultsData[idx];
-                                final items = (item['items'] as List).map((m) {
-                                  final v = (m['value'] ?? '').toString();
-                                  final short = v
-                                      .split(RegExp(r'\s+'))
-                                      .take(2)
-                                      .join(' ');
-                                  return {
-                                    'value': short,
-                                    'label': (m['label'] ?? '').toString(),
-                                    'full': (m['full'] ?? '').toString(),
-                                  };
-                                }).toList();
                                 return ResultCard(
                                   title: item['title'],
                                   icon: item['icon'],
                                   iconColor: item['iconColor'],
                                   gradient: List<Color>.from(item['gradient']),
-                                  items: List<Map<String, String>>.from(items),
+                                  items: List<Map<String, String>>.from(
+                                    item['items'],
+                                  ),
                                 );
                               },
                             );
@@ -214,6 +199,7 @@ class ResultPageWeb extends StatelessWidget {
                         },
                       ),
                       const Gap(12),
+                      // Freelance Recommendations Section - Use freelanceJobs['uiList']
                       Container(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
@@ -228,41 +214,46 @@ class ResultPageWeb extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Icon(
-                                  Icons.star_outline,
+                                  Icons.work_outline, // Changed icon to work
                                   color: Colors.white,
                                   size: 20,
                                 ),
                                 const Gap(6),
+
                                 Text(
-                                  'Recommendations',
+                                  'Freelance Opportunities', // Changed title
                                   style: AppTextStyles.font16BoldWhite,
                                 ),
                               ],
                             ),
                             const Gap(8),
-                            // Responsive topic chips layout
+                            // Responsive topic chips layout for freelance jobs
                             ResponsiveBuilder(
                               builder: (context, sizingInformation) {
                                 // For mobile devices - vertical layout
                                 if (sizingInformation.deviceScreenType ==
                                     DeviceScreenType.mobile) {
                                   return Column(
-                                    children: [
-                                      for (var s
-                                          in result.careerSuggestions.take(4))
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 8.0,
-                                          ),
-                                          child: TopicChip(
-                                            title: WordHelper.firstWord(s),
-                                            label: WordHelper.shortPreview(s),
-                                          ),
-                                        ),
-                                    ],
+                                    children: (result.freelanceJobs['uiList'] ?? [])
+                                        .map((job) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 8.0,
+                                            ),
+                                            child: TopicChip(
+                                              title: WordHelper.firstWord(
+                                                job,
+                                              ), // First word for chip title
+                                              label: WordHelper.shortPreview(
+                                                job,
+                                                maxWords: 3,
+                                              ), // Short preview for chip label
+                                            ),
+                                          );
+                                        })
+                                        .toList(),
                                   );
                                 }
                                 // For desktop/tablet - wrap layout
@@ -270,15 +261,20 @@ class ResultPageWeb extends StatelessWidget {
                                   return Wrap(
                                     spacing: 8,
                                     runSpacing: 8,
-                                    children: result.careerSuggestions
-                                        .take(4)
-                                        .map((s) {
-                                          return TopicChip(
-                                            title: WordHelper.firstWord(s),
-                                            label: WordHelper.shortPreview(s),
-                                          );
-                                        })
-                                        .toList(),
+                                    children:
+                                        (result.freelanceJobs['uiList'] ?? [])
+                                            .map((job) {
+                                              return TopicChip(
+                                                title: WordHelper.firstWord(
+                                                  job,
+                                                ), // First word for chip title
+                                                label: WordHelper.shortPreview(
+                                                  job,
+                                                  maxWords: 3,
+                                                ), // Short preview for chip label
+                                              );
+                                            })
+                                            .toList(),
                                   );
                                 }
                               },
@@ -290,6 +286,7 @@ class ResultPageWeb extends StatelessWidget {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            // Use the potentially updated exporter for detailed report
                             final bytes = ResultExporter.buildSimpleDocxBytes(
                               result,
                             );

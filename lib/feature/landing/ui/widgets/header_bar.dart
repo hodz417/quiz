@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quiz/core/local_settings/local_settings_bloc.dart';
-import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
+import 'package:quiz/core/utils/constants/app_assets.dart';
 import 'package:quiz/feature/landing/ui/widgets/language_dropdown_menu.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -26,12 +25,14 @@ class HeaderBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LanguageDropdownMenu(currentLanguage: currentLanguage),
-              Text(
-                context.l10n.multiverseMentor,
-                style: isMobile
-                    ? AppTextStyles.font56BoldBlack
-                    : AppTextStyles.font26BoldBlack,
-              ),
+         
+         Image.asset(
+
+height: 60.h,
+width: 180.w,          
+AppAssets.pngLogo,
+
+         )
             ],
           ),
         );

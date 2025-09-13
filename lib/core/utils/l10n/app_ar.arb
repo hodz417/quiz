@@ -336,7 +336,75 @@
   "@stronglyDisagree": {
     "description": "خيار ليكرت"
   }
+
+
+  ,
+    "congratulations": "تهانينا!",
+    "@congratulations": {
+      "description": "عنوان تهنئة عند عرض النتائج"
+    },
+    "personality": "الشخصية",
+    "@personality": {
+      "description": "عنوان بطاقة الشخصية"
+    },
+    "learningStyle": "أسلوب التعلم",
+    "@learningStyle": {
+      "description": "عنوان بطاقة أسلوب التعلم"
+    },
+    "goals": "الأهداف",
+    "@goals": {
+      "description": "عنوان بطاقة الأهداف"
+    },
+    "strengths": "نقاط القوة",
+    "@strengths": {
+      "description": "عنوان بطاقة نقاط القوة"
+    },
+    "freelanceOpportunities": "فرص العمل الحر",
+    "@freelanceOpportunities": {
+      "description": "عنوان قسم فرص العمل الحر"
+    },
+    "practicalNextSteps": "الخطوات العملية التالية",
+    "@practicalNextSteps": {
+      "description": "عنوان قسم الخطوات العملية التالية"
+    },
+    "downloadReport": "تحميل التقرير",
+    "@downloadReport": {
+      "description": "زر تحميل التقرير"
+    },
+    "reportDownloadStarted": "تم بدء تحميل التقرير — تحقق من مجلد التنزيلات في متصفحك.",
+    "@reportDownloadStarted": {
+      "description": "رسالة عند بدء تحميل التقرير"
+    },
+    "detailedReportNote": "تقرير مفصل مع جميع النتائج",
+    "@detailedReportNote": {
+      "description": "ملاحظة أسفل زر تحميل التقرير"
+    },
+    
+  "visual": "بصري",
+  "@visual": {
+    "description": "أسلوب التعلم: بصري"
+  },
+  "verbal": "لفظي",
+  "@verbal": {
+    "description": "أسلوب التعلم: لفظي"
+  },
+  "kinesthetic": "حسي حركي",
+  "@kinesthetic": {
+    "description": "أسلوب التعلم: حسي حركي"
+  }
+
+    ,
+  "detailedReportWithFullResults": "تقرير مفصل مع جميع النتائج",
+  "@detailedReportWithFullResults": {
+    "description": "ملاحظة أسفل زر تحميل التقرير"
+  }
+
+
 }
+
+    
+
+
 
 
 

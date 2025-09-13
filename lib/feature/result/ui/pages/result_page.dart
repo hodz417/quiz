@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart'; // Assuming AppColors is here
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart'; // Import the model
-import 'package:quiz/feature/result/data/result_exporter.dart'; // Import ResultExporter
-import 'package:quiz/feature/result/ui/widgets/result_card.dart'; // Import ResultCard
-import 'package:quiz/feature/result/ui/widgets/topic_chip.dart'; // Import TopicChip
-import 'package:responsive_builder/responsive_builder.dart'; // Import ResponsiveBuilder
+import 'package:quiz/core/utils/theme/app_theme.dart'; 
+import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:quiz/feature/result/data/result_exporter.dart';
+import 'package:quiz/feature/result/ui/widgets/result_card.dart';
+import 'package:quiz/feature/result/ui/widgets/topic_chip.dart'; 
+import 'package:responsive_builder/responsive_builder.dart';
 
 class ResultPageWeb extends StatelessWidget {
-  final AnalysisResult result; // Expect the updated AnalysisResult object
-
+  final AnalysisResult result; 
   const ResultPageWeb({super.key, required this.result});
 
   @override
@@ -23,7 +23,7 @@ class ResultPageWeb extends StatelessWidget {
     // Prepare data for ResultCards using new UI-specific fields
     final resultsData = <Map<String, dynamic>>[
       {
-        'title': 'Personality',
+        'title': context.l10n.personality,
         'icon': Icons.psychology,
         'iconColor': AppColors.blueColor,
         'gradient': [const Color(0xFFE7F3FF), Colors.white],
@@ -33,30 +33,30 @@ class ResultPageWeb extends StatelessWidget {
         ],
       },
       {
-        'title': 'Learning Style',
+        'title': context.l10n.learningStyle,
         'icon': Icons.school,
         'iconColor': const Color(0xFF16A34A),
         'gradient': [const Color(0xFFDCFCE7), Colors.white],
         'items': [
           {
             'value':
-                'Visual: ${result.learningStylePercentages['Visual'] ?? 0}%',
+                '${context.l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%',
             'label': '',
           },
           {
             'value':
-                'Verbal: ${result.learningStylePercentages['Verbal'] ?? 0}%',
+                '${context.l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%',
             'label': '',
           },
           {
             'value':
-                'Kinesthetic: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
+                '${context.l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
             'label': '',
           },
         ],
       },
       {
-        'title': 'Goals',
+        'title': context.l10n.goals,
         'icon': Icons.flag,
         'iconColor': Colors.black,
         'gradient': [Colors.white, Colors.white],
@@ -65,7 +65,7 @@ class ResultPageWeb extends StatelessWidget {
             .toList(),
       },
       {
-        'title': 'Strengths',
+        'title': context.l10n.strengths,
         'icon': Icons.star,
         'iconColor': Colors.amber,
         'gradient': [Colors.white, Colors.white],
@@ -85,7 +85,6 @@ class ResultPageWeb extends StatelessWidget {
         builder: (context, sizingInformation) {
           final isMobile =
               sizingInformation.deviceScreenType == DeviceScreenType.mobile;
-
           return SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(vertical: 18),
@@ -117,7 +116,7 @@ class ResultPageWeb extends StatelessWidget {
                           const Gap(12),
                           Center(
                             child: Text(
-                              'Congratulations!',
+                              context.l10n.congratulations,
                               style: isMobile
                                   ? AppTextStyles.font56BoldBlack
                                   : AppTextStyles.font30BoldBlack,
@@ -198,10 +197,10 @@ class ResultPageWeb extends StatelessWidget {
                                     ),
                                     const Gap(6),
                                     Text(
-                                      'Freelance Opportunities',
+                                      context.l10n.freelanceOpportunities,
                                       style: isMobile
                                           ? AppTextStyles.font45BoldBlack
-                                                .copyWith(color: Colors.white)
+                                              .copyWith(color: Colors.white)
                                           : AppTextStyles.font16BoldWhite,
                                     ),
                                   ],
@@ -229,7 +228,73 @@ class ResultPageWeb extends StatelessWidget {
                               ],
                             ),
                           ),
+                          const Gap(12),
+                          // Practical Steps Section
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF7C3AED), Color(0xFFDB2777)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.lightbulb_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    const Gap(6),
+                                    Text(
+                                  context.    l10n.practicalNextSteps,
+                                      style: isMobile
+                                          ? AppTextStyles.font45BoldBlack
+                                              .copyWith(color: Colors.white)
+                                          : AppTextStyles.font16BoldWhite,
+                                    ),
+                                  ],
+                                ),
+                                const Gap(8),
+                                if (isMobile)
+                                  Column(
+                                    children: result.practicalSteps.map((step) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8.0,
+                                        ),
+                                        child: TopicChip(title: step, label: ''),
+                                      );
+                                    }).toList(),
+                                  )
+                                else
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: result.practicalSteps.map((step) {
+                                      return TopicChip(title: step, label: '');
+                                    }).toList(),
+                                  ),
+                              ],
+                            ),
+                          ),
                           const Gap(18),
+                          // Inspirational Quote
+                          Center(
+                            child: Text(
+                              '"${result.inspirationalQuote}"',
+                              style: isMobile
+                                  ? AppTextStyles.font35Grey.copyWith(fontStyle: FontStyle.italic)
+                                  : AppTextStyles.font17Grey.copyWith(fontStyle: FontStyle.italic),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const Gap(12),
                           Center(
                             child: ElevatedButton(
                               onPressed: () {
@@ -240,9 +305,9 @@ class ResultPageWeb extends StatelessWidget {
                                   'assessment_report.docx',
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      'Report download started — check your browser\'s Downloads folder.',
+                                      context.l10n.reportDownloadStarted,
                                     ),
                                   ),
                                 );
@@ -257,9 +322,9 @@ class ResultPageWeb extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
-                                'Download Report',
-                                style: TextStyle(
+                              child: Text(
+                                context.l10n.downloadReport,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -268,10 +333,10 @@ class ResultPageWeb extends StatelessWidget {
                             ),
                           ),
                           const Gap(8),
-                          const Center(
+                          Center(
                             child: Text(
-                              'A detailed report with full results',
-                              style: TextStyle(
+                          context.    l10n.detailedReportWithFullResults,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
                               ),

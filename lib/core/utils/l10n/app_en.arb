@@ -325,7 +325,75 @@
   "@stronglyDisagree": {
     "description": "Likert option"
   }
+,
+
+  "congratulations": "Congratulations!",
+  "@congratulations": {
+    "description": "Title for congratulations when showing results"
+  },
+  "personality": "Personality",
+  "@personality": {
+    "description": "Title for personality card"
+  },
+  "learningStyle": "Learning Style",
+  "@learningStyle": {
+    "description": "Title for learning style card"
+  },
+  "goals": "Goals",
+  "@goals": {
+    "description": "Title for goals card"
+  },
+  "strengths": "Strengths",
+  "@strengths": {
+    "description": "Title for strengths card"
+  },
+  "freelanceOpportunities": "Freelance Opportunities",
+  "@freelanceOpportunities": {
+    "description": "Title for freelance opportunities section"
+  },
+  "practicalNextSteps": "Practical Next Steps",
+  "@practicalNextSteps": {
+    "description": "Title for practical next steps section"
+  },
+  "downloadReport": "Download Report",
+  "@downloadReport": {
+    "description": "Button text for downloading report"
+  },
+  "reportDownloadStarted": "Report download started — check your browser's downloads folder.",
+  "@reportDownloadStarted": {
+    "description": "Message shown when report download starts"
+  },
+  "detailedReportNote": "Detailed report with all results",
+  "@detailedReportNote": {
+    "description": "Note below the download report button"
+  }
+,
+  
+  "visual": "Visual",
+  "@visual": {
+    "description": "Learning style: visual"
+  },
+  "verbal": "Verbal",
+  "@verbal": {
+    "description": "Learning style: verbal"
+  },
+  "kinesthetic": "Kinesthetic",
+  "@kinesthetic": {
+    "description": "Learning style: kinesthetic"
+  }
+  ,
+  "detailedReportWithFullResults": "download this file ",
+  "@detailedReportWithFullResults": {
+    "description": "Note below the download report button"
+  }
+
+
 }
+
+
+
+
+
 
 
 

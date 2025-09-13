@@ -250,4 +250,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stronglyDisagree => 'Strongly Disagree';
+
+  @override
+  String get congratulations => 'Congratulations!';
+
+  @override
+  String get personality => 'Personality';
+
+  @override
+  String get learningStyle => 'Learning Style';
+
+  @override
+  String get goals => 'Goals';
+
+  @override
+  String get strengths => 'Strengths';
+
+  @override
+  String get freelanceOpportunities => 'Freelance Opportunities';
+
+  @override
+  String get practicalNextSteps => 'Practical Next Steps';
+
+  @override
+  String get downloadReport => 'Download Report';
+
+  @override
+  String get reportDownloadStarted =>
+      'Report download started — check your browser\'s downloads folder.';
+
+  @override
+  String get detailedReportNote => 'Detailed report with all results';
+
+  @override
+  String get visual => 'Visual';
+
+  @override
+  String get verbal => 'Verbal';
+
+  @override
+  String get kinesthetic => 'Kinesthetic';
+
+  @override
+  String get detailedReportWithFullResults => 'download this file ';
 }

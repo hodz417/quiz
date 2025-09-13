@@ -4,192 +4,282 @@ import 'package:archive/archive.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
-
-
-/// Builds a minimal .docx (WordprocessingML) archive from an [AnalysisResult].
-/// Returns the bytes ready to be written to disk or offered as a download.
+/// Builds a comprehensive .docx report from an [AnalysisResult]
 class ResultExporter {
   static String _escapeXml(String s) => s
       .replaceAll('&', '&amp;')
-      .replaceAll('<', '<')
-      .replaceAll('>', '>')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&apos;');
 
-  static Uint8List buildSimpleDocxBytes(AnalysisResult r) {
-    final header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  static Uint8List buildSimpleDocxBytes(AnalysisResult result) {
     final docXml = StringBuffer()
-      ..writeln(header)
-      ..writeln(
-        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
-      )
+      ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
+      ..writeln('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">')
       ..writeln('<w:body>');
 
-    void addParagraph(String text) {
-      docXml.writeln(
-        '<w:p><w:r><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
-      );
-    }
-
+    // Helper functions for document structure
     void addHeading(String text, {int level = 1}) {
-      // Simple heading using bold and size, as full styles are complex in raw XML
+      final fontSize = level == 1 ? 32 : level == 2 ? 28 : 24;
       docXml.writeln(
-        '<w:p><w:pPr><w:outlineLvl w:val="$level"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="${40 - (level * 4)}"/></w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+        '<w:p><w:pPr><w:outlineLvl w:val="$level"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="$fontSize"/></w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
       );
     }
 
-    addHeading('Multiverse Mentor Assessment Report');
-    addParagraph('');
+    void addSubheading(String text) {
+      docXml.writeln(
+        '<w:p><w:pPr><w:outlineLvl w:val="3"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="22"/></w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
+    }
+
+    void addParagraph(String text, {bool bold = false, bool italic = false}) {
+      docXml.write(
+        '<w:p><w:r><w:rPr>',
+      );
+      if (bold) docXml.write('<w:b/>');
+      if (italic) docXml.write('<w:i/>');
+      docXml.writeln(
+        '</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
+    }
+
+    void addBulletPoint(String text) {
+      docXml.writeln(
+        '<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr></w:pPr><w:r><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
+    }
+
+    void addDivider() {
+      docXml.writeln('<w:p><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>');
+    }
+
+    // Document content
+    addHeading('Multiverse Mentor Assessment Report', level: 1);
+    addDivider();
+
+    // Executive Summary
     addHeading('Executive Summary', level: 2);
-    addParagraph(r.uiSummary); // Use concise UI summary here or detailed if preferred
-    addParagraph('');
+    addParagraph(result.uiSummary);
+    addDivider();
 
-    addHeading('Detailed Profile Analysis', level: 1);
-    addHeading('Personality Type', level: 2);
-    addParagraph('${r.personalityType} - ${r.personalityExplanation}');
-    addParagraph(r.personalityDetails); // Add detailed personality description
+    // Detailed Analysis
+    addHeading('Detailed Analysis', level: 2);
+    
+    addSubheading('Personality Profile');
+    addParagraph('${result.personalityType} - ${result.personalityExplanation}', bold: true);
+    addParagraph(result.personalityDetails);
+    addDivider();
 
-    addHeading('Learning Style', level: 2);
-    addParagraph('Visual: ${r.learningStylePercentages['Visual'] ?? 0}%');
-    addParagraph('Verbal: ${r.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph('Kinesthetic: ${r.learningStylePercentages['Kinesthetic'] ?? 0}%');
-    addParagraph(r.learningStyleDetails); // Add detailed learning style explanation
+    addSubheading('Learning Style Analysis');
+    addParagraph('Visual: ${result.learningStylePercentages['Visual'] ?? 0}%');
+    addParagraph('Verbal: ${result.learningStylePercentages['Verbal'] ?? 0}%');
+    addParagraph('Kinesthetic: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addParagraph(result.learningStyleDetails);
+    addDivider();
 
-    addHeading('Goals', level: 2);
-    if (r.goalsDetails.isEmpty) {
+    addSubheading('Goals & Aspirations');
+    if (result.goalsDetails.isEmpty) {
       addParagraph('No specific goals were detailed.');
     } else {
-      for (var g in r.goalsDetails) {
-        addParagraph('- $g');
+      for (var goal in result.goalsDetails) {
+        addBulletPoint(goal);
       }
     }
+    addDivider();
 
-    addHeading('Strengths', level: 2);
-    if (r.strengthsDetails.isEmpty) {
+    addSubheading('Key Strengths');
+    if (result.strengthsDetails.isEmpty) {
       addParagraph('No specific strengths were detailed.');
     } else {
-      for (var s in r.strengthsDetails) {
-        addParagraph('- $s');
+      for (var strength in result.strengthsDetails) {
+        addBulletPoint(strength);
       }
     }
+    addDivider();
 
-    addHeading('Areas for Development', level: 2);
-    if (r.developmentAreas.isEmpty) {
+    addSubheading('Development Areas');
+    if (result.developmentAreas.isEmpty) {
       addParagraph('No specific development areas were identified.');
     } else {
-      for (var d in r.developmentAreas) {
-        addParagraph('- $d');
+      for (var area in result.developmentAreas) {
+        addBulletPoint(area);
       }
     }
+    addDivider();
 
-    addHeading('Career Suggestions', level: 2);
-    if (r.careerSuggestions.isEmpty) {
+    // Recommendations Section
+    addHeading('Recommendations', level: 2);
+    
+    addSubheading('Career Pathways');
+    if (result.careerSuggestions.isEmpty) {
       addParagraph('No specific career suggestions were provided.');
     } else {
-      for (var c in r.careerSuggestions) {
-        addParagraph('- $c');
+      for (var career in result.careerSuggestions) {
+        addBulletPoint(career);
       }
     }
+    addDivider();
 
-    addHeading('Suggested Skills to Learn', level: 2);
-    if (r.suggestedSkills.isEmpty) {
+    addSubheading('Skills Development');
+    if (result.suggestedSkills.isEmpty) {
       addParagraph('No specific skills were suggested.');
     } else {
-      for (var s in r.suggestedSkills) {
-        addParagraph('- $s');
+      for (var skill in result.suggestedSkills) {
+        addBulletPoint(skill);
       }
     }
+    addDivider();
 
-    addHeading('Freelance Opportunities', level: 2);
-    if (r.freelanceJobs['wordList']?.isEmpty ?? true) {
+    addSubheading('Freelance Opportunities');
+    if (result.freelanceJobs['wordList']?.isEmpty ?? true) {
       addParagraph('No specific freelance opportunities were suggested.');
     } else {
-      for (var job in r.freelanceJobs['wordList']!) {
-        addParagraph('- $job');
+      for (var job in result.freelanceJobs['wordList']!) {
+        addBulletPoint(job);
       }
     }
+    addDivider();
 
-    // closing
+    // NEW: Practical Steps
+    addSubheading('Practical Next Steps');
+    if (result.practicalSteps.isEmpty) {
+      addParagraph('No specific practical steps were provided.');
+    } else {
+      for (var step in result.practicalSteps) {
+        addBulletPoint(step);
+      }
+    }
+    addDivider();
+
+    // NEW: Inspirational Quote
+    addSubheading('Words of Inspiration');
+    addParagraph('"${result.inspirationalQuote}"', italic: true);
+    addDivider();
+
+    // Document closing
     docXml.writeln('<w:sectPr><w:pgSz w:w="11906" w:h="16838"/></w:sectPr>');
     docXml.writeln('</w:body>');
     docXml.writeln('</w:document>');
-    final documentXml = docXml.toString();
 
-final contentTypes = '''
+    // Create the complete DOCX package
+    return _createDocxPackage(docXml.toString());
+  }
+
+  static Uint8List _createDocxPackage(String documentXml) {
+    // Content Types definition
+    final contentTypes = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>
 </Types>
 ''';
 
-    final rels =
-        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    // Relationships
+    final rels = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
 </Relationships>
 ''';
 
-    final core =
-        """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    // Numbering for bullet points
+    final numbering = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:abstractNum w:abstractNumId="0">
+    <w:multiLevelType w:val="hybridMultilevel"/>
+    <w:lvl w:ilvl="0">
+      <w:numFmt w:val="bullet"/>
+      <w:lvlText w:val="•"/>
+      <w:lvlJc w:val="left"/>
+      <w:pPr>
+        <w:ind w:left="720" w:hanging="360"/>
+      </w:pPr>
+    </w:lvl>
+  </w:abstractNum>
+  <w:num w:numId="1">
+    <w:abstractNumId w:val="0"/>
+  </w:num>
+</w:numbering>
+''';
+
+    // Core properties
+    final core = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <dc:creator>Multiverse Mentor</dc:creator>
   <dc:title>Assessment Report</dc:title>
-  <dc:description>Detailed assessment report generated by the app</dc:description>
+  <dc:description>Detailed assessment report generated by Multiverse Mentor</dc:description>
 </cp:coreProperties>
-""";
+''';
 
-    final app =
-        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    // Application properties
+    final app = '''
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
   <Application>Multiverse Mentor</Application>
 </Properties>
 ''';
 
+    // Create archive with all necessary files
     final archive = Archive();
-    archive.addFile(
-      ArchiveFile(
-        '[Content_Types].xml',
-        utf8.encode(contentTypes).length,
-        utf8.encode(contentTypes),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'docProps/core.xml',
-        utf8.encode(core).length,
-        utf8.encode(core),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'docProps/app.xml',
-        utf8.encode(app).length,
-        utf8.encode(app),
-      ),
-    );
-    archive.addFile(
-      ArchiveFile(
-        'word/document.xml',
-        utf8.encode(documentXml).length,
-        utf8.encode(documentXml),
-      ),
-    );
+    
+    // Add content types
+    archive.addFile(ArchiveFile(
+      '[Content_Types].xml',
+      utf8.encode(contentTypes).length,
+      utf8.encode(contentTypes),
+    ));
+    
+    // Add relationships
+    archive.addFile(ArchiveFile(
+      '_rels/.rels',
+      utf8.encode(rels).length,
+      utf8.encode(rels),
+    ));
+    
+    // Add core properties
+    archive.addFile(ArchiveFile(
+      'docProps/core.xml',
+      utf8.encode(core).length,
+      utf8.encode(core),
+    ));
+    
+    // Add application properties
+    archive.addFile(ArchiveFile(
+      'docProps/app.xml',
+      utf8.encode(app).length,
+      utf8.encode(app),
+    ));
+    
+    // Add numbering for bullet points
+    archive.addFile(ArchiveFile(
+      'word/numbering.xml',
+      utf8.encode(numbering).length,
+      utf8.encode(numbering),
+    ));
+    
+    // Add main document
+    archive.addFile(ArchiveFile(
+      'word/document.xml',
+      utf8.encode(documentXml).length,
+      utf8.encode(documentXml),
+    ));
 
+    // Encode to ZIP format
     final encoder = ZipEncoder();
     final zipData = encoder.encode(archive)!;
     return Uint8List.fromList(zipData);
   }
 
-  /// Triggers a browser download (web-only). Accepts the doc bytes and the
-  /// suggested filename (e.g. "assessment_report.docx").
+  /// Triggers a browser download (web-only)
   static void downloadDocxInBrowser(Uint8List bytes, String filename) {
     final blob = html.Blob(
       [bytes],

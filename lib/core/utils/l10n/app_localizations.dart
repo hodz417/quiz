@@ -559,6 +559,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Strongly Disagree'**
   String get stronglyDisagree;
+
+  /// Title for congratulations when showing results
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations!'**
+  String get congratulations;
+
+  /// Title for personality card
+  ///
+  /// In en, this message translates to:
+  /// **'Personality'**
+  String get personality;
+
+  /// Title for learning style card
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Style'**
+  String get learningStyle;
+
+  /// Title for goals card
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get goals;
+
+  /// Title for strengths card
+  ///
+  /// In en, this message translates to:
+  /// **'Strengths'**
+  String get strengths;
+
+  /// Title for freelance opportunities section
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance Opportunities'**
+  String get freelanceOpportunities;
+
+  /// Title for practical next steps section
+  ///
+  /// In en, this message translates to:
+  /// **'Practical Next Steps'**
+  String get practicalNextSteps;
+
+  /// Button text for downloading report
+  ///
+  /// In en, this message translates to:
+  /// **'Download Report'**
+  String get downloadReport;
+
+  /// Message shown when report download starts
+  ///
+  /// In en, this message translates to:
+  /// **'Report download started — check your browser\'s downloads folder.'**
+  String get reportDownloadStarted;
+
+  /// Note below the download report button
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed report with all results'**
+  String get detailedReportNote;
+
+  /// Learning style: visual
+  ///
+  /// In en, this message translates to:
+  /// **'Visual'**
+  String get visual;
+
+  /// Learning style: verbal
+  ///
+  /// In en, this message translates to:
+  /// **'Verbal'**
+  String get verbal;
+
+  /// Learning style: kinesthetic
+  ///
+  /// In en, this message translates to:
+  /// **'Kinesthetic'**
+  String get kinesthetic;
+
+  /// Note below the download report button
+  ///
+  /// In en, this message translates to:
+  /// **'download this file '**
+  String get detailedReportWithFullResults;
 }
 
 class _AppLocalizationsDelegate

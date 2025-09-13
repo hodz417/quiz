@@ -24,6 +24,10 @@ class AnalysisResult {
   // --- FOR UI RECOMMENDATIONS & WORD REPORT ---
   final Map<String, List<String>> freelanceJobs; // Keys: 'uiList', 'wordList'
 
+  // NEW FIELDS
+  final List<String> practicalSteps;
+  final String inspirationalQuote;
+
   AnalysisResult({
     required this.uiSummary,
     required this.personalityType,
@@ -40,6 +44,8 @@ class AnalysisResult {
     required this.careerSuggestions,
     required this.suggestedSkills,
     required this.freelanceJobs,
+    required this.practicalSteps,
+    required this.inspirationalQuote,
   });
 
   factory AnalysisResult.empty() => AnalysisResult(
@@ -58,6 +64,8 @@ class AnalysisResult {
         careerSuggestions: [],
         suggestedSkills: [],
         freelanceJobs: {'uiList': [], 'wordList': []},
+        practicalSteps: [],
+        inspirationalQuote: 'Believe in yourself and all that you are.',
       );
 
   factory AnalysisResult.fromJson(Map<String, dynamic> json) {
@@ -71,10 +79,36 @@ class AnalysisResult {
         if (v is String) return int.tryParse(v.replaceAll('%', '').trim()) ?? 0;
         return 0;
       }
+      
+      // Normalize percentages to sum to 100
+      var visual = toInt(m['Visual']);
+      var verbal = toInt(m['Verbal']);
+      var kin = toInt(m['Kinesthetic']);
+      var total = visual + verbal + kin;
+      
+      if (total == 0) {
+        return {'Visual': 34, 'Verbal': 33, 'Kinesthetic': 33};
+      }
+      
+      // Calculate percentages that sum to 100
+      double scale = 100 / total;
+      int v1 = (visual * scale).floor();
+      int v2 = (verbal * scale).floor();
+      int v3 = (kin * scale).floor();
+      int sum = v1 + v2 + v3;
+      int rem = 100 - sum;
+      
+      // Distribute remainder
+      if (rem > 0) {
+        if (visual >= verbal && visual >= kin) v1 += rem;
+        else if (verbal >= visual && verbal >= kin) v2 += rem;
+        else v3 += rem;
+      }
+      
       return {
-        'Visual': toInt(m['Visual']),
-        'Verbal': toInt(m['Verbal']),
-        'Kinesthetic': toInt(m['Kinesthetic']),
+        'Visual': v1,
+        'Verbal': v2,
+        'Kinesthetic': v3,
       };
     }
 
@@ -112,6 +146,8 @@ class AnalysisResult {
       careerSuggestions: toStringList(json['careerSuggestions']),
       suggestedSkills: toStringList(json['suggestedSkills']),
       freelanceJobs: parseFreelanceJobs(json['freelanceJobs']),
+      practicalSteps: toStringList(json['practicalSteps']),
+      inspirationalQuote: json['inspirationalQuote']?.toString() ?? 'Believe in yourself and all that you are.',
     );
   }
 }

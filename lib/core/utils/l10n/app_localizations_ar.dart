@@ -250,4 +250,47 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stronglyDisagree => 'غير موافق بشدة';
+
+  @override
+  String get congratulations => 'تهانينا!';
+
+  @override
+  String get personality => 'الشخصية';
+
+  @override
+  String get learningStyle => 'أسلوب التعلم';
+
+  @override
+  String get goals => 'الأهداف';
+
+  @override
+  String get strengths => 'نقاط القوة';
+
+  @override
+  String get freelanceOpportunities => 'فرص العمل الحر';
+
+  @override
+  String get practicalNextSteps => 'الخطوات العملية التالية';
+
+  @override
+  String get downloadReport => 'تحميل التقرير';
+
+  @override
+  String get reportDownloadStarted =>
+      'تم بدء تحميل التقرير — تحقق من مجلد التنزيلات في متصفحك.';
+
+  @override
+  String get detailedReportNote => 'تقرير مفصل مع جميع النتائج';
+
+  @override
+  String get visual => 'بصري';
+
+  @override
+  String get verbal => 'لفظي';
+
+  @override
+  String get kinesthetic => 'حسي حركي';
+
+  @override
+  String get detailedReportWithFullResults => 'download this file ';
 }

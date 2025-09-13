@@ -19,6 +19,9 @@ class ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Detect if current locale is RTL (like Arabic)
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -32,84 +35,102 @@ class ResultCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0), // Slightly increased padding
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // --- Card Title ---
-              Row(
-                children: [
-                  Icon(icon, color: iconColor, size: 22),
-                  const Gap(6),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: AppTextStyles.font20SemiBoldBlack.copyWith(
-                        fontSize: 15,
+          padding: const EdgeInsets.all(8.0),
+          child: Directionality(
+            textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // --- Card Title ---
+                Row(
+                  children: [
+                    Icon(icon, color: iconColor, size: 22),
+                    const Gap(6),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: AppTextStyles.font20SemiBoldBlack.copyWith(
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: isRtl ? TextAlign.right : TextAlign.left,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
-              const Gap(6),
-              // --- Card Items Content ---
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start, // Align children to the left
-                children: [
-                  for (var i = 0; i < items.length; i++) ...[
-                    // Check if the item has a meaningful 'label'
-                    if ((items[i]['label']?.isNotEmpty ?? false))
-                      // If label exists, use Row with spaceBetween for label:value layout
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Label on the left
-                          Expanded(
-                            child: Text(
-                              '${items[i]['label']}:', // Add colon for clarity
-                              style: AppTextStyles.font14Grey.copyWith(
-                                fontSize: 12,
-                                //fontWeight: FontWeight.bold, // Optional: make label slightly bolder
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          // --- Increased Gap Here ---
-                          // Changed from const Gap(6) to const Gap(12) for more space
-                          const Gap(12), // Increase space between label and value
-                          // --------------------------
-                          // Value on the right
-                          Text(
+                  ],
+                ),
+                const Gap(6),
+                // --- Card Items Content ---
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < items.length; i++) ...[
+                      if ((items[i]['label']?.isNotEmpty ?? false))
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: isRtl
+                              ? [
+                                  // Value on the right (for RTL)
+                                  Text(
+                                    items[i]['value'] ?? '',
+                                    style: AppTextStyles.font14Grey.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Gap(12),
+                                  Expanded(
+                                    child: Text(
+                                      '${items[i]['label']}:',
+                                      style: AppTextStyles.font14Grey.copyWith(
+                                        fontSize: 12,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ]
+                              : [
+                                  // Label on the left (for LTR)
+                                  Expanded(
+                                    child: Text(
+                                      '${items[i]['label']}:',
+                                      style: AppTextStyles.font14Grey.copyWith(
+                                        fontSize: 12,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  const Gap(12),
+                                  Text(
+                                    items[i]['value'] ?? '',
+                                    style: AppTextStyles.font14Grey.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                        )
+                      else
+                        Align(
+                          alignment: isRtl ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Text(
                             items[i]['value'] ?? '',
                             style: AppTextStyles.font14Grey.copyWith(
                               fontSize: 12,
-                              fontWeight: FontWeight.bold, // Make value bold for emphasis
                             ),
-                            //overflow: TextOverflow.ellipsis, // Usually not needed for percentages
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: isRtl ? TextAlign.right : TextAlign.left,
                           ),
-                        ],
-                      )
-                    else
-                      // If no label, just display the 'value' text aligned to the left
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          items[i]['value'] ?? '',
-                          style: AppTextStyles.font14Grey.copyWith(
-                            fontSize: 12,
-                          ),
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    // Add spacing between items, except after the last one
-                    if (i != items.length - 1) const SizedBox(height: 6),
+                      if (i != items.length - 1) const SizedBox(height: 6),
+                    ],
                   ],
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

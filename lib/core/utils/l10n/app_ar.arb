@@ -359,14 +359,6 @@
     "@strengths": {
       "description": "عنوان بطاقة نقاط القوة"
     },
-    "freelanceOpportunities": "فرص العمل الحر",
-    "@freelanceOpportunities": {
-      "description": "عنوان قسم فرص العمل الحر"
-    },
-    "practicalNextSteps": "الخطوات العملية التالية",
-    "@practicalNextSteps": {
-      "description": "عنوان قسم الخطوات العملية التالية"
-    },
     "downloadReport": "تحميل التقرير",
     "@downloadReport": {
       "description": "زر تحميل التقرير"
@@ -378,8 +370,34 @@
     "detailedReportNote": "تقرير مفصل مع جميع النتائج",
     "@detailedReportNote": {
       "description": "ملاحظة أسفل زر تحميل التقرير"
-    },
-    
+    }
+    ,
+  "detailedReportWithFullResults": "نزّل التقرير الكامل الآن — خطوة صغيرة تقود لتقدم كبير.",
+  "@detailedReportWithFullResults": {
+    "description": "ملاحظة أسفل زر تحميل التقرير"
+  }
+
+,
+  "multiverseMentorAssessmentReport": "تقرير تقييم Multiverse Mentor",
+  "@multiverseMentorAssessmentReport": {
+    "description": "العنوان الرئيسي للتقرير"
+  },
+  "executiveSummary": "الملخص التنفيذي",
+  "@executiveSummary": {
+    "description": "عنوان قسم الملخص التنفيذي"
+  },
+  "detailedAnalysis": "تحليل مفصل",
+  "@detailedAnalysis": {
+    "description": "عنوان قسم التحليل المفصل"
+  },
+  "personalityProfile": "ملف الشخصية",
+  "@personalityProfile": {
+    "description": "عنوان فرعي لملف الشخصية"
+  },
+  "learningStyleAnalysis": "تحليل أسلوب التعلم",
+  "@learningStyleAnalysis": {
+    "description": "عنوان فرعي لتحليل أسلوب التعلم"
+  },
   "visual": "بصري",
   "@visual": {
     "description": "أسلوب التعلم: بصري"
@@ -391,16 +409,86 @@
   "kinesthetic": "حسي حركي",
   "@kinesthetic": {
     "description": "أسلوب التعلم: حسي حركي"
+  },
+  "goalsAspirations": "الأهداف والطموحات",
+  "@goalsAspirations": {
+    "description": "عنوان فرعي للأهداف والطموحات"
+  },
+  "noSpecificGoals": "لم يتم توضيح أهداف محددة.",
+  "@noSpecificGoals": {
+    "description": "رسالة عند عدم وجود أهداف"
+  },
+  "keyStrengths": "نقاط القوة",
+  "@keyStrengths": {
+    "description": "عنوان فرعي لنقاط القوة"
+  },
+  "noSpecificStrengths": "لم يتم توضيح نقاط قوة محددة.",
+  "@noSpecificStrengths": {
+    "description": "رسالة عند عدم وجود نقاط قوة"
+  },
+  "developmentAreas": "مجالات التطوير",
+  "@developmentAreas": {
+    "description": "عنوان فرعي لمجالات التطوير"
+  },
+  "noSpecificDevelopmentAreas": "لم يتم تحديد مجالات تطوير محددة.",
+  "@noSpecificDevelopmentAreas": {
+    "description": "رسالة عند عدم وجود مجالات تطوير"
+  },
+  "recommendations": "التوصيات",
+  "@recommendations": {
+    "description": "عنوان قسم التوصيات"
+  },
+  "careerPathways": "مسارات مهنية",
+  "@careerPathways": {
+    "description": "عنوان فرعي لاقتراحات المهنة"
+  },
+  "noSpecificCareerSuggestions": "لم تُقدّم اقتراحات مهنية محددة.",
+  "@noSpecificCareerSuggestions": {
+    "description": "رسالة عند عدم وجود اقتراحات مهنية"
+  },
+  "skillsDevelopment": "تطوير المهارات",
+  "@skillsDevelopment": {
+    "description": "عنوان فرعي لتطوير المهارات"
+  },
+  "noSpecificSkillsSuggested": "لم تُقترح مهارات محددة.",
+  "@noSpecificSkillsSuggested": {
+    "description": "رسالة عند عدم وجود مهارات مقترحة"
+  },
+  "freelanceOpportunities": "فرص العمل الحر",
+  "@freelanceOpportunities": {
+    "description": "عنوان فرعي لفرص العمل الحر"
+  },
+  "noSpecificFreelanceOpportunities": "لم تُقترح فرص عمل حر محددة.",
+  "@noSpecificFreelanceOpportunities": {
+    "description": "رسالة عند عدم وجود فرص عمل حر"
+  },
+  "practicalNextSteps": "الخطوات العملية التالية",
+  "@practicalNextSteps": {
+    "description": "عنوان فرعي للخطوات العملية التالية"
+  },
+  "noSpecificPracticalSteps": "لم تُقدّم خطوات عملية محددة.",
+  "@noSpecificPracticalSteps": {
+    "description": "رسالة عند عدم وجود خطوات عملية"
+  },
+  "wordsOfInspiration": "كلمات إلهامية",
+  "@wordsOfInspiration": {
+    "description": "عنوان فرعي للاقتباس التحفيزي"
+  },
+  "assessmentReportTitle": "تقرير التقييم",
+  "@assessmentReportTitle": {
+    "description": "عنوان خصائص الوثيقة"
+  },
+  "creatorName": "Multiverse Mentor",
+  "@creatorName": {
+    "description": "اسم منشئ التقرير"
+  },
+  "detailedReportDescription": "تقرير تقييم مفصل من Multiverse Mentor",
+  "@detailedReportDescription": {
+    "description": "وصف خصائص الوثيقة"
   }
-
-    ,
-  "detailedReportWithFullResults": "تقرير مفصل مع جميع النتائج",
-  "@detailedReportWithFullResults": {
-    "description": "ملاحظة أسفل زر تحميل التقرير"
-  }
-
-
 }
+
+
 
     
 

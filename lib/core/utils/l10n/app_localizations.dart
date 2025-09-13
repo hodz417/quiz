@@ -590,18 +590,6 @@ abstract class AppLocalizations {
   /// **'Strengths'**
   String get strengths;
 
-  /// Title for freelance opportunities section
-  ///
-  /// In en, this message translates to:
-  /// **'Freelance Opportunities'**
-  String get freelanceOpportunities;
-
-  /// Title for practical next steps section
-  ///
-  /// In en, this message translates to:
-  /// **'Practical Next Steps'**
-  String get practicalNextSteps;
-
   /// Button text for downloading report
   ///
   /// In en, this message translates to:
@@ -619,6 +607,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Detailed report with all results'**
   String get detailedReportNote;
+
+  /// Note below the download report button
+  ///
+  /// In en, this message translates to:
+  /// **'Download your full report now — one small click toward big progress'**
+  String get detailedReportWithFullResults;
+
+  /// Main report title
+  ///
+  /// In en, this message translates to:
+  /// **'Multiverse Mentor Assessment Report'**
+  String get multiverseMentorAssessmentReport;
+
+  /// Section title for executive summary
+  ///
+  /// In en, this message translates to:
+  /// **'Executive Summary'**
+  String get executiveSummary;
+
+  /// Section title for detailed analysis
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Analysis'**
+  String get detailedAnalysis;
+
+  /// Subheading for personality profile
+  ///
+  /// In en, this message translates to:
+  /// **'Personality Profile'**
+  String get personalityProfile;
+
+  /// Subheading for learning style
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Style Analysis'**
+  String get learningStyleAnalysis;
 
   /// Learning style: visual
   ///
@@ -638,11 +662,119 @@ abstract class AppLocalizations {
   /// **'Kinesthetic'**
   String get kinesthetic;
 
-  /// Note below the download report button
+  /// Subheading for goals and aspirations
   ///
   /// In en, this message translates to:
-  /// **'download this file '**
-  String get detailedReportWithFullResults;
+  /// **'Goals & Aspirations'**
+  String get goalsAspirations;
+
+  /// Message when there are no goals
+  ///
+  /// In en, this message translates to:
+  /// **'No specific goals were detailed.'**
+  String get noSpecificGoals;
+
+  /// Subheading for strengths
+  ///
+  /// In en, this message translates to:
+  /// **'Key Strengths'**
+  String get keyStrengths;
+
+  /// Message when there are no strengths
+  ///
+  /// In en, this message translates to:
+  /// **'No specific strengths were detailed.'**
+  String get noSpecificStrengths;
+
+  /// Subheading for development areas
+  ///
+  /// In en, this message translates to:
+  /// **'Development Areas'**
+  String get developmentAreas;
+
+  /// Message when there are no development areas
+  ///
+  /// In en, this message translates to:
+  /// **'No specific development areas were identified.'**
+  String get noSpecificDevelopmentAreas;
+
+  /// Section title for recommendations
+  ///
+  /// In en, this message translates to:
+  /// **'Recommendations'**
+  String get recommendations;
+
+  /// Subheading for career suggestions
+  ///
+  /// In en, this message translates to:
+  /// **'Career Pathways'**
+  String get careerPathways;
+
+  /// Message when there are no career suggestions
+  ///
+  /// In en, this message translates to:
+  /// **'No specific career suggestions were provided.'**
+  String get noSpecificCareerSuggestions;
+
+  /// Subheading for skills development
+  ///
+  /// In en, this message translates to:
+  /// **'Skills Development'**
+  String get skillsDevelopment;
+
+  /// Message when there are no suggested skills
+  ///
+  /// In en, this message translates to:
+  /// **'No specific skills were suggested.'**
+  String get noSpecificSkillsSuggested;
+
+  /// Subheading for freelance opportunities
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance Opportunities'**
+  String get freelanceOpportunities;
+
+  /// Message when there are no freelance suggestions
+  ///
+  /// In en, this message translates to:
+  /// **'No specific freelance opportunities were suggested.'**
+  String get noSpecificFreelanceOpportunities;
+
+  /// Subheading for practical next steps
+  ///
+  /// In en, this message translates to:
+  /// **'Practical Next Steps'**
+  String get practicalNextSteps;
+
+  /// Message when there are no practical steps
+  ///
+  /// In en, this message translates to:
+  /// **'No specific practical steps were provided.'**
+  String get noSpecificPracticalSteps;
+
+  /// Subheading for inspirational quote
+  ///
+  /// In en, this message translates to:
+  /// **'Words of Inspiration'**
+  String get wordsOfInspiration;
+
+  /// Core properties title
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment Report'**
+  String get assessmentReportTitle;
+
+  /// Core properties creator
+  ///
+  /// In en, this message translates to:
+  /// **'Multiverse Mentor'**
+  String get creatorName;
+
+  /// Core properties description
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed assessment report generated by Multiverse Mentor'**
+  String get detailedReportDescription;
 }
 
 class _AppLocalizationsDelegate

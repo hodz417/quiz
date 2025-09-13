@@ -1,6 +1,9 @@
+// result_exporter.dart
 import 'dart:convert' show utf8;
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
+import 'package:flutter/widgets.dart'; // for BuildContext
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -13,7 +16,10 @@ class ResultExporter {
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&apos;');
 
-  static Uint8List buildSimpleDocxBytes(AnalysisResult result) {
+  /// Build the docx bytes. Requires [context] to access localized strings.
+  static Uint8List buildSimpleDocxBytes(BuildContext context, AnalysisResult result) {
+    final l10n = context.l10n;
+
     final docXml = StringBuffer()
       ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
       ..writeln('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">')
@@ -34,14 +40,10 @@ class ResultExporter {
     }
 
     void addParagraph(String text, {bool bold = false, bool italic = false}) {
-      docXml.write(
-        '<w:p><w:r><w:rPr>',
-      );
+      docXml.write('<w:p><w:r><w:rPr>');
       if (bold) docXml.write('<w:b/>');
       if (italic) docXml.write('<w:i/>');
-      docXml.writeln(
-        '</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
-      );
+      docXml.writeln('</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>');
     }
 
     void addBulletPoint(String text) {
@@ -54,33 +56,33 @@ class ResultExporter {
       docXml.writeln('<w:p><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>');
     }
 
-    // Document content
-    addHeading('Multiverse Mentor Assessment Report', level: 1);
+    // Document content using localized strings
+    addHeading(l10n.multiverseMentorAssessmentReport, level: 1);
     addDivider();
 
     // Executive Summary
-    addHeading('Executive Summary', level: 2);
+    addHeading(l10n.executiveSummary, level: 2);
     addParagraph(result.uiSummary);
     addDivider();
 
     // Detailed Analysis
-    addHeading('Detailed Analysis', level: 2);
-    
-    addSubheading('Personality Profile');
+    addHeading(l10n.detailedAnalysis, level: 2);
+
+    addSubheading(l10n.personalityProfile);
     addParagraph('${result.personalityType} - ${result.personalityExplanation}', bold: true);
     addParagraph(result.personalityDetails);
     addDivider();
 
-    addSubheading('Learning Style Analysis');
-    addParagraph('Visual: ${result.learningStylePercentages['Visual'] ?? 0}%');
-    addParagraph('Verbal: ${result.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph('Kinesthetic: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addSubheading(l10n.learningStyleAnalysis);
+    addParagraph('${l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%');
+    addParagraph('${l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%');
+    addParagraph('${l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
     addParagraph(result.learningStyleDetails);
     addDivider();
 
-    addSubheading('Goals & Aspirations');
+    addSubheading(l10n.goalsAspirations);
     if (result.goalsDetails.isEmpty) {
-      addParagraph('No specific goals were detailed.');
+      addParagraph(l10n.noSpecificGoals);
     } else {
       for (var goal in result.goalsDetails) {
         addBulletPoint(goal);
@@ -88,9 +90,9 @@ class ResultExporter {
     }
     addDivider();
 
-    addSubheading('Key Strengths');
+    addSubheading(l10n.keyStrengths);
     if (result.strengthsDetails.isEmpty) {
-      addParagraph('No specific strengths were detailed.');
+      addParagraph(l10n.noSpecificStrengths);
     } else {
       for (var strength in result.strengthsDetails) {
         addBulletPoint(strength);
@@ -98,9 +100,9 @@ class ResultExporter {
     }
     addDivider();
 
-    addSubheading('Development Areas');
+    addSubheading(l10n.developmentAreas);
     if (result.developmentAreas.isEmpty) {
-      addParagraph('No specific development areas were identified.');
+      addParagraph(l10n.noSpecificDevelopmentAreas);
     } else {
       for (var area in result.developmentAreas) {
         addBulletPoint(area);
@@ -109,11 +111,11 @@ class ResultExporter {
     addDivider();
 
     // Recommendations Section
-    addHeading('Recommendations', level: 2);
-    
-    addSubheading('Career Pathways');
+    addHeading(l10n.recommendations, level: 2);
+
+    addSubheading(l10n.careerPathways);
     if (result.careerSuggestions.isEmpty) {
-      addParagraph('No specific career suggestions were provided.');
+      addParagraph(l10n.noSpecificCareerSuggestions);
     } else {
       for (var career in result.careerSuggestions) {
         addBulletPoint(career);
@@ -121,9 +123,9 @@ class ResultExporter {
     }
     addDivider();
 
-    addSubheading('Skills Development');
+    addSubheading(l10n.skillsDevelopment);
     if (result.suggestedSkills.isEmpty) {
-      addParagraph('No specific skills were suggested.');
+      addParagraph(l10n.noSpecificSkillsSuggested);
     } else {
       for (var skill in result.suggestedSkills) {
         addBulletPoint(skill);
@@ -131,9 +133,9 @@ class ResultExporter {
     }
     addDivider();
 
-    addSubheading('Freelance Opportunities');
+    addSubheading(l10n.freelanceOpportunities);
     if (result.freelanceJobs['wordList']?.isEmpty ?? true) {
-      addParagraph('No specific freelance opportunities were suggested.');
+      addParagraph(l10n.noSpecificFreelanceOpportunities);
     } else {
       for (var job in result.freelanceJobs['wordList']!) {
         addBulletPoint(job);
@@ -141,10 +143,10 @@ class ResultExporter {
     }
     addDivider();
 
-    // NEW: Practical Steps
-    addSubheading('Practical Next Steps');
+    // Practical Steps
+    addSubheading(l10n.practicalNextSteps);
     if (result.practicalSteps.isEmpty) {
-      addParagraph('No specific practical steps were provided.');
+      addParagraph(l10n.noSpecificPracticalSteps);
     } else {
       for (var step in result.practicalSteps) {
         addBulletPoint(step);
@@ -152,8 +154,8 @@ class ResultExporter {
     }
     addDivider();
 
-    // NEW: Inspirational Quote
-    addSubheading('Words of Inspiration');
+    // Inspirational Quote
+    addSubheading(l10n.wordsOfInspiration);
     addParagraph('"${result.inspirationalQuote}"', italic: true);
     addDivider();
 
@@ -162,11 +164,21 @@ class ResultExporter {
     docXml.writeln('</w:body>');
     docXml.writeln('</w:document>');
 
-    // Create the complete DOCX package
-    return _createDocxPackage(docXml.toString());
+    // Create the complete DOCX package and pass core properties from l10n
+    return _createDocxPackage(
+      docXml.toString(),
+      l10n.creatorName,
+      l10n.assessmentReportTitle,
+      l10n.detailedReportDescription,
+    );
   }
 
-  static Uint8List _createDocxPackage(String documentXml) {
+  static Uint8List _createDocxPackage(
+    String documentXml,
+    String creator,
+    String title,
+    String description,
+  ) {
     // Content Types definition
     final contentTypes = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -207,16 +219,16 @@ class ResultExporter {
 </w:numbering>
 ''';
 
-    // Core properties
+    // Core properties (use passed localized strings)
     final core = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <dc:creator>Multiverse Mentor</dc:creator>
-  <dc:title>Assessment Report</dc:title>
-  <dc:description>Detailed assessment report generated by Multiverse Mentor</dc:description>
+  <dc:creator>${_escapeXml(creator)}</dc:creator>
+  <dc:title>${_escapeXml(title)}</dc:title>
+  <dc:description>${_escapeXml(description)}</dc:description>
 </cp:coreProperties>
 ''';
 
@@ -224,48 +236,48 @@ class ResultExporter {
     final app = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
-  <Application>Multiverse Mentor</Application>
+  <Application>${_escapeXml(creator)}</Application>
 </Properties>
 ''';
 
     // Create archive with all necessary files
     final archive = Archive();
-    
+
     // Add content types
     archive.addFile(ArchiveFile(
       '[Content_Types].xml',
       utf8.encode(contentTypes).length,
       utf8.encode(contentTypes),
     ));
-    
+
     // Add relationships
     archive.addFile(ArchiveFile(
       '_rels/.rels',
       utf8.encode(rels).length,
       utf8.encode(rels),
     ));
-    
+
     // Add core properties
     archive.addFile(ArchiveFile(
       'docProps/core.xml',
       utf8.encode(core).length,
       utf8.encode(core),
     ));
-    
+
     // Add application properties
     archive.addFile(ArchiveFile(
       'docProps/app.xml',
       utf8.encode(app).length,
       utf8.encode(app),
     ));
-    
+
     // Add numbering for bullet points
     archive.addFile(ArchiveFile(
       'word/numbering.xml',
       utf8.encode(numbering).length,
       utf8.encode(numbering),
     ));
-    
+
     // Add main document
     archive.addFile(ArchiveFile(
       'word/document.xml',

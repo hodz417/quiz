@@ -267,12 +267,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get strengths => 'نقاط القوة';
 
   @override
-  String get freelanceOpportunities => 'فرص العمل الحر';
-
-  @override
-  String get practicalNextSteps => 'الخطوات العملية التالية';
-
-  @override
   String get downloadReport => 'تحميل التقرير';
 
   @override
@@ -281,6 +275,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get detailedReportNote => 'تقرير مفصل مع جميع النتائج';
+
+  @override
+  String get detailedReportWithFullResults =>
+      'نزّل التقرير الكامل الآن — خطوة صغيرة تقود لتقدم كبير.';
+
+  @override
+  String get multiverseMentorAssessmentReport =>
+      'تقرير تقييم Multiverse Mentor';
+
+  @override
+  String get executiveSummary => 'الملخص التنفيذي';
+
+  @override
+  String get detailedAnalysis => 'تحليل مفصل';
+
+  @override
+  String get personalityProfile => 'ملف الشخصية';
+
+  @override
+  String get learningStyleAnalysis => 'تحليل أسلوب التعلم';
 
   @override
   String get visual => 'بصري';
@@ -292,5 +306,60 @@ class AppLocalizationsAr extends AppLocalizations {
   String get kinesthetic => 'حسي حركي';
 
   @override
-  String get detailedReportWithFullResults => 'download this file ';
+  String get goalsAspirations => 'الأهداف والطموحات';
+
+  @override
+  String get noSpecificGoals => 'لم يتم توضيح أهداف محددة.';
+
+  @override
+  String get keyStrengths => 'نقاط القوة';
+
+  @override
+  String get noSpecificStrengths => 'لم يتم توضيح نقاط قوة محددة.';
+
+  @override
+  String get developmentAreas => 'مجالات التطوير';
+
+  @override
+  String get noSpecificDevelopmentAreas => 'لم يتم تحديد مجالات تطوير محددة.';
+
+  @override
+  String get recommendations => 'التوصيات';
+
+  @override
+  String get careerPathways => 'مسارات مهنية';
+
+  @override
+  String get noSpecificCareerSuggestions => 'لم تُقدّم اقتراحات مهنية محددة.';
+
+  @override
+  String get skillsDevelopment => 'تطوير المهارات';
+
+  @override
+  String get noSpecificSkillsSuggested => 'لم تُقترح مهارات محددة.';
+
+  @override
+  String get freelanceOpportunities => 'فرص العمل الحر';
+
+  @override
+  String get noSpecificFreelanceOpportunities => 'لم تُقترح فرص عمل حر محددة.';
+
+  @override
+  String get practicalNextSteps => 'الخطوات العملية التالية';
+
+  @override
+  String get noSpecificPracticalSteps => 'لم تُقدّم خطوات عملية محددة.';
+
+  @override
+  String get wordsOfInspiration => 'كلمات إلهامية';
+
+  @override
+  String get assessmentReportTitle => 'تقرير التقييم';
+
+  @override
+  String get creatorName => 'Multiverse Mentor';
+
+  @override
+  String get detailedReportDescription =>
+      'تقرير تقييم مفصل من Multiverse Mentor';
 }

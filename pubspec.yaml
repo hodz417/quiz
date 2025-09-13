@@ -41,7 +41,6 @@ dependencies:
   path_provider: ^2.1.5
   provider: ^6.1.5
   responsive_builder: ^0.7.1
-  shared_preferences: ^2.1.1
   step_progress: ^2.6.1
   talker_bloc_logger: ^4.6.4
   universal_html: ^2.2.4

@@ -4,29 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
-/// Small utility helpers for trimming and styling short previews used across the UI.
-class WordHelper {
-  /// Return a short preview of the text (default: up to 3 words). Trims
-  /// punctuation at ends and collapses whitespace. Safe for empty input.
-  static String shortPreview(String? text, {int maxWords = 2}) {
-    if (text == null) return '';
-    final cleaned = text.trim().replaceAll(RegExp(r'[\u200B\uFEFF]'), '');
-    if (cleaned.isEmpty) return '';
-    // remove repeated whitespace and trailing punctuation
-    final parts = cleaned
-        .replaceAll(RegExp(r'[\p{P}+]', unicode: true), '')
-        .split(RegExp(r'\s+'));
-    return parts.take(maxWords).join(' ');
-  }
 
-  /// Return the very first word (used for the small topic title on chips)
-  static String firstWord(String? text) {
-    if (text == null) return '';
-    final t = text.trim();
-    if (t.isEmpty) return '';
-    return t.split(RegExp(r'\s+')).first;
-  }
-}
 
 /// Builds a minimal .docx (WordprocessingML) archive from an [AnalysisResult].
 /// Returns the bytes ready to be written to disk or offered as a download.

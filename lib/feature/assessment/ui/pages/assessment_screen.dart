@@ -1,6 +1,6 @@
 // assessment_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
@@ -46,7 +46,7 @@ class _QuizPageState extends State<QuizPage> {
             sizingInformation.deviceScreenType == DeviceScreenType.mobile;
         final mediaQuery = MediaQuery.of(context);
         final containerHeight = isMobile
-            ? mediaQuery.size.height * 0.54
+            ? mediaQuery.size.height * 0.70
             : mediaQuery.size.height * 0.75;
         final containerWidth = isMobile
             ? mediaQuery.size.width * 0.95
@@ -76,8 +76,7 @@ class _QuizPageState extends State<QuizPage> {
                   } else if (state is ChatInitial) {
                     EasyLoading.dismiss();
                   }
-                } catch (_) {
-                }
+                } catch (_) {}
 
                 if (state is ChatError) {
                   ScaffoldMessenger.of(
@@ -116,8 +115,10 @@ class _QuizPageState extends State<QuizPage> {
                       onKey: (FocusNode node, RawKeyEvent event) {
                         // only handle key down to avoid double firing
                         if (event is RawKeyDownEvent) {
-                          final isEnter = event.logicalKey == LogicalKeyboardKey.enter ||
-                              event.logicalKey == LogicalKeyboardKey.numpadEnter;
+                          final isEnter =
+                              event.logicalKey == LogicalKeyboardKey.enter ||
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.numpadEnter;
                           if (isEnter) {
                             // Avoid submitting when question is open-ended (to allow newline)
                             if (currentQ.kind == QuestionKind.openEnded) {
@@ -151,7 +152,7 @@ class _QuizPageState extends State<QuizPage> {
                                       Text(
                                         currentQ.text,
                                         style: isMobile
-                                            ? AppTextStyles.font45BoldBlack
+                                            ? AppTextStyles.font56BoldBlack
                                             : AppTextStyles.font20SemiBoldBlack,
                                         textAlign: TextAlign.center,
                                       ),
@@ -167,7 +168,9 @@ class _QuizPageState extends State<QuizPage> {
                                 const SizedBox(height: 10),
                                 QuizControlButtons(
                                   onPrevious: () {
-                                    context.read<ChatBloc>().add(PrevQuestion());
+                                    context.read<ChatBloc>().add(
+                                      PrevQuestion(),
+                                    );
                                     _formKey.currentState?.reset();
                                   },
                                   onNext: () => _onNextPressed(currentQ),

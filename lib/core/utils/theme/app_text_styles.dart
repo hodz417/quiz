@@ -56,7 +56,7 @@ class AppTextStyles {
     color: Colors.white,
   );
 
-  static TextStyle font14White = TextStyle(
+  static TextStyle font14WhiteBold = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.bold,
     color: Colors.white,
@@ -72,6 +72,19 @@ class AppTextStyles {
     fontSize: 45.sp,
     color: Colors.black87,
   );
+
+  static TextStyle font45BoldBlue = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 45.sp,
+    color: Colors.blue,
+  );
+
+  static TextStyle font45BoldWhite = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 45.sp,
+    color: Colors.white,
+  );
+
   static TextStyle font18RegularGrey = TextStyle(
     fontWeight: FontWeight.w500,
     fontSize: 18.sp,
@@ -95,6 +108,17 @@ class AppTextStyles {
     fontSize: 14.sp,
     color: Colors.black,
   );
+
+  static TextStyle font14LightBlue = TextStyle(
+    fontSize: 14.sp,
+    color: Colors.blue,
+  );
+
+  static TextStyle font14White = TextStyle(
+    fontSize: 14.sp,
+    color: Colors.white,
+  );
+
   static TextStyle font14BlackBold = TextStyle(
     fontSize: 14.sp,
     color: Colors.black,
@@ -122,6 +146,12 @@ class AppTextStyles {
     color: Colors.grey[600],
   );
 
+    static TextStyle font12BoldGrey = TextStyle(
+    fontSize: 12.sp,
+    color: Colors.grey[600],
+  );
+
+
   static TextStyle font12Regular = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
@@ -137,9 +167,10 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
   );
 
-  static TextStyle font14BoldWhite = TextStyle(
-    fontSize: 14.sp,
-    color: Colors.white,
+
+static TextStyle font15SemiBoldBlack = TextStyle(
+    fontSize: 15.sp,
+    color: Colors.black87,
     fontWeight: FontWeight.w600,
   );
 
@@ -174,8 +205,7 @@ class AppTextStyles {
     height: 1.3,
   );
 
-  
-    static TextStyle font14BoldBlack = TextStyle(
+  static TextStyle font14BoldBlack = TextStyle(
     fontSize: 14.sp,
     color: Colors.black,
     fontWeight: FontWeight.bold,
@@ -187,20 +217,14 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
   );
 
+  static TextStyle font12Grey = TextStyle(fontSize: 12.sp, color: Colors.grey);
 
-    static TextStyle font12Grey = TextStyle(
-    fontSize: 12.sp,
-    color: Colors.grey,
-  );
-
- 
-
-    static TextStyle  font16White = TextStyle(
+  static TextStyle font16White = TextStyle(
     fontSize: 16.sp,
     color: Colors.white,
   );
 
-    static TextStyle  font20BoldWhite = TextStyle(
+  static TextStyle font20BoldWhite = TextStyle(
     fontSize: 20.sp,
     color: Colors.white,
     fontWeight: FontWeight.bold,

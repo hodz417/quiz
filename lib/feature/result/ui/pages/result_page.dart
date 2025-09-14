@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart'; 
+import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:quiz/feature/result/data/result_exporter.dart';
 import 'package:quiz/feature/result/ui/widgets/result_card.dart';
-import 'package:quiz/feature/result/ui/widgets/topic_chip.dart'; 
+import 'package:quiz/feature/result/ui/widgets/topic_chip.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ResultPageWeb extends StatelessWidget {
-  final AnalysisResult result; 
+  final AnalysisResult result;
   const ResultPageWeb({super.key, required this.result});
 
   @override
@@ -197,8 +197,7 @@ class ResultPageWeb extends StatelessWidget {
                                   Text(
                                     context.l10n.freelanceOpportunities,
                                     style: isMobile
-                                        ? AppTextStyles.font45BoldBlack
-                                            .copyWith(color: Colors.white)
+                                        ? AppTextStyles.font45BoldWhite
                                         : AppTextStyles.font16BoldWhite,
                                   ),
                                 ],
@@ -250,10 +249,9 @@ class ResultPageWeb extends StatelessWidget {
                                   ),
                                   const Gap(6),
                                   Text(
-                                context.    l10n.practicalNextSteps,
+                                    context.l10n.practicalNextSteps,
                                     style: isMobile
-                                        ? AppTextStyles.font45BoldBlack
-                                            .copyWith(color: Colors.white)
+                                        ? AppTextStyles.font45BoldWhite
                                         : AppTextStyles.font16BoldWhite,
                                   ),
                                 ],
@@ -285,8 +283,10 @@ class ResultPageWeb extends StatelessWidget {
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              final bytes =
-                                  ResultExporter.buildSimpleDocxBytes(context , result);
+                              final bytes = ResultExporter.buildSimpleDocxBytes(
+                                context,
+                                result,
+                              );
                               ResultExporter.downloadDocxInBrowser(
                                 bytes,
                                 'assessment_report.docx',
@@ -322,7 +322,7 @@ class ResultPageWeb extends StatelessWidget {
                         const Gap(8),
                         Center(
                           child: Text(
-                        context.    l10n.detailedReportWithFullResults,
+                            context.l10n.detailedReportWithFullResults,
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.grey,

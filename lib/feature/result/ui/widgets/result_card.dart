@@ -50,9 +50,7 @@ class ResultCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: AppTextStyles.font20SemiBoldBlack.copyWith(
-                          fontSize: 15,
-                        ),
+                        style: AppTextStyles.font15SemiBoldBlack,
                         overflow: TextOverflow.ellipsis,
                         textAlign: isRtl ? TextAlign.right : TextAlign.left,
                       ),
@@ -74,18 +72,13 @@ class ResultCard extends StatelessWidget {
                                   // Value on the right (for RTL)
                                   Text(
                                     items[i]['value'] ?? '',
-                                    style: AppTextStyles.font14Grey.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: AppTextStyles.font12BoldGrey,
                                   ),
                                   const Gap(12),
                                   Expanded(
                                     child: Text(
                                       '${items[i]['label']}:',
-                                      style: AppTextStyles.font14Grey.copyWith(
-                                        fontSize: 12,
-                                      ),
+                                      style: AppTextStyles.font12Grey,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.right,
                                     ),
@@ -96,9 +89,7 @@ class ResultCard extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       '${items[i]['label']}:',
-                                      style: AppTextStyles.font14Grey.copyWith(
-                                        fontSize: 12,
-                                      ),
+                                      style: AppTextStyles.font12Grey,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                     ),
@@ -106,21 +97,19 @@ class ResultCard extends StatelessWidget {
                                   const Gap(12),
                                   Text(
                                     items[i]['value'] ?? '',
-                                    style: AppTextStyles.font14Grey.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: AppTextStyles.font12Grey,
                                   ),
                                 ],
                         )
                       else
                         Align(
-                          alignment: isRtl ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment: isRtl
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                           child: Text(
                             items[i]['value'] ?? '',
-                            style: AppTextStyles.font14Grey.copyWith(
-                              fontSize: 12,
-                            ),
+                            style: AppTextStyles.font12Grey,
+
                             overflow: TextOverflow.ellipsis,
                             textAlign: isRtl ? TextAlign.right : TextAlign.left,
                           ),

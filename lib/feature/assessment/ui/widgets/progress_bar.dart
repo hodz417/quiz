@@ -60,25 +60,19 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
                         Text(
                           '${context.l10n.progressQuestion} $currentStep',
                           style: isMobile
-                              ? AppTextStyles.font45BoldBlack
+                              ? AppTextStyles.font45BoldBlue
                               : AppTextStyles.font14Black,
                         ),
                         Text(
-                          progressText, 
+                          progressText,
                           style: isMobile
-                              ? AppTextStyles.font45BoldBlack.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                )
-                              : AppTextStyles.font14Black.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                ),
+                              ? AppTextStyles.font45BoldBlue
+                              : AppTextStyles.font14LightBlue
                         ),
                         Text(
                           '${context.l10n.progressOf} $totalSteps',
                           style: isMobile
-                              ? AppTextStyles.font45BoldBlack
+                              ? AppTextStyles.font45BoldBlue
                               : AppTextStyles.font14Black,
                         ),
                       ],

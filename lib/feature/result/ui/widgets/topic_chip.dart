@@ -28,7 +28,7 @@ class TopicChip extends StatelessWidget {
                 title,
                 style: isMobile
                     ? AppTextStyles.font35White
-                    : AppTextStyles.font14BoldWhite,
+                    : AppTextStyles.font14WhiteBold,
               ),
             ],
           ),

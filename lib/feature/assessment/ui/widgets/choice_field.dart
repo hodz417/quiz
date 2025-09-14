@@ -81,15 +81,11 @@ class ChoiceField extends StatelessWidget {
                       text,
                       style: isMobile
                           ? (selected
-                              ? AppTextStyles.font45BoldBlack.copyWith(
-                                  color: AppColors.simpleWhiteColor,
-                                )
-                              : AppTextStyles.font45BoldBlack)
+                                ? AppTextStyles.font45BoldWhite
+                                : AppTextStyles.font45BoldBlue)
                           : (selected
-                              ? AppTextStyles.font14Black.copyWith(
-                                  color: AppColors.simpleWhiteColor,
-                                )
-                              : AppTextStyles.font14Black),
+                                ? AppTextStyles.font14White
+                                : AppTextStyles.font14Black),
                     ),
                   ),
                 ),

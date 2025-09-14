@@ -109,6 +109,7 @@ class ResultCard extends StatelessWidget {
                           child: Text(
                             items[i]['value'] ?? '',
                             style: AppTextStyles.font12Grey,
+                                      maxLines : 2 , 
 
                             overflow: TextOverflow.ellipsis,
                             textAlign: isRtl ? TextAlign.right : TextAlign.left,

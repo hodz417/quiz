@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:quiz/core/utils/constants/app_assets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
 import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/landing/ui/widgets/hero_image.dart';
 import 'package:quiz/feature/landing/ui/widgets/hero_text_area.dart';
 
 class HeroSection extends StatelessWidget {
@@ -26,7 +25,7 @@ class HeroSection extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    HeroImage(width: 1100.w, height: 200.h),
+                    Image.asset(AppAssets.heroImage ,width: 1300.w, height: 300.h),
                     Gap(40.h),
                     HeroTextArea(),
                   ],
@@ -37,10 +36,7 @@ class HeroSection extends StatelessWidget {
                     Expanded(flex: 6, child: HeroTextArea()),
                     Gap(56.w),
 
-                    Expanded(
-                      flex: 5,
-                      child: HeroImage(width: 720.w, height: 280.h),
-                    ),
+                    Expanded(flex: 5, child: Image.asset(AppAssets.heroImage),),
                   ],
                 ),
         );

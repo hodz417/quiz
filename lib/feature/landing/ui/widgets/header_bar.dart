@@ -25,14 +25,8 @@ class HeaderBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LanguageDropdownMenu(currentLanguage: currentLanguage),
-         
-         Image.asset(
 
-height: 60.h,
-width: 180.w,          
-AppAssets.pngLogo,
-
-         )
+              Image.asset(height: 60.h, width: 180.w, AppAssets.pngLogo),
             ],
           ),
         );

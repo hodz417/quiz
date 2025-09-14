@@ -82,7 +82,7 @@ class ChoiceField extends StatelessWidget {
                       style: isMobile
                           ? (selected
                                 ? AppTextStyles.font45BoldWhite
-                                : AppTextStyles.font45BoldBlue)
+                                : AppTextStyles.font45BoldBlack)
                           : (selected
                                 ? AppTextStyles.font14White
                                 : AppTextStyles.font14Black),

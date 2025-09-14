@@ -30,7 +30,7 @@ class QuizControlButtons extends StatelessWidget {
               label: Text(
                 context.l10n.previous,
                 style: isMobile
-                    ? AppTextStyles.font45BoldBlue
+                    ? AppTextStyles.font45BoldBlack
                     : AppTextStyles.font14Black,
               ),
             ),
@@ -50,7 +50,7 @@ class QuizControlButtons extends StatelessWidget {
                 context.l10n.next,
                 style: isMobile
                     ? AppTextStyles.font45BoldWhite
-                    : AppTextStyles.font14White
+                    : AppTextStyles.font14White,
               ),
             ),
           ],

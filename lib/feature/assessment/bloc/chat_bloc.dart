@@ -175,8 +175,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     answers[currentQ.id] = event.answer;
     _addUser(event.answer);
 
-    if (messages.isNotEmpty && messages.last['isLoading'] == true)
+    if (messages.isNotEmpty && messages.last['isLoading'] == true) {
       messages.removeLast();
+    }
 
     currentQuestionIndex++;
     if (currentQuestionIndex < levelQuestions.length) {
@@ -277,8 +278,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } catch (e) {
       // dismiss easy loading on error as well
       await EasyLoading.dismiss();
-      if (messages.isNotEmpty && messages.last['isLoading'] == true)
+      if (messages.isNotEmpty && messages.last['isLoading'] == true) {
         messages.removeLast();
+      }
       _addBot("Analysis failed: ${e.toString()}");
       emit(ChatError(e.toString()));
     }
@@ -288,8 +290,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     AnalysisComplete event,
     Emitter<ChatState> emit,
   ) {
-    if (messages.isNotEmpty && messages.last['isLoading'] == true)
+    if (messages.isNotEmpty && messages.last['isLoading'] == true) {
       messages.removeLast();
+    }
     final formatted =
         '''
 ${event.result.uiSummary}

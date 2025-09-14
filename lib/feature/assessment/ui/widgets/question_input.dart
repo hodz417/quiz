@@ -3,13 +3,12 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 
-import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
 import 'package:quiz/feature/assessment/data/helper/likert_options.dart';
 import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz/feature/assessment/ui/widgets/choice_field.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
 
 class QuestionInputWidget extends StatelessWidget {
   final AssessmentQuestion question;
@@ -23,7 +22,7 @@ class QuestionInputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ChatBloc>();
+    final bloc = context.read<AssessmentBloc>();
     final prevAnswer = bloc.answers[question.id] ?? '';
 
     return ResponsiveBuilder(

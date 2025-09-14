@@ -1,20 +1,22 @@
-// chat_bloc.dart
+// assessment_bloc.dart
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:quiz/core/utils/constants/questions_en.dart';
-import 'package:quiz/core/utils/constants/questions_ar.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:quiz/feature/assessment/data/helper/questions_en.dart';
+import 'package:quiz/feature/assessment/data/helper/questions_ar.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
-import 'package:quiz/feature/assessment/data/repositories/chat_repository.dart';
+import 'package:quiz/feature/assessment/data/repositories/assessment_repository.dart';
 import 'package:quiz/core/utils/di.dart';
 import 'package:quiz/core/local_settings/local_settings_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart'; 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-part 'chat_event.dart';
-part 'chat_state.dart';
+part 'assessment_event.dart';
+part 'assessment_state.dart';
+part 'assessment_bloc.freezed.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final ChatRepository repository;
+class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
+  final AssessmentRepository repository;
 
   final List<Map<String, dynamic>> messages = [];
   final Map<String, String> answers = {};
@@ -24,13 +26,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   int currentQuestionIndex = 0;
   bool analysisComplete = false;
 
-  ChatBloc(this.repository) : super(ChatInitial()) {
-    on<ChatStarted>(_onChatStarted);
-    on<AnswerSubmitted>(_onAnswerSubmitted);
-    on<PrevQuestion>(_onPrevQuestion);
-    on<AnalysisRequested>(_onAnalysisRequested);
-    on<AnalysisComplete>(_onAnalysisComplete);
-    on<ResetChat>(_onResetChat);
+  AssessmentBloc(this.repository) : super(const AssessmentState.initial()) {
+    on<AssessmentEvent>((event, emit) async {
+      await event.when(
+        started: (level) => _onAssessmentStarted(level, emit),
+        answerSubmitted: (questionId, answer) => _onAnswerSubmitted(questionId, answer, emit),
+        prevQuestion: () => _onPrevQuestion(emit),
+        analysisRequested: () => _onAnalysisRequested(emit),
+        analysisComplete: (result) => _onAnalysisComplete(result, emit),
+        reset: () => _onResetAssessment(emit),
+      );
+    });
   }
 
   // Helper method to get the current locale from LocalSettingsBloc
@@ -75,8 +81,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
   }
 
-  FutureOr<void> _onChatStarted(ChatStarted event, Emitter<ChatState> emit) {
-    selectedLevel = event.level ?? 'Level 1';
+  FutureOr<void> _onAssessmentStarted(String? level, Emitter<AssessmentState> emit) {
+    selectedLevel = level ?? 'Level 1';
 
     // Use the appropriate question set based on locale
     final questions = _questions;
@@ -132,7 +138,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final q = levelQuestions[currentQuestionIndex];
       _addBot("[${q.level}] ${q.text}\n(Estimated: ${q.timeSeconds} seconds)");
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: q,
           progress: progress,
@@ -141,7 +147,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     } else {
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: null,
           progress: 0.0,
@@ -152,13 +158,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   FutureOr<void> _onAnswerSubmitted(
-    AnswerSubmitted event,
-    Emitter<ChatState> emit,
+    String questionId,
+    String answer,
+    Emitter<AssessmentState> emit,
   ) async {
     if (analysisComplete) {
       _addBot("Analysis is already complete. Answers cannot be modified.");
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: null,
           progress: progress,
@@ -172,8 +179,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (idx < 0 || idx >= levelQuestions.length) return;
     final currentQ = levelQuestions[idx];
 
-    answers[currentQ.id] = event.answer;
-    _addUser(event.answer);
+    answers[currentQ.id] = answer;
+    _addUser(answer);
 
     if (messages.isNotEmpty && messages.last['isLoading'] == true) {
       messages.removeLast();
@@ -186,7 +193,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         "[${next.level}] ${next.text}\n(Estimated: ${next.timeSeconds} seconds)",
       );
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: next,
           progress: progress,
@@ -194,15 +201,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ),
       );
     } else {
-      add(AnalysisRequested());
+      add(const AssessmentEvent.analysisRequested());
     }
   }
 
-  FutureOr<void> _onPrevQuestion(PrevQuestion event, Emitter<ChatState> emit) {
+  FutureOr<void> _onPrevQuestion(Emitter<AssessmentState> emit) {
     if (analysisComplete) {
       _addBot("Analysis is already complete. You cannot go back.");
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: null,
           progress: progress,
@@ -216,7 +223,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final q = levelQuestions[currentQuestionIndex];
       _addBot("Returning to the previous question:\n[${q.level}] ${q.text}");
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: q,
           progress: progress,
@@ -226,7 +233,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else {
       _addBot("You are already at the first question.");
       emit(
-        ChatLoaded(
+        AssessmentState.loaded(
           messages: List.from(messages),
           currentQuestion: levelQuestions.isNotEmpty
               ? levelQuestions.first
@@ -238,16 +245,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Future<void> _onAnalysisRequested(
-    AnalysisRequested event,
-    Emitter<ChatState> emit,
-  ) async {
+  Future<void> _onAnalysisRequested(Emitter<AssessmentState> emit) async {
     // show easy loading overlay
     EasyLoading.show(status: 'Analyzing responses...');
 
     _addBot("Analyzing responses...", isLoading: true);
     emit(
-      ChatLoaded(
+      AssessmentState.loaded(
         messages: List.from(messages),
         currentQuestion: null,
         progress: progress,
@@ -274,7 +278,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       // dismiss easy loading before emitting result
       await EasyLoading.dismiss();
 
-      add(AnalysisComplete(result));
+      add(AssessmentEvent.analysisComplete(result));
     } catch (e) {
       // dismiss easy loading on error as well
       await EasyLoading.dismiss();
@@ -282,57 +286,56 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messages.removeLast();
       }
       _addBot("Analysis failed: ${e.toString()}");
-      emit(ChatError(e.toString()));
+      emit(AssessmentState.error(e.toString()));
     }
   }
 
   FutureOr<void> _onAnalysisComplete(
-    AnalysisComplete event,
-    Emitter<ChatState> emit,
+    AnalysisResult result,
+    Emitter<AssessmentState> emit,
   ) {
     if (messages.isNotEmpty && messages.last['isLoading'] == true) {
       messages.removeLast();
     }
-    final formatted =
-        '''
-${event.result.uiSummary}
+    final formatted = '''
+${result.uiSummary}
 
 Personality:
-${event.result.personalityType}
+${result.personalityType}
 
 Learning Style:
-- Visual: ${event.result.learningStylePercentages['Visual']}%
-- Verbal: ${event.result.learningStylePercentages['Verbal']}%
-- Kinesthetic: ${event.result.learningStylePercentages['Kinesthetic']}
+- Visual: ${result.learningStylePercentages['Visual']}%
+- Verbal: ${result.learningStylePercentages['Verbal']}%
+- Kinesthetic: ${result.learningStylePercentages['Kinesthetic']}
 
 Goals:
-${event.result.inferredGoals.map((g) => '- $g').join('\n')}
+${result.inferredGoals.map((g) => '- $g').join('\n')}
 
 Strengths:
-${event.result.keyStrengths.map((s) => '- $s').join('\n')}
+${result.keyStrengths.map((s) => '- $s').join('\n')}
 
 Development Areas:
-${event.result.developmentAreas.map((d) => '- $d').join('\n')}
+${result.developmentAreas.map((d) => '- $d').join('\n')}
 
 Career Suggestions:
-${event.result.careerSuggestions.map((c) => '- $c').join('\n')}
+${result.careerSuggestions.map((c) => '- $c').join('\n')}
 ''';
     _addBot(formatted);
     emit(
-      AnalysisCompleteState(
-        result: event.result,
+      AssessmentState.analysisComplete(
+        result: result,
         messages: List.from(messages),
       ),
     );
   }
 
-  FutureOr<void> _onResetChat(ResetChat event, Emitter<ChatState> emit) {
+  FutureOr<void> _onResetAssessment(Emitter<AssessmentState> emit) {
     messages.clear();
     answers.clear();
     levelQuestions.clear();
     currentQuestionIndex = 0;
     analysisComplete = false;
     selectedLevel = null;
-    emit(ChatInitial());
+    emit(const AssessmentState.initial());
   }
 }

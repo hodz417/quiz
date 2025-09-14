@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
-import 'package:quiz/feature/assessment/data/repositories/chat_repository.dart';
+import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
+import 'package:quiz/feature/assessment/data/repositories/assessment_repository.dart';
 import '../local_settings/local_settings_bloc.dart';
 
 final getIt = GetIt.instance;
@@ -11,8 +11,12 @@ void setupDependencyInjections() {
 
   // Register repository (implementation assumed: ChatRepositoryImpl)
   // Use lazySingleton so it is created only when needed
-  getIt.registerLazySingleton<ChatRepository>(() => ChatRepository());
+  getIt.registerLazySingleton<AssessmentRepository>(
+    () => AssessmentRepository(),
+  );
 
-  // Register ChatBloc as a factory so each route gets a fresh instance
-  getIt.registerFactory<ChatBloc>(() => ChatBloc(getIt<ChatRepository>()));
+  // Register AssessmentBloc as a factory so each route gets a fresh instance
+  getIt.registerFactory<AssessmentBloc>(
+    () => AssessmentBloc(getIt<AssessmentRepository>()),
+  );
 }

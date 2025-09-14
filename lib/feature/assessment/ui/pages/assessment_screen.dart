@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
 import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
 import 'package:quiz/feature/assessment/ui/widgets/progress_bar.dart';
 import 'package:quiz/feature/assessment/ui/widgets/question_input.dart';
@@ -31,9 +31,9 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final bloc = context.read<ChatBloc>();
+      final bloc = context.read<AssessmentBloc>();
       if (bloc.selectedLevel != widget.selectedLevel) {
-        bloc.add(ChatStarted(level: widget.selectedLevel));
+        bloc.add(AssessmentStarted(level: widget.selectedLevel));
       }
     });
   }
@@ -56,10 +56,10 @@ class _QuizPageState extends State<QuizPage> {
           child: Scaffold(
             backgroundColor: AppColors.kPrimaryBg,
             appBar: const ProgressBar(),
-            body: BlocConsumer<ChatBloc, ChatState>(
+            body: BlocConsumer<AssessmentBloc, AssessmentState>(
               listener: (ctx, state) {
                 try {
-                  if (state is ChatLoaded) {
+                  if (state is AssessmentLoaded) {
                     final hasLoading = state.messages.any(
                       (m) => m['isLoading'] == true,
                     );
@@ -68,23 +68,23 @@ class _QuizPageState extends State<QuizPage> {
                     } else {
                       EasyLoading.dismiss();
                     }
-                  } else if (state is AnalysisCompleteState) {
+                  } else if (state is AssessmentAnalysisComplete) {
                     // ensure loading dismissed before navigation
                     EasyLoading.dismiss();
-                  } else if (state is ChatError) {
+                  } else if (state is AssessmentError) {
                     EasyLoading.dismiss();
-                  } else if (state is ChatInitial) {
+                  } else if (state is AssessmentInitial) {
                     EasyLoading.dismiss();
                   }
                 } catch (_) {}
 
-                if (state is ChatError) {
+                if (state is AssessmentError) {
                   ScaffoldMessenger.of(
                     ctx,
                   ).showSnackBar(SnackBar(content: Text(state.message)));
                 }
 
-                if (state is AnalysisCompleteState) {
+                if (state is AssessmentAnalysisComplete) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     Navigator.push(
                       ctx,
@@ -92,16 +92,16 @@ class _QuizPageState extends State<QuizPage> {
                         builder: (_) => ResultPageWeb(result: state.result),
                       ),
                     ).then((_) {
-                      ctx.read<ChatBloc>().add(ResetChat());
+                      ctx.read<AssessmentBloc>().add(ResetAssessment());
                     });
                   });
                 }
               },
               builder: (ctx, state) {
-                if (state is ChatInitial) {
+                if (state is AssessmentInitial) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (state is ChatLoaded) {
+                if (state is AssessmentLoaded) {
                   final currentQ = state.currentQuestion;
                   if (currentQ == null) {
                     // if currentQuestion is null but messages include loading,
@@ -168,7 +168,7 @@ class _QuizPageState extends State<QuizPage> {
                                 const SizedBox(height: 10),
                                 QuizControlButtons(
                                   onPrevious: () {
-                                    context.read<ChatBloc>().add(
+                                    context.read<AssessmentBloc>().add(
                                       PrevQuestion(),
                                     );
                                     _formKey.currentState?.reset();
@@ -199,7 +199,7 @@ class _QuizPageState extends State<QuizPage> {
       final val = _formKey.currentState!.fields['answer']!.value
           .toString()
           .trim();
-      context.read<ChatBloc>().add(
+      context.read<AssessmentBloc>().add(
         AnswerSubmitted(currentQ.id, val),
       ); // Bloc sends to Gemini or backend
       _formKey.currentState?.reset();

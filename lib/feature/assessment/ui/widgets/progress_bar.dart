@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/assessment/bloc/chat_bloc.dart';
+import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,7 +14,7 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(
+    return BlocBuilder<AssessmentBloc, AssessmentState>(
       builder: (ctx, state) {
         // default values
         int currentStep = 0;
@@ -23,16 +23,16 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
         String progressText = '0%';
 
         // get bloc instance
-        final bloc = BlocProvider.of<ChatBloc>(context);
+        final bloc = BlocProvider.of<AssessmentBloc>(context);
 
-        if (state is ChatLoaded) {
+        if (state is AssessmentLoaded) {
           totalSteps = bloc.levelQuestions.length;
           currentStep = state.currentIndex + 1;
 
           // weighted progress
           realProgress = bloc.progress;
           progressText = '${(realProgress * 100).toStringAsFixed(0)}%';
-        } else if (state is AnalysisCompleteState) {
+        } else if (state is AssessmentAnalysisComplete) {
           // when analysis is complete
           realProgress = 1.0;
           progressText = '100%';
@@ -67,7 +67,7 @@ class ProgressBar extends StatelessWidget implements PreferredSizeWidget {
                           progressText,
                           style: isMobile
                               ? AppTextStyles.font45BoldBlue
-                              : AppTextStyles.font14LightBlue
+                              : AppTextStyles.font14LightBlue,
                         ),
                         Text(
                           '${context.l10n.progressOf} $totalSteps',

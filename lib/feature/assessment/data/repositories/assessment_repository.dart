@@ -5,23 +5,27 @@ import 'package:quiz/core/local_settings/local_settings_bloc.dart';
 import 'package:quiz/core/utils/di.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 
-class ChatRepository {
+class AssessmentRepository {
   final GenerativeModel chatModel;
   final LocalSettingsBloc _localSettingsBloc;
 
-  ChatRepository()
-      : chatModel = GenerativeModel(
-          model: AppConfig.chatModel,
-          apiKey: AppConfig.geminiApiKey,
-          generationConfig: AppConfig.chatGenerationConfig,
-        ),
-        _localSettingsBloc = getIt<LocalSettingsBloc>();
+  AssessmentRepository()
+    : chatModel = GenerativeModel(
+        model: AppConfig.chatModel,
+        apiKey: AppConfig.geminiApiKey,
+        generationConfig: AppConfig.chatGenerationConfig,
+      ),
+      _localSettingsBloc = getIt<LocalSettingsBloc>();
 
-  Future<AnalysisResult> analyzeResponses(List<Map<String, dynamic>> responses) async {
+  Future<AnalysisResult> analyzeResponses(
+    List<Map<String, dynamic>> responses,
+  ) async {
     final payload = {'responses': responses};
     final currentLanguage = _localSettingsBloc.state.local;
-    
-    final prompt = currentLanguage == 'ar' ? _buildArabicPrompt(payload) : _buildEnglishPrompt(payload);
+
+    final prompt = currentLanguage == 'ar'
+        ? _buildArabicPrompt(payload)
+        : _buildEnglishPrompt(payload);
 
     try {
       final model = GenerativeModel(
@@ -34,12 +38,15 @@ class ChatRepository {
           maxOutputTokens: 2048,
         ),
       );
-      
+
       final response = await model.generateContent([Content.text(prompt)]);
       var jsonText = (response.text ?? '').trim();
 
       // Extract codeblock JSON if present
-      final fenceRegex = RegExp(r'```(?:json)?\s*([\s\S]*?)```', multiLine: true);
+      final fenceRegex = RegExp(
+        r'```(?:json)?\s*([\s\S]*?)```',
+        multiLine: true,
+      );
       final fenceMatch = fenceRegex.firstMatch(jsonText);
       if (fenceMatch != null) {
         jsonText = fenceMatch.group(1)!.trim();

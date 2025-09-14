@@ -118,6 +118,7 @@ class ChoiceField extends StatelessWidget {
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // when `content` is Flexible it will expand inside this Column properly
             content,

@@ -1,14 +1,12 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-class TopicChip extends StatelessWidget {
+class FreelanceCard extends StatelessWidget {
   final String title;
   final String label;
 
-  const TopicChip({super.key, required this.title, required this.label});
+  const FreelanceCard({super.key, required this.title, required this.label});
 
   @override
   Widget build(BuildContext context) {

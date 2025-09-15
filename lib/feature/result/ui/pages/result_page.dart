@@ -210,7 +210,7 @@ class ResultPageWeb extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                         bottom: 8.0,
                                       ),
-                                      child: TopicChip(title: job, label: ''),
+                                      child: FreelanceCard(title: job, label: ''),
                                     );
                                   }).toList(),
                                 )
@@ -219,7 +219,7 @@ class ResultPageWeb extends StatelessWidget {
                                   spacing: 8,
                                   runSpacing: 8,
                                   children: uiList.map((job) {
-                                    return TopicChip(title: job, label: '');
+                                    return FreelanceCard(title: job, label: '');
                                   }).toList(),
                                 ),
                             ],
@@ -230,7 +230,7 @@ class ResultPageWeb extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF7C3AED), Color(0xFFDB2777)],
+                              colors: [Color(0xFF7C3AED), Color(0xFF0068CC)],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
@@ -264,7 +264,7 @@ class ResultPageWeb extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                         bottom: 8.0,
                                       ),
-                                      child: TopicChip(title: step, label: ''),
+                                      child: FreelanceCard(title: step, label: ''),
                                     );
                                   }).toList(),
                                 )
@@ -273,7 +273,7 @@ class ResultPageWeb extends StatelessWidget {
                                   spacing: 8,
                                   runSpacing: 8,
                                   children: result.practicalSteps.map((step) {
-                                    return TopicChip(title: step, label: '');
+                                    return FreelanceCard(title: step, label: '');
                                   }).toList(),
                                 ),
                             ],

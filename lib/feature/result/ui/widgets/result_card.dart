@@ -73,6 +73,7 @@ class ResultCard extends StatelessWidget {
                                   Text(
                                     items[i]['value'] ?? '',
                                     style: AppTextStyles.font12BoldGrey,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   const Gap(12),
                                   Expanded(
@@ -98,6 +99,7 @@ class ResultCard extends StatelessWidget {
                                   Text(
                                     items[i]['value'] ?? '',
                                     style: AppTextStyles.font12Grey,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                         )
@@ -109,7 +111,7 @@ class ResultCard extends StatelessWidget {
                           child: Text(
                             items[i]['value'] ?? '',
                             style: AppTextStyles.font12Grey,
-                                      maxLines : 2 , 
+                            maxLines: 2,
 
                             overflow: TextOverflow.ellipsis,
                             textAlign: isRtl ? TextAlign.right : TextAlign.left,

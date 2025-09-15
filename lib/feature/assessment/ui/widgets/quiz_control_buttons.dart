@@ -19,19 +19,19 @@ class QuizControlButtons extends StatelessWidget {
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         final isMobile =
-            sizingInformation.deviceScreenType == DeviceScreenType.mobile;
+            sizingInformation.isMobile;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton.icon(
               onPressed: onPrevious,
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              icon: const Icon(Icons.arrow_back, color: Colors.black) ,
               label: Text(
                 context.l10n.previous,
                 style: isMobile
                     ? AppTextStyles.font45BoldBlack
-                    : AppTextStyles.font14Black,
+                    : AppTextStyles.font16Black,
               ),
             ),
             ElevatedButton(
@@ -50,7 +50,7 @@ class QuizControlButtons extends StatelessWidget {
                 context.l10n.next,
                 style: isMobile
                     ? AppTextStyles.font45BoldWhite
-                    : AppTextStyles.font14White,
+                    : AppTextStyles.font16White,
               ),
             ),
           ],

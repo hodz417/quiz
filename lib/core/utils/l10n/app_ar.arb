@@ -485,6 +485,10 @@
   "detailedReportDescription": "تقرير تقييم مفصل من Multiverse Mentor",
   "@detailedReportDescription": {
     "description": "وصف خصائص الوثيقة"
+  },
+  "loading": "جار التحليل",
+  "@loading": {
+    "description": "نص يُعرض أثناء تحميل التقرير"
   }
 }
 

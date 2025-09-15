@@ -362,4 +362,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get detailedReportDescription =>
       'تقرير تقييم مفصل من Multiverse Mentor';
+
+  @override
+  String get loading => 'جار التحليل';
 }

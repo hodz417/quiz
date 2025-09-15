@@ -6,6 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/core/utils/theme/app_text_styles.dart';
 import 'package:quiz/core/utils/theme/app_theme.dart';
 import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
@@ -64,7 +65,7 @@ class _QuizPageState extends State<QuizPage> {
                       (m) => m['isLoading'] == true,
                     );
                     if (hasLoading) {
-                      EasyLoading.show(status: 'جارٍ التحليل...');
+                      EasyLoading.show(status: context.l10n.loading);
                     } else {
                       EasyLoading.dismiss();
                     }

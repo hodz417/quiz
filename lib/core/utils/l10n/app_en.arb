@@ -475,6 +475,12 @@
   "@detailedReportDescription": {
     "description": "Core properties description"
   }
+
+  ,
+  "loading": "Loading analysis",
+  "@loading": {
+    "description": "Text shown while the report is loading"
+  }
 }
 
 

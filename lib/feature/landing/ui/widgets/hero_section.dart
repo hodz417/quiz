@@ -19,13 +19,13 @@ class HeroSection extends StatelessWidget {
           color: AppColors.kPrimaryBg,
           padding: EdgeInsets.symmetric(
             horizontal: isMobile ? 20.w : 36.w,
-            vertical: isMobile ? 32.h : 60.h,
+            vertical: isMobile ? 32.h : 10.h,
           ),
           child: isMobile
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(AppAssets.heroImage ,width: 1300.w, height: 300.h),
+                    Image.asset(AppAssets.heroImage2 ,width: 1400.w, height: 350.h),
                     Gap(40.h),
                     HeroTextArea(),
                   ],
@@ -33,10 +33,10 @@ class HeroSection extends StatelessWidget {
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(flex: 6, child: HeroTextArea()),
+                    Expanded(flex: 5, child: HeroTextArea()),
                     Gap(56.w),
 
-                    Expanded(flex: 5, child: Image.asset(AppAssets.heroImage),),
+                    Expanded(flex: 4, child: Image.asset(AppAssets.heroImage2 , height: 600.h,),),
                   ],
                 ),
         );

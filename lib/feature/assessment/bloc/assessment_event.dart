@@ -8,6 +8,8 @@ class AssessmentEvent with _$AssessmentEvent {
   const factory AssessmentEvent.answerSubmitted(String questionId, String answer) = AnswerSubmitted;
   const factory AssessmentEvent.prevQuestion() = PrevQuestion;
   const factory AssessmentEvent.analysisRequested() = AnalysisRequested;
+    const factory AssessmentEvent.saveResult(AnalysisResult result) = _SaveResult;
+
   const factory AssessmentEvent.analysisComplete(AnalysisResult result) = AnalysisComplete;
   const factory AssessmentEvent.reset() = ResetAssessment;
 }

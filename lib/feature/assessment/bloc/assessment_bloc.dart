@@ -1,4 +1,4 @@
-// assessment_bloc.dart
+// feature/assessment/presentation/bloc/assessment_bloc.dart
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -10,6 +10,7 @@ import 'package:quiz/feature/assessment/data/repositories/assessment_repository.
 import 'package:quiz/core/utils/di.dart';
 import 'package:quiz/core/local_settings/local_settings_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:quiz/feature/assessment/data/service/firestore_service.dart';
 
 part 'assessment_event.dart';
 part 'assessment_state.dart';
@@ -17,6 +18,8 @@ part 'assessment_bloc.freezed.dart';
 
 class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   final AssessmentRepository repository;
+  final FirestoreService _firestoreService;
+  final LocalSettingsBloc _localSettingsBloc;
 
   final List<Map<String, dynamic>> messages = [];
   final Map<String, String> answers = {};
@@ -26,7 +29,10 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   int currentQuestionIndex = 0;
   bool analysisComplete = false;
 
-  AssessmentBloc(this.repository) : super(const AssessmentState.initial()) {
+  AssessmentBloc(this.repository)
+      : _firestoreService = getIt<FirestoreService>(),
+        _localSettingsBloc = getIt<LocalSettingsBloc>(),
+        super(const AssessmentState.initial()) {
     on<AssessmentEvent>((event, emit) async {
       await event.when(
         started: (level) => _onAssessmentStarted(level, emit),
@@ -35,6 +41,7 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
         analysisRequested: () => _onAnalysisRequested(emit),
         analysisComplete: (result) => _onAnalysisComplete(result, emit),
         reset: () => _onResetAssessment(emit),
+        saveResult: (result) => _onSaveResult(result, emit),
       );
     });
   }
@@ -42,8 +49,7 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   // Helper method to get the current locale from LocalSettingsBloc
   String get _currentLocale {
     try {
-      final settingsBloc = getIt<LocalSettingsBloc>();
-      return settingsBloc.state.local;
+      return _localSettingsBloc.state.local;
     } catch (e) {
       return 'en'; // Fallback to English
     }
@@ -246,7 +252,6 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   }
 
   Future<void> _onAnalysisRequested(Emitter<AssessmentState> emit) async {
-    // show easy loading overlay
     EasyLoading.show(status: 'Analyzing responses...');
 
     _addBot("Analyzing responses...", isLoading: true);
@@ -275,12 +280,9 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
       final result = await repository.analyzeResponses(payload);
       analysisComplete = true;
 
-      // dismiss easy loading before emitting result
       await EasyLoading.dismiss();
-
       add(AssessmentEvent.analysisComplete(result));
     } catch (e) {
-      // dismiss easy loading on error as well
       await EasyLoading.dismiss();
       if (messages.isNotEmpty && messages.last['isLoading'] == true) {
         messages.removeLast();
@@ -293,10 +295,14 @@ class AssessmentBloc extends Bloc<AssessmentEvent, AssessmentState> {
   FutureOr<void> _onAnalysisComplete(
     AnalysisResult result,
     Emitter<AssessmentState> emit,
-  ) {
+  ) async {
     if (messages.isNotEmpty && messages.last['isLoading'] == true) {
       messages.removeLast();
     }
+    
+    // Add event to save the result
+    add(AssessmentEvent.saveResult(result));
+    
     final formatted = '''
 ${result.uiSummary}
 
@@ -306,7 +312,7 @@ ${result.personalityType}
 Learning Style:
 - Visual: ${result.learningStylePercentages['Visual']}%
 - Verbal: ${result.learningStylePercentages['Verbal']}%
-- Kinesthetic: ${result.learningStylePercentages['Kinesthetic']}
+- Kinesthetic: ${result.learningStylePercentages['Kinesthetic']}%
 
 Goals:
 ${result.inferredGoals.map((g) => '- $g').join('\n')}
@@ -319,14 +325,39 @@ ${result.developmentAreas.map((d) => '- $d').join('\n')}
 
 Career Suggestions:
 ${result.careerSuggestions.map((c) => '- $c').join('\n')}
+
+Learning Resources:
+${result.learningResources.map((r) {
+  final name = r['name'] ?? '';
+  final description = r['description'] ?? '';
+  return '- $name: $description';
+}).join('\n')}
 ''';
+
     _addBot(formatted);
+
     emit(
       AssessmentState.analysisComplete(
         result: result,
         messages: List.from(messages),
       ),
     );
+  }
+
+  FutureOr<void> _onSaveResult(
+    AnalysisResult result,
+    Emitter<AssessmentState> emit,
+  ) async {
+    try {
+      await _firestoreService.saveAnalysisResult(
+        result: result,
+        assessmentLevel: selectedLevel ?? 'Unknown',
+      );
+      _addBot("Result saved successfully!");
+    } catch (e) {
+      _addBot("Failed to save result: $e");
+      print('Error saving result: $e');
+    }
   }
 
   FutureOr<void> _onResetAssessment(Emitter<AssessmentState> emit) {

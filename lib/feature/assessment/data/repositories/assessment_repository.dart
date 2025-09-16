@@ -1,29 +1,28 @@
+// feature/assessment/data/repositories/assessment_repository.dart
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:quiz/core/config/config.dart';
-import 'package:quiz/core/local_settings/local_settings_bloc.dart';
-import 'package:quiz/core/utils/di.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 
 class AssessmentRepository {
   final GenerativeModel chatModel;
-  final LocalSettingsBloc _localSettingsBloc;
 
   AssessmentRepository()
     : chatModel = GenerativeModel(
         model: AppConfig.chatModel,
         apiKey: AppConfig.geminiApiKey,
         generationConfig: AppConfig.chatGenerationConfig,
-      ),
-      _localSettingsBloc = getIt<LocalSettingsBloc>();
+      );
 
   Future<AnalysisResult> analyzeResponses(
     List<Map<String, dynamic>> responses,
   ) async {
     final payload = {'responses': responses};
-    final currentLanguage = _localSettingsBloc.state.local;
-
-    final prompt = currentLanguage == 'ar'
+    
+    // Detect language from responses
+    final isArabic = _detectLanguage(responses);
+    
+    final prompt = isArabic 
         ? _buildArabicPrompt(payload)
         : _buildEnglishPrompt(payload);
 
@@ -35,7 +34,7 @@ class AssessmentRepository {
           temperature: 0.1,
           topK: 40,
           topP: 0.9,
-          maxOutputTokens: 2048,
+          maxOutputTokens: 4096,
         ),
       );
 
@@ -67,6 +66,18 @@ class AssessmentRepository {
     }
   }
 
+  // Detect if responses are in Arabic
+  bool _detectLanguage(List<Map<String, dynamic>> responses) {
+    for (var response in responses) {
+      final answer = response['answer'].toString();
+      // Check for Arabic characters
+      if (RegExp(r'[\u0600-\u06FF]').hasMatch(answer)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   String _buildArabicPrompt(Map<String, dynamic> payload) {
     return '''
 أنت محلل تقييم الذكاء الاصطناعي لـ Multiverse Mentor. قم بتحليل استجابات التقييم وأنشئ *مستويين من الإخراج:
@@ -75,7 +86,9 @@ class AssessmentRepository {
 2. **تقرير مفصل** → تحليلي واحترافي للمشرفين أو المستثمرين أو المعلمين، مع رؤى قابلة للتطبيق.
 
 --- شرط اللغة ---
-- استخدم العربية فقط في جميع الإخراجات.
+- إذا كانت الإجابات (answers) في الإدخال بالعربية → اجعل كل التقرير والإخراج بالعربية.
+- إذا كانت الإجابات بالإنجليزية → اجعل كل التقرير والإخراج بالإنجليزية.
+- لا تخلط بين اللغتين أبداً.
 
 --- تنسيق الإدخال ---
 مصفوفة JSON تحتوي على استجابات، كل استجابة تشمل:
@@ -137,7 +150,16 @@ class AssessmentRepository {
   "suggestedSkills": ["مهارة 1", "مهارة 2"],
   "freelanceJobs": {"uiList": ["وظيفة 1", "وظيفة 2"], "wordList": ["وظيفة 1 - وصف", "وظيفة 2 - وصف"]},
   "practicalSteps": ["خطوة 1", "خطوة 2"],
-  "inspirationalQuote": "اقتباس ملهم"
+  "inspirationalQuote": "اقتباس ملهم",
+  "learningResources": [
+    {"name": "اسم المورد", "type": "نوع المورد", "url": "رابط المورد", "description": "وصف المورد"},
+    {"name": "اسم المورد 2", "type": "نوع المورد", "url": "رابط المورد", "description": "وصف المورد"}
+  ],
+  "roadmap": {
+    "levelA": ["خطوة 1", "خطوة 2", "خطوة 3"],
+    "levelB": ["خطوة 1", "خطوة 2", "خطوة 3"],
+    "levelC": ["خطوة 1", "خطوة 2", "خطوة 3"]
+  }
 }
 
 --- بيانات الإدخال ---
@@ -153,7 +175,9 @@ You are Multiverse Mentor's AI Assessment Analyzer. Analyze assessment responses
 2. **Detailed Report** → Analytical and professional for supervisors, investors, or teachers, with actionable insights.
 
 --- Language Requirement ---
-- Use English only for all outputs.
+- If the answers in the input are in Arabic → Make the entire report and output in Arabic.
+- If the answers are in English → Make the entire report and output in English.
+- Never mix the two languages.
 
 --- Input Format ---
 JSON array containing responses, each response includes:
@@ -215,7 +239,16 @@ Output must be only a valid JSON object with the following structure:
   "suggestedSkills": ["Skill 1", "Skill 2"],
   "freelanceJobs": {"uiList": ["Job 1", "Job 2"], "wordList": ["Job 1 - description", "Job 2 - description"]},
   "practicalSteps": ["Step 1", "Step 2"],
-  "inspirationalQuote": "Inspirational quote"
+  "inspirationalQuote": "Inspirational quote",
+  "learningResources": [
+    {"name": "Resource Name", "type": "Resource Type", "url": "Resource URL", "description": "Resource description"},
+    {"name": "Resource Name 2", "type": "Resource Type", "url": "Resource URL", "description": "Resource description"}
+  ],
+  "roadmap": {
+    "levelA": ["Step 1", "Step 2", "Step 3"],
+    "levelB": ["Step 1", "Step 2", "Step 3"],
+    "levelC": ["Step 1", "Step 2", "Step 3"]
+  }
 }
 
 --- Input Data ---

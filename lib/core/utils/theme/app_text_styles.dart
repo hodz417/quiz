@@ -20,12 +20,11 @@ class AppTextStyles {
     color: Colors.black87,
   );
 
-    static TextStyle font16Black = TextStyle(
+  static TextStyle font16Black = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 16.sp,
     color: Colors.black87,
   );
-
 
   static TextStyle font56BoldBlack = TextStyle(
     fontSize: 56.sp,
@@ -153,11 +152,10 @@ class AppTextStyles {
     color: Colors.grey[600],
   );
 
-    static TextStyle font12BoldGrey = TextStyle(
+  static TextStyle font12BoldGrey = TextStyle(
     fontSize: 12.sp,
     color: Colors.grey[600],
   );
-
 
   static TextStyle font12Regular = TextStyle(
     fontSize: 12.sp,
@@ -174,9 +172,14 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
   );
 
-
-static TextStyle font15SemiBoldBlack = TextStyle(
+  static TextStyle font15SemiBoldBlack = TextStyle(
     fontSize: 15.sp,
+    color: Colors.black87,
+    fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle font50SemiBoldBlack = TextStyle(
+    fontSize: 50.sp,
     color: Colors.black87,
     fontWeight: FontWeight.w600,
   );
@@ -225,6 +228,7 @@ static TextStyle font15SemiBoldBlack = TextStyle(
   );
 
   static TextStyle font12Grey = TextStyle(fontSize: 12.sp, color: Colors.grey);
+  static TextStyle font40Grey = TextStyle(fontSize: 40.sp, color: Colors.grey);
 
   static TextStyle font16White = TextStyle(
     fontSize: 16.sp,

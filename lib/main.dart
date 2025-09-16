@@ -8,6 +8,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quiz/core/utils/l10n/app_localizations.dart';
+import 'package:quiz/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'core/local_settings/local_settings_bloc.dart';
 import 'core/router/app_router.dart';
@@ -21,7 +23,9 @@ void main() async {
         ? HydratedStorage.webStorageDirectory
         : await getTemporaryDirectory(),
   );
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   HydratedBloc.storage = storage;
 
   setupDependencyInjections();

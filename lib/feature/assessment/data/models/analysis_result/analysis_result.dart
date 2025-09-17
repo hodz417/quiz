@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'analysis_result.freezed.dart';
 part 'analysis_result.g.dart';
 
-/// نموذج واحد فقط لنتيجة التحليل (بدون موديلات فرعية منفصلة).
 @freezed
 class AnalysisResult with _$AnalysisResult {
   const factory AnalysisResult({
@@ -22,13 +21,10 @@ class AnalysisResult with _$AnalysisResult {
     required List<String> developmentAreas,
     required List<String> careerSuggestions,
     required List<String> suggestedSkills,
-    /// خريطة لقوائم الوظائف الحرة حسب فئاتها
     required Map<String, List<String>> freelanceJobs,
     required List<String> practicalSteps,
     required String inspirationalQuote,
-    /// موارد التعلم كقائمة خرائط (يمكن أن تمثل أي بنية JSON لكل مورد)
     required List<Map<String, dynamic>> learningResources,
-    /// الخريطة العامة للـ roadmap: على سبيل المثال {"levelA": [...], "levelB": [...], "levelC": [...]}
     required Map<String, List<String>> roadmap,
   }) = _AnalysisResult;
 

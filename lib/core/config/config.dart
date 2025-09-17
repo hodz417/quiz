@@ -14,4 +14,7 @@ class AppConfig {
     maxOutputTokens: 1500,
     temperature: 0.3,
   );
+
+  static final String serperApiKey = '9b512d478096d672310db2d91912c78657a81a49';
+  static final String baseUrl = 'https://google.serper.dev';
 }

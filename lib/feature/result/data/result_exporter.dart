@@ -1,8 +1,7 @@
-// result_exporter.dart
-import 'dart:convert' show utf8;
-import 'dart:typed_data';
+import 'dart:convert' show base64Encode, utf8;
 import 'package:archive/archive.dart';
-import 'package:flutter/widgets.dart'; // for BuildContext
+import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart'; // Added for rootBundle
 import 'package:quiz/core/utils/extensions/l10n_extension.dart';
 import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
@@ -17,12 +16,23 @@ class ResultExporter {
       .replaceAll("'", '&apos;');
 
   /// Build the docx bytes. Requires [context] to access localized strings.
-  static Uint8List buildSimpleDocxBytes(BuildContext context, AnalysisResult result) {
+  static Future<Uint8List> buildSimpleDocxBytes(
+      BuildContext context, AnalysisResult result) async {
     final l10n = context.l10n;
+
+    // Load logo image
+    Uint8List? logoBytes;
+    try {
+      final byteData = await rootBundle.load("assets/images/mentor_logo.png");
+      logoBytes = byteData.buffer.asUint8List();
+    } catch (e) {
+      print("Error loading logo: $e");
+    }
 
     final docXml = StringBuffer()
       ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
-      ..writeln('<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">')
+      ..writeln(
+          '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">')
       ..writeln('<w:body>');
 
     // Helper functions for document structure
@@ -43,7 +53,8 @@ class ResultExporter {
       docXml.write('<w:p><w:r><w:rPr>');
       if (bold) docXml.write('<w:b/>');
       if (italic) docXml.write('<w:i/>');
-      docXml.writeln('</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>');
+      docXml.writeln(
+          '</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>');
     }
 
     void addBulletPoint(String text) {
@@ -54,6 +65,56 @@ class ResultExporter {
 
     void addDivider() {
       docXml.writeln('<w:p><w:r><w:t xml:space="preserve"> </w:t></w:r></w:p>');
+    }
+
+    void addImage(Uint8List imageBytes) {
+      final base64Image = base64Encode(imageBytes);
+      docXml.writeln('''
+      <w:p>
+        <w:r>
+          <w:drawing>
+            <wp:inline distT="0" distB="0" distL="0" distR="0">
+              <wp:extent cx="1905000" cy="1905000"/>
+              <wp:docPr id="1" name="Logo"/>
+              <wp:cNvGraphicFramePr>
+                <a:graphicFrameLocks noChangeAspect="1"/>
+              </wp:cNvGraphicFramePr>
+              <a:graphic>
+                <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                  <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                    <pic:nvPicPr>
+                      <pic:cNvPr id="0" name="Logo"/>
+                      <pic:cNvPicPr/>
+                    </pic:nvPicPr>
+                    <pic:blipFill>
+                      <a:blip r:embed="rIdLogo"/>
+                      <a:stretch>
+                        <a:fillRect/>
+                      </a:stretch>
+                    </pic:blipFill>
+                    <pic:spPr>
+                      <a:xfrm>
+                        <a:off x="0" y="0"/>
+                        <a:ext cx="1905000" cy="1905000"/>
+                      </a:xfrm>
+                      <a:prstGeom prst="rect">
+                        <a:avLst/>
+                      </a:prstGeom>
+                    </pic:spPr>
+                  </pic:pic>
+                </a:graphicData>
+              </a:graphic>
+            </wp:inline>
+          </w:drawing>
+        </w:r>
+      </w:p>
+    ''');
+    }
+
+    // Add logo if available
+    if (logoBytes != null) {
+      addImage(logoBytes);
+      addDivider();
     }
 
     // Document content using localized strings
@@ -69,14 +130,18 @@ class ResultExporter {
     addHeading(l10n.detailedAnalysis, level: 2);
 
     addSubheading(l10n.personalityProfile);
-    addParagraph('${result.personalityType} - ${result.personalityExplanation}', bold: true);
+    addParagraph('${result.personalityType} - ${result.personalityExplanation}',
+        bold: true);
     addParagraph(result.personalityDetails);
     addDivider();
 
     addSubheading(l10n.learningStyleAnalysis);
-    addParagraph('${l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%');
-    addParagraph('${l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%');
-    addParagraph('${l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
+    addParagraph(
+        '${l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%');
+    addParagraph(
+        '${l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%');
+    addParagraph(
+        '${l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
     addParagraph(result.learningStyleDetails);
     addDivider();
 
@@ -154,6 +219,27 @@ class ResultExporter {
     }
     addDivider();
 
+    // Learning Resources
+    addSubheading(l10n.learningResources);
+    if (result.learningResources.isEmpty) {
+      addParagraph(l10n.noLearningResources);
+    } else {
+      for (var resource in result.learningResources) {
+        final title = resource['title'] ?? 'Untitled Resource';
+        final url = resource['url'] ?? '';
+        final description = resource['description'] ?? '';
+        
+        addSubheading(title);
+        if (description.isNotEmpty) {
+          addParagraph(description);
+        }
+        if (url.isNotEmpty) {
+          addParagraph('URL: $url');
+        }
+        addDivider();
+      }
+    }
+
     // Inspirational Quote
     addSubheading(l10n.wordsOfInspiration);
     addParagraph('"${result.inspirationalQuote}"', italic: true);
@@ -170,6 +256,7 @@ class ResultExporter {
       l10n.creatorName,
       l10n.assessmentReportTitle,
       l10n.detailedReportDescription,
+      logoBytes: logoBytes,
     );
   }
 
@@ -177,26 +264,40 @@ class ResultExporter {
     String documentXml,
     String creator,
     String title,
-    String description,
-  ) {
+    String description, {
+    Uint8List? logoBytes,
+  }) {
     // Content Types definition
     final contentTypes = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="png" ContentType="image/png"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
   <Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>
 </Types>
 ''';
 
-    // Relationships
+    // Main relationships
     final rels = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
 </Relationships>
 ''';
+
+    // Document relationships
+    final documentRels = StringBuffer()
+      ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
+      ..writeln('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">')
+      ..writeln('<Relationship Id="rIdNumbering" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>');
+
+    if (logoBytes != null) {
+      documentRels.writeln('<Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/>');
+    }
+
+    documentRels.writeln('</Relationships>');
 
     // Numbering for bullet points
     final numbering = '''
@@ -257,6 +358,13 @@ class ResultExporter {
       utf8.encode(rels),
     ));
 
+    // Add document relationships
+    archive.addFile(ArchiveFile(
+      'word/_rels/document.xml.rels',
+      utf8.encode(documentRels.toString()).length,
+      utf8.encode(documentRels.toString()),
+    ));
+
     // Add core properties
     archive.addFile(ArchiveFile(
       'docProps/core.xml',
@@ -284,6 +392,15 @@ class ResultExporter {
       utf8.encode(documentXml).length,
       utf8.encode(documentXml),
     ));
+
+    // Add logo image if available
+    if (logoBytes != null) {
+      archive.addFile(ArchiveFile(
+        'word/media/logo.png',
+        logoBytes.length,
+        logoBytes,
+      ));
+    }
 
     // Encode to ZIP format
     final encoder = ZipEncoder();

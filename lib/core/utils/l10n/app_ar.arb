@@ -490,6 +490,21 @@
   "@loading": {
     "description": "نص يُعرض أثناء تحميل التقرير"
   }
+
+  ,
+  "learningResources": "موارد التعلم",
+  "@learningResources": {
+    "description": "عنوان فرعي لموارد التعلم"
+  }
+
+      ,
+  "noLearningResources": "لا توجد موارد تعلم متاحة في الوقت الحالي.",
+  "@noLearningResources": {
+    "description": "رسالة عند عدم وجود موارد تعلم"
+  }
+
+
+  
 }
 
 

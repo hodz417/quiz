@@ -365,4 +365,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loading => 'جار التحليل';
+
+  @override
+  String get learningResources => 'موارد التعلم';
+
+  @override
+  String get noLearningResources => 'لا توجد موارد تعلم متاحة في الوقت الحالي.';
 }

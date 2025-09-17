@@ -369,4 +369,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading => 'Loading analysis';
+
+  @override
+  String get learningResources => 'Learning Resources';
+
+  @override
+  String get noLearningResources =>
+      'No specific learning resources were suggested.';
 }

@@ -481,6 +481,19 @@
   "@loading": {
     "description": "Text shown while the report is loading"
   }
+
+    ,
+  "learningResources": "Learning Resources",
+  "@learningResources": {
+    "description": "Subheading for learning resources"
+  }
+
+  
+    ,
+  "noLearningResources": "No specific learning resources were suggested.",
+  "@noLearningResources": {
+    "description": " No Subheading for learning resources"
+  }
 }
 
 

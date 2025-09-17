@@ -282,13 +282,13 @@ class ResultPageWeb extends StatelessWidget {
                         const Gap(18),
                         Center(
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               final bytes = ResultExporter.buildSimpleDocxBytes(
                                 context,
                                 result,
                               );
                               ResultExporter.downloadDocxInBrowser(
-                                bytes,
+                                await bytes ,
                                 'assessment_report.docx',
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -314,7 +314,7 @@ class ResultPageWeb extends StatelessWidget {
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -324,7 +324,7 @@ class ResultPageWeb extends StatelessWidget {
                           child: Text(
                             context.l10n.detailedReportWithFullResults,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.grey,
                             ),
                           ),

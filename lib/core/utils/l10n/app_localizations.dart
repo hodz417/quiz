@@ -781,6 +781,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading analysis'**
   String get loading;
+
+  /// Subheading for learning resources
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Resources'**
+  String get learningResources;
+
+  ///  No Subheading for learning resources
+  ///
+  /// In en, this message translates to:
+  /// **'No specific learning resources were suggested.'**
+  String get noLearningResources;
 }
 
 class _AppLocalizationsDelegate

@@ -8,21 +8,21 @@ class AssessmentRepository {
   final GenerativeModel chatModel;
 
   AssessmentRepository()
-    : chatModel = GenerativeModel(
-        model: AppConfig.chatModel,
-        apiKey: AppConfig.geminiApiKey,
-        generationConfig: AppConfig.chatGenerationConfig,
-      );
+      : chatModel = GenerativeModel(
+          model: AppConfig.chatModel,
+          apiKey: AppConfig.geminiApiKey,
+          generationConfig: AppConfig.chatGenerationConfig,
+        );
 
   Future<AnalysisResult> analyzeResponses(
     List<Map<String, dynamic>> responses,
   ) async {
     final payload = {'responses': responses};
-    
+
     // Detect language from responses
     final isArabic = _detectLanguage(responses);
-    
-    final prompt = isArabic 
+
+    final prompt = isArabic
         ? _buildArabicPrompt(payload)
         : _buildEnglishPrompt(payload);
 
@@ -62,6 +62,8 @@ class AssessmentRepository {
       return AnalysisResult.fromJson(parsedRaw);
     } catch (e, st) {
       print('analyzeResponses error: $e\n$st');
+      // Consider re-throwing or returning a specific error state
+      // instead of returning an empty result silently.
       return AnalysisResult.empty();
     }
   }
@@ -152,8 +154,10 @@ class AssessmentRepository {
   "practicalSteps": ["خطوة 1", "خطوة 2"],
   "inspirationalQuote": "اقتباس ملهم",
   "learningResources": [
-    {"name": "اسم المورد", "type": "نوع المورد", "url": "رابط المورد", "description": "وصف المورد"},
-    {"name": "اسم المورد 2", "type": "نوع المورد", "url": "رابط المورد", "description": "وصف المورد"}
+    {"name": "freeCodeCamp", "type": "Course & Docs", "url": "https://www.freecodecamp.org/", "description": "مسار عملي شامل لتعلم تطوير الويب (HTML/CSS/JS) مناسب لبداية العمل الحر كمطور Front-end."},
+    {"name": "Figma Learn", "type": "UI/UX Learning", "url": "https://www.figma.com/resources/learn-design/", "description": "دروس وموارد رسمية لتعلم تصميم واجهات وتجهيز نماذج أولية — مورد مهم لمن يريد العمل الحر في UI/UX."},
+    {"name": "Upwork Resources", "type": "Freelancing Platform Guide", "url": "https://www.upwork.com/resources", "description": "دليل رسمي ومقالات عن كيفية إنشاء ملف مهني، البحث عن وظائف، وتحديد أسعار مناسبة للمطورين والمصممين والكتاب."},
+    {"name": "Fiverr Resources", "type": "Freelancing Platform Guide", "url": "https://www.fiverr.com/resources", "description": "مصادر ودروس لعرض خدماتك على Fiverr، بناء باقات جذابة، وتحسين ظهور الخدمات — مفيد لكتّاب المحتوى ومقدمي الخدمات السريعة."}
   ],
   "roadmap": {
     "levelA": ["خطوة 1", "خطوة 2", "خطوة 3"],
@@ -241,8 +245,10 @@ Output must be only a valid JSON object with the following structure:
   "practicalSteps": ["Step 1", "Step 2"],
   "inspirationalQuote": "Inspirational quote",
   "learningResources": [
-    {"name": "Resource Name", "type": "Resource Type", "url": "Resource URL", "description": "Resource description"},
-    {"name": "Resource Name 2", "type": "Resource Type", "url": "Resource URL", "description": "Resource description"}
+    {"name": "freeCodeCamp", "type": "Course & Docs", "url": "https://www.freecodecamp.org/", "description": "Hands-on, free curriculum for web development — ideal for starting freelance Front-end work."},
+    {"name": "Figma Learn", "type": "UI/UX Learning", "url": "https://www.figma.com/resources/learn-design/", "description": "Official tutorials and resources to learn interface design and prototyping — essential for freelance UI/UX designers."},
+    {"name": "Upwork Resources", "type": "Freelancing Platform Guide", "url": "https://www.upwork.com/resources", "description": "Guides and articles on building a strong profile, finding jobs, and setting rates for developers, designers, and writers."},
+    {"name": "Fiverr Resources", "type": "Freelancing Platform Guide", "url": "https://www.fiverr.com/resources", "description": "Resources and tips for creating gigs, packaging services, and improving discoverability — useful for writers and quick-sells."}
   ],
   "roadmap": {
     "levelA": ["Step 1", "Step 2", "Step 3"],

@@ -1,4 +1,4 @@
-import 'dart:convert' show base64Encode, utf8;
+import 'dart:convert' show utf8;
 import 'package:archive/archive.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart'; // Added for rootBundle
@@ -15,9 +15,25 @@ class ResultExporter {
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&apos;');
 
+  static String _cleanResourceField(String s) {
+    if (s.isEmpty) return '';
+    // removes "Resource found via search for" and anything that follows on that line
+    return s
+        .replaceAll(
+          RegExp(
+            r'Resource found via search for[:\s]*.*',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .trim();
+  }
+
   /// Build the docx bytes. Requires [context] to access localized strings.
   static Future<Uint8List> buildSimpleDocxBytes(
-      BuildContext context, AnalysisResult result) async {
+    BuildContext context,
+    AnalysisResult result,
+  ) async {
     final l10n = context.l10n;
 
     // Load logo image
@@ -32,12 +48,17 @@ class ResultExporter {
     final docXml = StringBuffer()
       ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
       ..writeln(
-          '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">')
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">',
+      )
       ..writeln('<w:body>');
 
     // Helper functions for document structure
     void addHeading(String text, {int level = 1}) {
-      final fontSize = level == 1 ? 32 : level == 2 ? 28 : 24;
+      final fontSize = level == 1
+          ? 32
+          : level == 2
+          ? 28
+          : 24;
       docXml.writeln(
         '<w:p><w:pPr><w:outlineLvl w:val="$level"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="$fontSize"/></w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
       );
@@ -54,7 +75,8 @@ class ResultExporter {
       if (bold) docXml.write('<w:b/>');
       if (italic) docXml.write('<w:i/>');
       docXml.writeln(
-          '</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>');
+        '</w:rPr><w:t xml:space="preserve">${_escapeXml(text)}</w:t></w:r></w:p>',
+      );
     }
 
     void addBulletPoint(String text) {
@@ -68,47 +90,51 @@ class ResultExporter {
     }
 
     void addImage(Uint8List imageBytes) {
-      final base64Image = base64Encode(imageBytes);
+      // Width: 3 inches (3 * 914400 = 2743200 EMUs)
+      // Height reduced to 1 inch (1 * 914400 = 914400 EMUs)
       docXml.writeln('''
-      <w:p>
-        <w:r>
-          <w:drawing>
-            <wp:inline distT="0" distB="0" distL="0" distR="0">
-              <wp:extent cx="1905000" cy="1905000"/>
-              <wp:docPr id="1" name="Logo"/>
-              <wp:cNvGraphicFramePr>
-                <a:graphicFrameLocks noChangeAspect="1"/>
-              </wp:cNvGraphicFramePr>
-              <a:graphic>
-                <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
-                  <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
-                    <pic:nvPicPr>
-                      <pic:cNvPr id="0" name="Logo"/>
-                      <pic:cNvPicPr/>
-                    </pic:nvPicPr>
-                    <pic:blipFill>
-                      <a:blip r:embed="rIdLogo"/>
-                      <a:stretch>
-                        <a:fillRect/>
-                      </a:stretch>
-                    </pic:blipFill>
-                    <pic:spPr>
-                      <a:xfrm>
-                        <a:off x="0" y="0"/>
-                        <a:ext cx="1905000" cy="1905000"/>
-                      </a:xfrm>
-                      <a:prstGeom prst="rect">
-                        <a:avLst/>
-                      </a:prstGeom>
-                    </pic:spPr>
-                  </pic:pic>
-                </a:graphicData>
-              </a:graphic>
-            </wp:inline>
-          </w:drawing>
-        </w:r>
-      </w:p>
-    ''');
+  <w:p>
+    <w:pPr>
+      <w:jc w:val="center"/> <!-- Center the image -->
+    </w:pPr>
+    <w:r>
+      <w:drawing>
+        <wp:inline distT="0" distB="0" distL="0" distR="0">
+          <wp:extent cx="2743200" cy="914400"/> <!-- Width x Reduced Height -->
+          <wp:docPr id="1" name="Logo"/>
+          <wp:cNvGraphicFramePr>
+            <a:graphicFrameLocks noChangeAspect="1"/>
+          </wp:cNvGraphicFramePr>
+          <a:graphic>
+            <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+              <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                <pic:nvPicPr>
+                  <pic:cNvPr id="0" name="Logo"/>
+                  <pic:cNvPicPr/>
+                </pic:nvPicPr>
+                <pic:blipFill>
+                  <a:blip r:embed="rIdLogo"/>
+                  <a:stretch>
+                    <a:fillRect/>
+                  </a:stretch>
+                </pic:blipFill>
+                <pic:spPr>
+                  <a:xfrm>
+                    <a:off x="0" y="0"/>
+                    <a:ext cx="2743200" cy="914400"/> <!-- Width x Reduced Height -->
+                  </a:xfrm>
+                  <a:prstGeom prst="rect">
+                    <a:avLst/>
+                  </a:prstGeom>
+                </pic:spPr>
+              </pic:pic>
+            </a:graphicData>
+          </a:graphic>
+        </wp:inline>
+      </w:drawing>
+    </w:r>
+  </w:p>
+''');
     }
 
     // Add logo if available
@@ -130,18 +156,23 @@ class ResultExporter {
     addHeading(l10n.detailedAnalysis, level: 2);
 
     addSubheading(l10n.personalityProfile);
-    addParagraph('${result.personalityType} - ${result.personalityExplanation}',
-        bold: true);
+    addParagraph(
+      '${result.personalityType} - ${result.personalityExplanation}',
+      bold: true,
+    );
     addParagraph(result.personalityDetails);
     addDivider();
 
     addSubheading(l10n.learningStyleAnalysis);
     addParagraph(
-        '${l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%');
+      '${l10n.visual}: ${result.learningStylePercentages['Visual'] ?? 0}%',
+    );
     addParagraph(
-        '${l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%');
+      '${l10n.verbal}: ${result.learningStylePercentages['Verbal'] ?? 0}%',
+    );
     addParagraph(
-        '${l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%');
+      '${l10n.kinesthetic}: ${result.learningStylePercentages['Kinesthetic'] ?? 0}%',
+    );
     addParagraph(result.learningStyleDetails);
     addDivider();
 
@@ -219,22 +250,68 @@ class ResultExporter {
     }
     addDivider();
 
-    // Learning Resources
+    // Learning Resources - UPDATED SECTION
     addSubheading(l10n.learningResources);
     if (result.learningResources.isEmpty) {
       addParagraph(l10n.noLearningResources);
     } else {
+      addParagraph(l10n.learningResourcesDescription);
+      addDivider();
+
       for (var resource in result.learningResources) {
-        final title = resource['title'] ?? 'Untitled Resource';
-        final url = resource['url'] ?? '';
-        final description = resource['description'] ?? '';
-        
-        addSubheading(title);
+        final name = _cleanResourceField(
+          resource['name'] ?? 'Untitled Resource',
+        );
+        final type = _cleanResourceField(resource['type'] ?? '');
+        final url = _cleanResourceField(resource['url'] ?? '');
+        final description = _cleanResourceField(resource['description'] ?? '');
+        final lastUpdated = _cleanResourceField(resource['lastUpdated'] ?? '');
+
+        addSubheading(name);
+        if (type.isNotEmpty) {
+          addParagraph('${l10n.resourceType}: $type');
+        }
         if (description.isNotEmpty) {
           addParagraph(description);
         }
         if (url.isNotEmpty) {
-          addParagraph('URL: $url');
+          addParagraph('${l10n.resourceUrl}: $url');
+        }
+        if (lastUpdated.isNotEmpty) {
+          addParagraph('${l10n.lastUpdated}: $lastUpdated');
+        }
+        addDivider();
+      }
+    }
+
+    // Roadmap Section - NEW SECTION
+    addSubheading(l10n.learningRoadmap);
+    if (result.roadmap.isEmpty) {
+      addParagraph(l10n.noRoadmapAvailable);
+    } else {
+      // Level A (Beginner)
+      if (result.roadmap['levelA']?.isNotEmpty ?? false) {
+        addSubheading('${l10n.beginnerLevel} (3-6 ${l10n.months})');
+        for (var step in result.roadmap['levelA']!) {
+          addBulletPoint(step);
+        }
+        addDivider();
+      }
+
+      // Level B (Intermediate)
+      if (result.roadmap['levelB']?.isNotEmpty ?? false) {
+        addSubheading('${l10n.intermediateLevel} (6-12 ${l10n.months})');
+        for (var step in result.roadmap['levelB']!) {
+          addBulletPoint(step);
+        }
+        addDivider();
+      }
+
+      // Level C (Advanced)
+      if (result.roadmap['levelC']?.isNotEmpty ?? false) {
+        addSubheading('${l10n.advancedLevel} (12-24 ${l10n.months})');
+        for (var step in result.roadmap['levelC']!) {
+          addBulletPoint(step);
         }
         addDivider();
       }
@@ -290,11 +367,17 @@ class ResultExporter {
     // Document relationships
     final documentRels = StringBuffer()
       ..writeln('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>')
-      ..writeln('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">')
-      ..writeln('<Relationship Id="rIdNumbering" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>');
+      ..writeln(
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+      )
+      ..writeln(
+        '<Relationship Id="rIdNumbering" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>',
+      );
 
     if (logoBytes != null) {
-      documentRels.writeln('<Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/>');
+      documentRels.writeln(
+        '<Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/>',
+      );
     }
 
     documentRels.writeln('</Relationships>');
@@ -321,7 +404,8 @@ class ResultExporter {
 ''';
 
     // Core properties (use passed localized strings)
-    final core = '''
+    final core =
+        '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -334,7 +418,8 @@ class ResultExporter {
 ''';
 
     // Application properties
-    final app = '''
+    final app =
+        '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
   <Application>${_escapeXml(creator)}</Application>
@@ -345,61 +430,69 @@ class ResultExporter {
     final archive = Archive();
 
     // Add content types
-    archive.addFile(ArchiveFile(
-      '[Content_Types].xml',
-      utf8.encode(contentTypes).length,
-      utf8.encode(contentTypes),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        '[Content_Types].xml',
+        utf8.encode(contentTypes).length,
+        utf8.encode(contentTypes),
+      ),
+    );
 
     // Add relationships
-    archive.addFile(ArchiveFile(
-      '_rels/.rels',
-      utf8.encode(rels).length,
-      utf8.encode(rels),
-    ));
+    archive.addFile(
+      ArchiveFile('_rels/.rels', utf8.encode(rels).length, utf8.encode(rels)),
+    );
 
     // Add document relationships
-    archive.addFile(ArchiveFile(
-      'word/_rels/document.xml.rels',
-      utf8.encode(documentRels.toString()).length,
-      utf8.encode(documentRels.toString()),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        'word/_rels/document.xml.rels',
+        utf8.encode(documentRels.toString()).length,
+        utf8.encode(documentRels.toString()),
+      ),
+    );
 
     // Add core properties
-    archive.addFile(ArchiveFile(
-      'docProps/core.xml',
-      utf8.encode(core).length,
-      utf8.encode(core),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        'docProps/core.xml',
+        utf8.encode(core).length,
+        utf8.encode(core),
+      ),
+    );
 
     // Add application properties
-    archive.addFile(ArchiveFile(
-      'docProps/app.xml',
-      utf8.encode(app).length,
-      utf8.encode(app),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        'docProps/app.xml',
+        utf8.encode(app).length,
+        utf8.encode(app),
+      ),
+    );
 
     // Add numbering for bullet points
-    archive.addFile(ArchiveFile(
-      'word/numbering.xml',
-      utf8.encode(numbering).length,
-      utf8.encode(numbering),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        'word/numbering.xml',
+        utf8.encode(numbering).length,
+        utf8.encode(numbering),
+      ),
+    );
 
     // Add main document
-    archive.addFile(ArchiveFile(
-      'word/document.xml',
-      utf8.encode(documentXml).length,
-      utf8.encode(documentXml),
-    ));
+    archive.addFile(
+      ArchiveFile(
+        'word/document.xml',
+        utf8.encode(documentXml).length,
+        utf8.encode(documentXml),
+      ),
+    );
 
     // Add logo image if available
     if (logoBytes != null) {
-      archive.addFile(ArchiveFile(
-        'word/media/logo.png',
-        logoBytes.length,
-        logoBytes,
-      ));
+      archive.addFile(
+        ArchiveFile('word/media/logo.png', logoBytes.length, logoBytes),
+      );
     }
 
     // Encode to ZIP format

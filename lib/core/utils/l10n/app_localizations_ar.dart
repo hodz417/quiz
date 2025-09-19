@@ -367,8 +367,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loading => 'جار التحليل';
 
   @override
+  String get noLearningResources => 'لم يتم اقتراح مصادر تعلم محددة.';
+
+  @override
   String get learningResources => 'موارد التعلم';
 
   @override
-  String get noLearningResources => 'لا توجد موارد تعلم متاحة في الوقت الحالي.';
+  String get learningResourcesDescription =>
+      'مصادر التعلم المقترحة (دورات، مقالات، فيديوهات) لمساعدتك في اتباع خريطة الطريق.';
+
+  @override
+  String get resourceType => 'نوع المورد';
+
+  @override
+  String get resourceUrl => 'رابط المورد';
+
+  @override
+  String get lastUpdated => 'آخر تحديث';
+
+  @override
+  String get learningRoadmap => 'خريطة طريق التعلم';
+
+  @override
+  String get noRoadmapAvailable => 'لا توجد خريطة طريق متاحة.';
+
+  @override
+  String get beginnerLevel => 'مبتدئ';
+
+  @override
+  String get intermediateLevel => 'متوسط';
+
+  @override
+  String get advancedLevel => 'متقدم';
+
+  @override
+  String get months => 'أشهر';
+
+  @override
+  String get untitledResource => 'مورد بدون عنوان';
 }

@@ -482,19 +482,77 @@
     "description": "Text shown while the report is loading"
   }
 
-    ,
-  "learningResources": "Learning Resources",
-  "@learningResources": {
-    "description": "Subheading for learning resources"
-  }
-
   
     ,
   "noLearningResources": "No specific learning resources were suggested.",
   "@noLearningResources": {
     "description": " No Subheading for learning resources"
   }
+
+  
+    ,
+  "learningResources": "Learning Resources",
+  "@learningResources": {
+    "description": "Subheading for learning resources"
+  },
+
+  "learningResourcesDescription": "Recommended learning resources (courses, articles, videos) to help you follow the roadmap.",
+  "@learningResourcesDescription": {
+    "description": "Short description shown above the list of learning resources"
+  },
+
+  "resourceType": "Resource type",
+  "@resourceType": {
+    "description": "Label for the resource type (e.g., Course, Article, Video)"
+  },
+
+  "resourceUrl": "Resource URL",
+  "@resourceUrl": {
+    "description": "Label for the resource link/URL"
+  },
+
+  "lastUpdated": "Last updated",
+  "@lastUpdated": {
+    "description": "Label to show the last updated date of the resource"
+  },
+
+  "learningRoadmap": "Learning Roadmap",
+  "@learningRoadmap": {
+    "description": "Subheading for the learning roadmap section"
+  },
+
+  "noRoadmapAvailable": "No roadmap available.",
+  "@noRoadmapAvailable": {
+    "description": "Displayed when there is no roadmap data"
+  },
+
+  "beginnerLevel": "Beginner",
+  "@beginnerLevel": {
+    "description": "Label for beginner roadmap level"
+  },
+
+  "intermediateLevel": "Intermediate",
+  "@intermediateLevel": {
+    "description": "Label for intermediate roadmap level"
+  },
+
+  "advancedLevel": "Advanced",
+  "@advancedLevel": {
+    "description": "Label for advanced roadmap level"
+  },
+
+  "months": "months",
+  "@months": {
+    "description": "Plural label for months used in duration ranges"
+  },
+
+  "untitledResource": "Untitled Resource",
+  "@untitledResource": {
+    "description": "Fallback name when a resource has no title"
+  }
 }
+
+
 
 
 

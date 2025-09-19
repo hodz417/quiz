@@ -497,15 +497,74 @@
     "description": "عنوان فرعي لموارد التعلم"
   }
 
-      ,
-  "noLearningResources": "لا توجد موارد تعلم متاحة في الوقت الحالي.",
-  "@noLearningResources": {
-    "description": "رسالة عند عدم وجود موارد تعلم"
-  }
 
+
+, 
+
+
+  "noLearningResources": "لم يتم اقتراح مصادر تعلم محددة.",
+  "@noLearningResources": {
+    "description": "يظهر عندما لا توجد مصادر تعلم"
+  },
+
+  "learningResourcesDescription": "مصادر التعلم المقترحة (دورات، مقالات، فيديوهات) لمساعدتك في اتباع خريطة الطريق.",
+  "@learningResourcesDescription": {
+    "description": "وصف قصير يظهر فوق قائمة مصادر التعلم"
+  },
+
+  "resourceType": "نوع المورد",
+  "@resourceType": {
+    "description": "تسمية لنوع المورد (مثال: دورة، مقال، فيديو)"
+  },
+
+  "resourceUrl": "رابط المورد",
+  "@resourceUrl": {
+    "description": "تسمية لرابط المورد أو الـ URL"
+  },
+
+  "lastUpdated": "آخر تحديث",
+  "@lastUpdated": {
+    "description": "تسمية لإظهار تاريخ آخر تحديث للمورد"
+  },
+
+  "learningRoadmap": "خريطة طريق التعلم",
+  "@learningRoadmap": {
+    "description": "عنوان فرعي لقسم خريطة الطريق"
+  },
+
+  "noRoadmapAvailable": "لا توجد خريطة طريق متاحة.",
+  "@noRoadmapAvailable": {
+    "description": "يظهر عندما لا تتوفر بيانات لخريطة الطريق"
+  },
+
+  "beginnerLevel": "مبتدئ",
+  "@beginnerLevel": {
+    "description": "تسمية لمستوى المبتدئين في خريطة الطريق"
+  },
+
+  "intermediateLevel": "متوسط",
+  "@intermediateLevel": {
+    "description": "تسمية لمستوى المتوسط في خريطة الطريق"
+  },
+
+  "advancedLevel": "متقدم",
+  "@advancedLevel": {
+    "description": "تسمية لمستوى المتقدمين في خريطة الطريق"
+  },
+
+  "months": "أشهر",
+  "@months": {
+    "description": "تسمية الجمع لكلمة أشهر المستخدمة في نطاقات المدة"
+  },
+
+  "untitledResource": "مورد بدون عنوان",
+  "@untitledResource": {
+    "description": "الاسم الافتراضي عندما لا يحتوي المورد على عنوان"
+  }
+}
 
   
-}
+
 
 
 

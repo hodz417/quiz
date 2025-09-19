@@ -782,17 +782,83 @@ abstract class AppLocalizations {
   /// **'Loading analysis'**
   String get loading;
 
+  ///  No Subheading for learning resources
+  ///
+  /// In en, this message translates to:
+  /// **'No specific learning resources were suggested.'**
+  String get noLearningResources;
+
   /// Subheading for learning resources
   ///
   /// In en, this message translates to:
   /// **'Learning Resources'**
   String get learningResources;
 
-  ///  No Subheading for learning resources
+  /// Short description shown above the list of learning resources
   ///
   /// In en, this message translates to:
-  /// **'No specific learning resources were suggested.'**
-  String get noLearningResources;
+  /// **'Recommended learning resources (courses, articles, videos) to help you follow the roadmap.'**
+  String get learningResourcesDescription;
+
+  /// Label for the resource type (e.g., Course, Article, Video)
+  ///
+  /// In en, this message translates to:
+  /// **'Resource type'**
+  String get resourceType;
+
+  /// Label for the resource link/URL
+  ///
+  /// In en, this message translates to:
+  /// **'Resource URL'**
+  String get resourceUrl;
+
+  /// Label to show the last updated date of the resource
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get lastUpdated;
+
+  /// Subheading for the learning roadmap section
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Roadmap'**
+  String get learningRoadmap;
+
+  /// Displayed when there is no roadmap data
+  ///
+  /// In en, this message translates to:
+  /// **'No roadmap available.'**
+  String get noRoadmapAvailable;
+
+  /// Label for beginner roadmap level
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginnerLevel;
+
+  /// Label for intermediate roadmap level
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediateLevel;
+
+  /// Label for advanced roadmap level
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advancedLevel;
+
+  /// Plural label for months used in duration ranges
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get months;
+
+  /// Fallback name when a resource has no title
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Resource'**
+  String get untitledResource;
 }
 
 class _AppLocalizationsDelegate

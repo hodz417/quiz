@@ -371,9 +371,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loading => 'Loading analysis';
 
   @override
+  String get noLearningResources =>
+      'No specific learning resources were suggested.';
+
+  @override
   String get learningResources => 'Learning Resources';
 
   @override
-  String get noLearningResources =>
-      'No specific learning resources were suggested.';
+  String get learningResourcesDescription =>
+      'Recommended learning resources (courses, articles, videos) to help you follow the roadmap.';
+
+  @override
+  String get resourceType => 'Resource type';
+
+  @override
+  String get resourceUrl => 'Resource URL';
+
+  @override
+  String get lastUpdated => 'Last updated';
+
+  @override
+  String get learningRoadmap => 'Learning Roadmap';
+
+  @override
+  String get noRoadmapAvailable => 'No roadmap available.';
+
+  @override
+  String get beginnerLevel => 'Beginner';
+
+  @override
+  String get intermediateLevel => 'Intermediate';
+
+  @override
+  String get advancedLevel => 'Advanced';
+
+  @override
+  String get months => 'months';
+
+  @override
+  String get untitledResource => 'Untitled Resource';
 }

@@ -5,11 +5,9 @@
 *.swp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
-.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -18,7 +16,9 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# VS Code settings (uncomment if you want to ignore them)
+# The .vscode folder contains lauanch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
 #.vscode/
 
 # Flutter/Dart/Pub related
@@ -29,16 +29,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-build/
-
-# Generated code (build_runner)
-# ───────────────────────────────
-**/*.g.dart
-**/*.freezed.dart
-
-# FlutterFire CLI local config
-# ────────────────────────────────
-.firebase/
+/build/
 
 # Symbolication related
 app.*.symbols
@@ -46,15 +37,7 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio build artifacts
+# Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# Firebase config files
-android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
-macos/Runner/GoogleService-Info.plist
-web/firebase-messaging-sw.js
-lib/firebase_options.dart
-

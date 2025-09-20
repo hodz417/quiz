@@ -57,9 +57,6 @@ class MyApp extends StatelessWidget {
               title: 'Mentor',
               routerConfig: appRouter.router,
               locale: Locale(state.local),
-              theme: state.lightTheme,
-              darkTheme: state.darkTheme,
-              themeMode: state.currentThemeMode,
               builder: EasyLoading.init(),
             );
           },

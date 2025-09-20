@@ -23,7 +23,6 @@ LocalSettingsState _$LocalSettingsStateFromJson(Map<String, dynamic> json) {
 mixin _$LocalSettingsState {
   String get local => throw _privateConstructorUsedError;
   bool get isDarkMode => throw _privateConstructorUsedError;
-  FlexScheme get colorScheme => throw _privateConstructorUsedError;
   String get currencyCode => throw _privateConstructorUsedError;
   String get englishFont => throw _privateConstructorUsedError;
   String get arabicFont => throw _privateConstructorUsedError;
@@ -49,7 +48,6 @@ abstract class $LocalSettingsStateCopyWith<$Res> {
   $Res call({
     String local,
     bool isDarkMode,
-    FlexScheme colorScheme,
     String currencyCode,
     String englishFont,
     String arabicFont,
@@ -74,7 +72,6 @@ class _$LocalSettingsStateCopyWithImpl<$Res, $Val extends LocalSettingsState>
   $Res call({
     Object? local = null,
     Object? isDarkMode = null,
-    Object? colorScheme = null,
     Object? currencyCode = null,
     Object? englishFont = null,
     Object? arabicFont = null,
@@ -90,10 +87,6 @@ class _$LocalSettingsStateCopyWithImpl<$Res, $Val extends LocalSettingsState>
                 ? _value.isDarkMode
                 : isDarkMode // ignore: cast_nullable_to_non_nullable
                       as bool,
-            colorScheme: null == colorScheme
-                ? _value.colorScheme
-                : colorScheme // ignore: cast_nullable_to_non_nullable
-                      as FlexScheme,
             currencyCode: null == currencyCode
                 ? _value.currencyCode
                 : currencyCode // ignore: cast_nullable_to_non_nullable
@@ -128,7 +121,6 @@ abstract class _$$LocalSettingsStateImplCopyWith<$Res>
   $Res call({
     String local,
     bool isDarkMode,
-    FlexScheme colorScheme,
     String currencyCode,
     String englishFont,
     String arabicFont,
@@ -152,7 +144,6 @@ class __$$LocalSettingsStateImplCopyWithImpl<$Res>
   $Res call({
     Object? local = null,
     Object? isDarkMode = null,
-    Object? colorScheme = null,
     Object? currencyCode = null,
     Object? englishFont = null,
     Object? arabicFont = null,
@@ -168,10 +159,6 @@ class __$$LocalSettingsStateImplCopyWithImpl<$Res>
             ? _value.isDarkMode
             : isDarkMode // ignore: cast_nullable_to_non_nullable
                   as bool,
-        colorScheme: null == colorScheme
-            ? _value.colorScheme
-            : colorScheme // ignore: cast_nullable_to_non_nullable
-                  as FlexScheme,
         currencyCode: null == currencyCode
             ? _value.currencyCode
             : currencyCode // ignore: cast_nullable_to_non_nullable
@@ -199,7 +186,6 @@ class _$LocalSettingsStateImpl implements _LocalSettingsState {
   const _$LocalSettingsStateImpl({
     this.local = 'ar',
     this.isDarkMode = false,
-    this.colorScheme = FlexScheme.blue,
     this.currencyCode = "SAR",
     this.englishFont = 'Roboto',
     this.arabicFont = 'Cairo',
@@ -217,9 +203,6 @@ class _$LocalSettingsStateImpl implements _LocalSettingsState {
   final bool isDarkMode;
   @override
   @JsonKey()
-  final FlexScheme colorScheme;
-  @override
-  @JsonKey()
   final String currencyCode;
   @override
   @JsonKey()
@@ -233,7 +216,7 @@ class _$LocalSettingsStateImpl implements _LocalSettingsState {
 
   @override
   String toString() {
-    return 'LocalSettingsState(local: $local, isDarkMode: $isDarkMode, colorScheme: $colorScheme, currencyCode: $currencyCode, englishFont: $englishFont, arabicFont: $arabicFont, isTable: $isTable)';
+    return 'LocalSettingsState(local: $local, isDarkMode: $isDarkMode, currencyCode: $currencyCode, englishFont: $englishFont, arabicFont: $arabicFont, isTable: $isTable)';
   }
 
   @override
@@ -244,8 +227,6 @@ class _$LocalSettingsStateImpl implements _LocalSettingsState {
             (identical(other.local, local) || other.local == local) &&
             (identical(other.isDarkMode, isDarkMode) ||
                 other.isDarkMode == isDarkMode) &&
-            (identical(other.colorScheme, colorScheme) ||
-                other.colorScheme == colorScheme) &&
             (identical(other.currencyCode, currencyCode) ||
                 other.currencyCode == currencyCode) &&
             (identical(other.englishFont, englishFont) ||
@@ -261,7 +242,6 @@ class _$LocalSettingsStateImpl implements _LocalSettingsState {
     runtimeType,
     local,
     isDarkMode,
-    colorScheme,
     currencyCode,
     englishFont,
     arabicFont,
@@ -289,7 +269,6 @@ abstract class _LocalSettingsState implements LocalSettingsState {
   const factory _LocalSettingsState({
     final String local,
     final bool isDarkMode,
-    final FlexScheme colorScheme,
     final String currencyCode,
     final String englishFont,
     final String arabicFont,
@@ -303,8 +282,6 @@ abstract class _LocalSettingsState implements LocalSettingsState {
   String get local;
   @override
   bool get isDarkMode;
-  @override
-  FlexScheme get colorScheme;
   @override
   String get currencyCode;
   @override

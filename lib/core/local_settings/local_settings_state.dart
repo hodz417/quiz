@@ -5,7 +5,6 @@ class LocalSettingsState with _$LocalSettingsState {
   const factory LocalSettingsState({
     @Default('ar') String local,
     @Default(false) bool isDarkMode,
-    @Default(FlexScheme.blue) FlexScheme colorScheme,
     @Default("SAR") String currencyCode,
     @Default('Roboto') String englishFont,
     @Default('Cairo') String arabicFont,
@@ -21,16 +20,4 @@ extension LocalSettingsExtension on LocalSettingsState {
       ? GoogleFonts.getTextTheme(arabicFont)
       : GoogleFonts.getTextTheme(englishFont);
 
-  ThemeMode get currentThemeMode =>
-      isDarkMode ? ThemeMode.dark : ThemeMode.light;
-
-  ThemeData get lightTheme => FlexThemeData.light(
-        scheme: colorScheme,
-        textTheme: currentTextTheme,
-      );
-
-  ThemeData get darkTheme => FlexThemeData.dark(
-        scheme: colorScheme,
-        textTheme: currentTextTheme,
-      );
 }

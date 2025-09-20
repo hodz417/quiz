@@ -7,12 +7,6 @@ class ChangeLocale extends LocalSettingsEvent {
   ChangeLocale(this.newLocale);
 }
 
-class ChangeColorScheme extends LocalSettingsEvent {
-  final FlexScheme newScheme;
-  ChangeColorScheme(this.newScheme);
-}
-
-class ToggleTheme extends LocalSettingsEvent {}
 
 class _ConfigureEasyLoading extends LocalSettingsEvent {}
 

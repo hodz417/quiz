@@ -1,7 +1,7 @@
 // core/services/firestore_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:mentor/feature/assessment/data/models/analysis_result/analysis_result.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore;

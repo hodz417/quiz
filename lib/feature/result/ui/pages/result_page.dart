@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
-import 'package:quiz/feature/result/data/result_exporter.dart';
-import 'package:quiz/feature/result/ui/widgets/result_card.dart';
-import 'package:quiz/feature/result/ui/widgets/freelance_card.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/core/utils/theme/app_text_styles.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
+import 'package:mentor/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:mentor/feature/result/data/result_exporter.dart';
+import 'package:mentor/feature/result/ui/widgets/result_card.dart';
+import 'package:mentor/feature/result/ui/widgets/freelance_card.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ResultPageWeb extends StatelessWidget {

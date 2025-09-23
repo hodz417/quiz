@@ -1,8 +1,8 @@
 // feature/assessment/data/repositories/assessment_repository.dart
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:quiz/core/config/config.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:mentor/core/config/config.dart';
+import 'package:mentor/feature/assessment/data/models/analysis_result/analysis_result.dart';
 
 class AssessmentRepository {
   final GenerativeModel chatModel;

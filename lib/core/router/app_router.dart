@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quiz/core/utils/widgets/donation_button.dart';
+import 'package:mentor/core/utils/widgets/donation_button.dart';
 
-import 'package:quiz/feature/landing/ui/pages/landing_page.dart';
-import 'package:quiz/feature/assessment/ui/pages/assessment_screen.dart';
-import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
+import 'package:mentor/feature/landing/ui/pages/landing_page.dart';
+import 'package:mentor/feature/assessment/ui/pages/assessment_screen.dart';
+import 'package:mentor/feature/assessment/bloc/assessment_bloc.dart';
 
 
 import '../utils/constants/routes.dart';

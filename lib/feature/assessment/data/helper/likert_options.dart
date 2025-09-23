@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
 
 List<Map<String, String>> likertOptions(BuildContext context) {
   final loc = context.l10n;

@@ -6,15 +6,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
-import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
-import 'package:quiz/feature/assessment/ui/widgets/progress_bar.dart';
-import 'package:quiz/feature/assessment/ui/widgets/question_input.dart';
-import 'package:quiz/feature/assessment/ui/widgets/quiz_control_buttons.dart';
-import 'package:quiz/feature/result/ui/pages/result_page.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/core/utils/theme/app_text_styles.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
+import 'package:mentor/feature/assessment/bloc/assessment_bloc.dart';
+import 'package:mentor/feature/assessment/data/models/assessment_question/assessment_question.dart';
+import 'package:mentor/feature/assessment/ui/widgets/progress_bar.dart';
+import 'package:mentor/feature/assessment/ui/widgets/question_input.dart';
+import 'package:mentor/feature/assessment/ui/widgets/quiz_control_buttons.dart';
+import 'package:mentor/feature/result/ui/pages/result_page.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class QuizPage extends StatefulWidget {

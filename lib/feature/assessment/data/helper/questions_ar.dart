@@ -1,4 +1,4 @@
-import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
+import 'package:mentor/feature/assessment/data/models/assessment_question/assessment_question.dart';
 
 
 final List<AssessmentQuestion> questionsAr = [

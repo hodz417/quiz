@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
-import 'package:quiz/core/local_settings/local_settings_bloc.dart';
-import 'package:quiz/core/utils/constants/app_assets.dart';
-import 'package:quiz/feature/landing/ui/widgets/language_dropdown_menu.dart';
+import 'package:mentor/core/local_settings/local_settings_bloc.dart';
+import 'package:mentor/core/utils/constants/app_assets.dart';
+import 'package:mentor/feature/landing/ui/widgets/language_dropdown_menu.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class HeaderBar extends StatelessWidget {

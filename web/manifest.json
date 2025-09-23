@@ -1,21 +1,21 @@
 {
-    "name": "quiz",
-    "short_name": "quiz",
+    "name": "Mentor",
+    "short_name": "Mentor",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Discover your path",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
+            "src": "icons/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-512.png",
+            "src": "icons/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         },

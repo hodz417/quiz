@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
-import 'package:quiz/feature/assessment/bloc/assessment_bloc.dart';
-import 'package:quiz/feature/assessment/data/repositories/assessment_repository.dart';
-import 'package:quiz/feature/assessment/data/service/firestore_service.dart';
+import 'package:mentor/feature/assessment/bloc/assessment_bloc.dart';
+import 'package:mentor/feature/assessment/data/repositories/assessment_repository.dart';
+import 'package:mentor/feature/assessment/data/service/firestore_service.dart';
 import '../local_settings/local_settings_bloc.dart';
 
 final getIt = GetIt.instance;

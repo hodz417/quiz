@@ -2,17 +2,17 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:quiz/feature/assessment/data/helper/questions_en.dart';
-import 'package:quiz/feature/assessment/data/helper/questions_ar.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
-import 'package:quiz/feature/assessment/data/models/jop_search/search_model.dart';
-import 'package:quiz/feature/assessment/data/models/assessment_question/assessment_question.dart';
-import 'package:quiz/feature/assessment/data/repositories/assessment_repository.dart';
-import 'package:quiz/core/utils/di.dart';
-import 'package:quiz/core/local_settings/local_settings_bloc.dart';
+import 'package:mentor/feature/assessment/data/helper/questions_en.dart';
+import 'package:mentor/feature/assessment/data/helper/questions_ar.dart';
+import 'package:mentor/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:mentor/feature/assessment/data/models/jop_search/search_model.dart';
+import 'package:mentor/feature/assessment/data/models/assessment_question/assessment_question.dart';
+import 'package:mentor/feature/assessment/data/repositories/assessment_repository.dart';
+import 'package:mentor/core/utils/di.dart';
+import 'package:mentor/core/local_settings/local_settings_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:quiz/feature/assessment/data/repositories/search_repositories.dart';
-import 'package:quiz/feature/assessment/data/service/firestore_service.dart';
+import 'package:mentor/feature/assessment/data/repositories/search_repositories.dart';
+import 'package:mentor/feature/assessment/data/service/firestore_service.dart';
 
 part 'assessment_event.dart';
 part 'assessment_state.dart';

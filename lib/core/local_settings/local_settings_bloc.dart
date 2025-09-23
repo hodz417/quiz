@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:quiz/core/utils/theme/theme_constants.dart';
+import 'package:mentor/core/utils/theme/theme_constants.dart';
 
 part 'local_settings_event.dart';
 part 'local_settings_state.dart';

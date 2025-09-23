@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/core/utils/theme/app_text_styles.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/core/utils/theme/app_text_styles.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class QuizControlButtons extends StatelessWidget {

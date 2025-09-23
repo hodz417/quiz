@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quiz/feature/landing/ui/widgets/header_bar.dart';
+import 'package:mentor/feature/landing/ui/widgets/header_bar.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 
-import 'package:quiz/feature/landing/ui/widgets/footer_section.dart';
-import 'package:quiz/feature/landing/ui/widgets/hero_section.dart';
-import 'package:quiz/feature/landing/ui/widgets/how_work_section.dart';
+import 'package:mentor/feature/landing/ui/widgets/footer_section.dart';
+import 'package:mentor/feature/landing/ui/widgets/hero_section.dart';
+import 'package:mentor/feature/landing/ui/widgets/how_work_section.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});

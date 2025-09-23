@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/core/utils/theme/app_text_styles.dart';
+import 'package:mentor/core/utils/theme/app_text_styles.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class FreelanceCard extends StatelessWidget {

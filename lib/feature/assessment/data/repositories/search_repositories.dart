@@ -1,8 +1,8 @@
 // feature/assessment/data/repositories/search_repository.dart
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:quiz/core/config/config.dart';
-import 'package:quiz/feature/assessment/data/models/jop_search/search_model.dart';
+import 'package:mentor/core/config/config.dart';
+import 'package:mentor/feature/assessment/data/models/jop_search/search_model.dart';
 
 class SearchRepository {
   final Dio _dio;

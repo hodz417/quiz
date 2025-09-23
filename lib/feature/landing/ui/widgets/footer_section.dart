@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/landing/ui/widgets/footer_links.dart';
-import 'package:quiz/feature/landing/ui/widgets/footer_logo_and_contact.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
+import 'package:mentor/feature/landing/ui/widgets/footer_links.dart';
+import 'package:mentor/feature/landing/ui/widgets/footer_logo_and_contact.dart';
 
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});

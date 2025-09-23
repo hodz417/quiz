@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/feature/landing/data/helper/start_level_func.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/feature/landing/data/helper/start_level_func.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
 import 'feature_card_item.dart';
 
 class FeaturesCards extends StatelessWidget {

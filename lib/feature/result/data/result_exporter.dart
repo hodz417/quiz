@@ -2,8 +2,8 @@ import 'dart:convert' show utf8;
 import 'package:archive/archive.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart'; // Added for rootBundle
-import 'package:quiz/core/utils/extensions/l10n_extension.dart';
-import 'package:quiz/feature/assessment/data/models/analysis_result/analysis_result.dart';
+import 'package:mentor/core/utils/extensions/l10n_extension.dart';
+import 'package:mentor/feature/assessment/data/models/analysis_result/analysis_result.dart';
 import 'package:universal_html/html.dart' as html;
 
 /// Builds a comprehensive .docx report from an [AnalysisResult]

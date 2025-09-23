@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quiz/core/utils/constants/app_assets.dart';
+import 'package:mentor/core/utils/constants/app_assets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:quiz/core/utils/theme/app_theme.dart';
-import 'package:quiz/feature/landing/ui/widgets/hero_text_area.dart';
+import 'package:mentor/core/utils/theme/app_theme.dart';
+import 'package:mentor/feature/landing/ui/widgets/hero_text_area.dart';
 
 class HeroSection extends StatelessWidget {
   const HeroSection({super.key});

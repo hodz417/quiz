@@ -60,7 +60,7 @@ class AssessmentRepository {
       }
 
       // 5) Safe JSON parse
-      Map<String, dynamic> _safeParseJson(String s) {
+      Map<String, dynamic> safeParseJson(String s) {
         // direct
         try {
           return jsonDecode(s) as Map<String, dynamic>;
@@ -90,13 +90,25 @@ class AssessmentRepository {
 
       Map<String, dynamic> parsed;
       try {
-        parsed = _safeParseJson(raw);
+        parsed = safeParseJson(raw);
       } catch (e) {
         // ignore: avoid_print
         final previewLen = raw.length > 500 ? 500 : raw.length;
         print('AI raw (first 500): ${raw.substring(0, previewLen)}');
         rethrow;
       }
+
+      // ---- NORMALIZE LEARNING STYLE PERCENTAGES BEFORE DESERIALIZATION ----
+      parsed['learningStylePercentages'] =
+          _normalizeLearningStyles(parsed['learningStylePercentages']);
+
+      // (Optional) ensure required collections exist if model omitted them
+      parsed.putIfAbsent('inferredGoals', () => <String>[]);
+      parsed.putIfAbsent('keyStrengths', () => <String>[]);
+      parsed.putIfAbsent('freelanceJobs', () => {'uiList': <String>[], 'wordList': <String>[]});
+      parsed.putIfAbsent('practicalSteps', () => <String>[]);
+      parsed.putIfAbsent('learningResources', () => <Map<String, dynamic>>[]);
+      parsed.putIfAbsent('roadmap', () => {'levelA': <String>[], 'levelB': <String>[], 'levelC': <String>[]});
 
       return AnalysisResult.fromJson(parsed);
     } catch (e, st) {
@@ -105,6 +117,116 @@ class AssessmentRepository {
       return AnalysisResult.empty();
     }
   }
+
+  // ===================== NORMALIZATION =====================
+
+  Map<String, int> _normalizeLearningStyles(dynamic raw) {
+    // Canonical keys used by the UI
+    const vKey = 'Visual';
+    const verbKey = 'Verbal';
+    const kinKey = 'Kinesthetic';
+
+    // Common aliases → canonical
+    const aliases = <String, String>{
+      // Visual
+      'visual': vKey,
+      'spatial': vKey,
+      'visual/spatial': vKey,
+
+      // Verbal (LLMs often output Auditory/Aural/Reading-Writing)
+      'verbal': verbKey,
+      'linguistic': verbKey,
+      'reading/writing': verbKey,
+      'reading-writing': verbKey,
+      'read/write': verbKey,
+      'read & write': verbKey,
+      'aural': verbKey,
+      'auditory': verbKey,
+      'listening': verbKey,
+
+      // Kinesthetic
+      'kinesthetic': kinKey,
+      'kinaesthetic': kinKey,
+      'physical': kinKey,
+      'hands-on': kinKey,
+      'tactile': kinKey,
+      'bodily-kinesthetic': kinKey,
+    };
+
+    // Extract a Map<String, dynamic>
+    Map<String, dynamic> asMap;
+    if (raw is Map) {
+      asMap = raw.map((k, v) => MapEntry(k.toString(), v));
+    } else {
+      asMap = {};
+    }
+
+    // Initialize with zeros
+    final tmp = <String, int>{vKey: 0, verbKey: 0, kinKey: 0};
+
+    int _toInt(dynamic v) {
+      if (v is int) return v;
+      if (v is num) return v.round();
+      if (v is String) {
+        // Handles "34%", " 33 ", etc.
+        final m = RegExp(r'-?\d+').firstMatch(v);
+        if (m != null) return int.tryParse(m.group(0)!) ?? 0;
+      }
+      return 0;
+    }
+
+    // Read via aliases
+    asMap.forEach((k, v) {
+      final canon = aliases[k.trim().toLowerCase()];
+      if (canon != null && tmp.containsKey(canon)) {
+        tmp[canon] = _toInt(v);
+      }
+    });
+
+    // If canonical keys already present, prefer them
+    for (final k in [vKey, verbKey, kinKey]) {
+      if (asMap.containsKey(k)) tmp[k] = _toInt(asMap[k]);
+    }
+
+    // Clamp individual values
+    tmp.updateAll((_, val) => val.clamp(0, 100));
+
+    // If all zero → default split
+    final sum0 = tmp.values.fold<int>(0, (a, b) => a + b);
+    if (sum0 == 0) return {vKey: 34, verbKey: 33, kinKey: 33};
+
+    // Normalize to sum = 100 using largest remainder method
+    final totals = [tmp[vKey]!, tmp[verbKey]!, tmp[kinKey]!];
+    final keys = [vKey, verbKey, kinKey];
+    final sum = totals.reduce((a, b) => a + b);
+
+    final base = <String, int>{};
+    final remainders = <String, double>{};
+    int used = 0;
+    for (var i = 0; i < keys.length; i++) {
+      final proportion = (totals[i] / sum) * 100.0;
+      final floorVal = proportion.floor();
+      base[keys[i]] = floorVal;
+      remainders[keys[i]] = proportion - floorVal;
+      used += floorVal;
+    }
+
+    int remain = 100 - used;
+    final order = remainders.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    for (var i = 0; i < remain; i++) {
+      final k = order[i % order.length].key;
+      base[k] = base[k]! + 1;
+    }
+
+    return {
+      vKey: base[vKey]!,
+      verbKey: base[verbKey]!,
+      kinKey: base[kinKey]!,
+    };
+  }
+
+  // ===================== HELPERS =====================
 
   // Make payload compact: keep id, weight, short answer; drop question/level
   List<Map<String, dynamic>> _condenseResponses(List<Map<String, dynamic>> responses) {

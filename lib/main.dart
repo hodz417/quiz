@@ -10,33 +10,44 @@ import 'package:path_provider/path_provider.dart';
 import 'package:mentor/core/utils/l10n/app_localizations.dart';
 import 'package:mentor/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_strategy/url_strategy.dart';
+
 import 'core/local_settings/local_settings_bloc.dart';
 import 'core/router/app_router.dart';
+
+Future<void> _ensureFirebaseAndAuth() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final auth = FirebaseAuth.instance;
+  if (auth.currentUser == null) {
+    await auth.signInAnonymously();
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy(); // remove # from web URL
 
   final storage = await HydratedStorage.build(
-    storageDirectory: kIsWeb
-        ? HydratedStorage.webStorageDirectory
-        : await getTemporaryDirectory(),
+    storageDirectory:
+        kIsWeb ? HydratedStorage.webStorageDirectory : await getTemporaryDirectory(),
   );
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  await _ensureFirebaseAndAuth();
+
   HydratedBloc.storage = storage;
 
   setupDependencyInjections();
   Bloc.observer = AppLogger.talkerBlocObserver;
+
   runApp(MyApp(appRouter: AppRouter()));
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.appRouter});
-
   final AppRouter appRouter;
 
   @override
@@ -46,10 +57,10 @@ class MyApp extends StatelessWidget {
       buildWhen: (p, c) => p != c,
       builder: (context, state) {
         return ScreenUtilInit(
-      designSize: const Size(1440, 900),
+          designSize: const Size(1440, 900),
           minTextAdapt: true,
           splitScreenMode: true,
-          builder: (_, child) {
+          builder: (_, __) {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

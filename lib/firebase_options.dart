@@ -72,11 +72,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyClT1l9Ra0vcR6Lbdb3qNZS9Cg6BOky-vw',
-    appId: '1:319047157578:web:af90222cd2054ec4ef23b3',
+    appId: '1:319047157578:web:3ee1d639738fbd70ef23b3',
     messagingSenderId: '319047157578',
     projectId: 'quiz-c7220',
     authDomain: 'quiz-c7220.firebaseapp.com',
     storageBucket: 'quiz-c7220.firebasestorage.app',
-    measurementId: 'G-HF0C98DVC8',
+    measurementId: 'G-M9BYM0WGFH',
   );
+
 }

@@ -11,8 +11,8 @@ _$AnalysisResultImpl _$$AnalysisResultImplFromJson(Map<String, dynamic> json) =>
       uiSummary: json['uiSummary'] as String,
       personalityType: json['personalityType'] as String,
       personalityExplanation: json['personalityExplanation'] as String,
-      learningStylePercentages: const LearningStyleMapConverter().fromJson(
-        json['learningStylePercentages'],
+      learningStylePercentages: Map<String, int>.from(
+        json['learningStylePercentages'] as Map,
       ),
       inferredGoals: (json['inferredGoals'] as List<dynamic>)
           .map((e) => e as String)
@@ -61,9 +61,7 @@ Map<String, dynamic> _$$AnalysisResultImplToJson(
   'uiSummary': instance.uiSummary,
   'personalityType': instance.personalityType,
   'personalityExplanation': instance.personalityExplanation,
-  'learningStylePercentages': const LearningStyleMapConverter().toJson(
-    instance.learningStylePercentages,
-  ),
+  'learningStylePercentages': instance.learningStylePercentages,
   'inferredGoals': instance.inferredGoals,
   'keyStrengths': instance.keyStrengths,
   'detailedSummary': instance.detailedSummary,

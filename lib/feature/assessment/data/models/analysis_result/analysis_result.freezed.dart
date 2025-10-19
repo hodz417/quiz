@@ -24,9 +24,6 @@ mixin _$AnalysisResult {
   String get uiSummary => throw _privateConstructorUsedError;
   String get personalityType => throw _privateConstructorUsedError;
   String get personalityExplanation => throw _privateConstructorUsedError;
-
-  /// This will ALWAYS be normalized to Visual/Verbal/Kinesthetic that sum to 100.
-  @LearningStyleMapConverter()
   Map<String, int> get learningStylePercentages =>
       throw _privateConstructorUsedError;
   List<String> get inferredGoals => throw _privateConstructorUsedError;
@@ -39,18 +36,12 @@ mixin _$AnalysisResult {
   List<String> get developmentAreas => throw _privateConstructorUsedError;
   List<String> get careerSuggestions => throw _privateConstructorUsedError;
   List<String> get suggestedSkills => throw _privateConstructorUsedError;
-
-  /// Expect: {'uiList': [...], 'wordList': [...]}
   Map<String, List<String>> get freelanceJobs =>
       throw _privateConstructorUsedError;
   List<String> get practicalSteps => throw _privateConstructorUsedError;
   String get inspirationalQuote => throw _privateConstructorUsedError;
-
-  /// Intentionally kept empty by the model; system fills later.
   List<Map<String, dynamic>> get learningResources =>
       throw _privateConstructorUsedError;
-
-  /// Expect: {'levelA': [...], 'levelB': [...], 'levelC': [...]}
   Map<String, List<String>> get roadmap => throw _privateConstructorUsedError;
 
   /// Serializes this AnalysisResult to a JSON map.
@@ -74,7 +65,7 @@ abstract class $AnalysisResultCopyWith<$Res> {
     String uiSummary,
     String personalityType,
     String personalityExplanation,
-    @LearningStyleMapConverter() Map<String, int> learningStylePercentages,
+    Map<String, int> learningStylePercentages,
     List<String> inferredGoals,
     List<String> keyStrengths,
     String detailedSummary,
@@ -225,7 +216,7 @@ abstract class _$$AnalysisResultImplCopyWith<$Res>
     String uiSummary,
     String personalityType,
     String personalityExplanation,
-    @LearningStyleMapConverter() Map<String, int> learningStylePercentages,
+    Map<String, int> learningStylePercentages,
     List<String> inferredGoals,
     List<String> keyStrengths,
     String detailedSummary,
@@ -368,7 +359,6 @@ class _$AnalysisResultImpl implements _AnalysisResult {
     required this.uiSummary,
     required this.personalityType,
     required this.personalityExplanation,
-    @LearningStyleMapConverter()
     required final Map<String, int> learningStylePercentages,
     required final List<String> inferredGoals,
     required final List<String> keyStrengths,
@@ -407,13 +397,8 @@ class _$AnalysisResultImpl implements _AnalysisResult {
   final String personalityType;
   @override
   final String personalityExplanation;
-
-  /// This will ALWAYS be normalized to Visual/Verbal/Kinesthetic that sum to 100.
   final Map<String, int> _learningStylePercentages;
-
-  /// This will ALWAYS be normalized to Visual/Verbal/Kinesthetic that sum to 100.
   @override
-  @LearningStyleMapConverter()
   Map<String, int> get learningStylePercentages {
     if (_learningStylePercentages is EqualUnmodifiableMapView)
       return _learningStylePercentages;
@@ -486,10 +471,7 @@ class _$AnalysisResultImpl implements _AnalysisResult {
     return EqualUnmodifiableListView(_suggestedSkills);
   }
 
-  /// Expect: {'uiList': [...], 'wordList': [...]}
   final Map<String, List<String>> _freelanceJobs;
-
-  /// Expect: {'uiList': [...], 'wordList': [...]}
   @override
   Map<String, List<String>> get freelanceJobs {
     if (_freelanceJobs is EqualUnmodifiableMapView) return _freelanceJobs;
@@ -507,11 +489,7 @@ class _$AnalysisResultImpl implements _AnalysisResult {
 
   @override
   final String inspirationalQuote;
-
-  /// Intentionally kept empty by the model; system fills later.
   final List<Map<String, dynamic>> _learningResources;
-
-  /// Intentionally kept empty by the model; system fills later.
   @override
   List<Map<String, dynamic>> get learningResources {
     if (_learningResources is EqualUnmodifiableListView)
@@ -520,10 +498,7 @@ class _$AnalysisResultImpl implements _AnalysisResult {
     return EqualUnmodifiableListView(_learningResources);
   }
 
-  /// Expect: {'levelA': [...], 'levelB': [...], 'levelC': [...]}
   final Map<String, List<String>> _roadmap;
-
-  /// Expect: {'levelA': [...], 'levelB': [...], 'levelC': [...]}
   @override
   Map<String, List<String>> get roadmap {
     if (_roadmap is EqualUnmodifiableMapView) return _roadmap;
@@ -649,7 +624,6 @@ abstract class _AnalysisResult implements AnalysisResult {
     required final String uiSummary,
     required final String personalityType,
     required final String personalityExplanation,
-    @LearningStyleMapConverter()
     required final Map<String, int> learningStylePercentages,
     required final List<String> inferredGoals,
     required final List<String> keyStrengths,
@@ -677,10 +651,7 @@ abstract class _AnalysisResult implements AnalysisResult {
   String get personalityType;
   @override
   String get personalityExplanation;
-
-  /// This will ALWAYS be normalized to Visual/Verbal/Kinesthetic that sum to 100.
   @override
-  @LearningStyleMapConverter()
   Map<String, int> get learningStylePercentages;
   @override
   List<String> get inferredGoals;
@@ -702,20 +673,14 @@ abstract class _AnalysisResult implements AnalysisResult {
   List<String> get careerSuggestions;
   @override
   List<String> get suggestedSkills;
-
-  /// Expect: {'uiList': [...], 'wordList': [...]}
   @override
   Map<String, List<String>> get freelanceJobs;
   @override
   List<String> get practicalSteps;
   @override
   String get inspirationalQuote;
-
-  /// Intentionally kept empty by the model; system fills later.
   @override
   List<Map<String, dynamic>> get learningResources;
-
-  /// Expect: {'levelA': [...], 'levelB': [...], 'levelC': [...]}
   @override
   Map<String, List<String>> get roadmap;
 

@@ -13,7 +13,6 @@ import 'package:mentor/core/local_settings/local_settings_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:mentor/feature/assessment/data/repositories/search_repositories.dart';
 import 'package:mentor/feature/assessment/data/service/firestore_service.dart';
-
 part 'assessment_event.dart';
 part 'assessment_state.dart';
 part 'assessment_bloc.freezed.dart';
@@ -399,20 +398,46 @@ ${updatedResult.learningResources.map((r) {
     );
   }
 
-  FutureOr<void> _onSaveResult(
-    AnalysisResult result,
-    Emitter<AssessmentState> emit,
-  ) async {
-    try {
-      await _firestoreService.saveAnalysisResult(
-        result: result,
-        assessmentLevel: selectedLevel ?? 'Unknown',
-      );
-      _addBot("Result and learning resources saved successfully!");
-    } catch (e) {
-      _addBot("Failed to save result: $e");
-    }
+ FutureOr<void> _onSaveResult(
+  AnalysisResult result,
+  Emitter<AssessmentState> emit,
+) async {
+  try {
+    final questionsSnapshot = levelQuestions.map((q) {
+      return {
+        'id': q.id,
+        'level': q.level,
+        'question': q.text,
+        'weight': q.weight,
+        'answer': answers[q.id] ?? '',
+      };
+    }).toList();
+
+    final userId = null; // غيّرها لاحقًا إذا عندك Firebase Auth
+    final locale = _currentLocale;
+
+    final docId = await _firestoreService.saveAnalysisResult(
+      result: result,
+      assessmentLevel: selectedLevel ?? 'Unknown',
+      userId: userId,
+      answers: Map<String, String>.from(answers),
+      questions: questionsSnapshot,
+      locale: locale,
+    );
+
+    _addBot("تم حفظ النتيجة بنجاح في النظام. رقم العملية: $docId");
+  } catch (e) {
+    _addBot("حدث خطأ أثناء حفظ النتيجة: $e");
   }
+
+  emit(
+    AssessmentState.analysisComplete(
+      result: result,
+      messages: List.from(messages),
+    ),
+  );
+}
+
 
   FutureOr<void> _onResetAssessment(Emitter<AssessmentState> emit) {
     messages.clear();

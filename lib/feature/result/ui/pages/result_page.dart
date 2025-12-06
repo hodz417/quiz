@@ -8,6 +8,7 @@ import 'package:mentor/feature/result/data/result_exporter.dart';
 import 'package:mentor/feature/result/ui/widgets/result_card.dart';
 import 'package:mentor/feature/result/ui/widgets/freelance_card.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ResultPageWeb extends StatelessWidget {
   final AnalysisResult result;
@@ -281,42 +282,77 @@ class ResultPageWeb extends StatelessWidget {
                         ),
                         const Gap(18),
                         Center(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              final bytes = ResultExporter.buildSimpleDocxBytes(
-                                context,
-                                result,
-                              );
-                              ResultExporter.downloadDocxInBrowser(
-                                await bytes ,
-                                'assessment_report.docx',
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.l10n.reportDownloadStarted,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final bytes = ResultExporter.buildSimpleDocxBytes(
+                                    context,
+                                    result,
+                                  );
+                                  ResultExporter.downloadDocxInBrowser(
+                                    await bytes ,
+                                    'assessment_report.docx',
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        context.l10n.reportDownloadStarted,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF0068CC),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 28,
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF0068CC),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 28,
-                                vertical: 14,
+                                child: Text(
+                                  context.l10n.downloadReport,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),Gap(12),
+                               ElevatedButton(
+                                onPressed: ()   async {
+          const notionUrl =
+              'https://amethyst-mallow-c16.notion.site/2b87e9c89e4a810399fafa6901cdde29?v=2b87e9c89e4a81ea9b82000c972a5ce1&source=copy_link';
+
+          // Open in a new browser tab (web only)
+          await launchUrlString(
+            notionUrl,
+            webOnlyWindowName: '_blank',
+          );
+        },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF0068CC),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 28,
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Text(
+                                 "Notion Template",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text(
-                              context.l10n.downloadReport,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                            ],
                           ),
                         ),
                         const Gap(8),

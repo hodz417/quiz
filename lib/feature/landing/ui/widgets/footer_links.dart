@@ -4,9 +4,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:mentor/core/utils/theme/app_text_styles.dart';
 
+class LinkItem {
+  final String text;
+  final VoidCallback? onTap;
+
+  const LinkItem({
+    required this.text,
+    this.onTap,
+  });
+}
+
 class FooterLinks extends StatelessWidget {
   final String title;
-  final List<String> items;
+  final List<LinkItem> items;
 
   const FooterLinks({super.key, required this.title, required this.items});
 
@@ -24,7 +34,10 @@ class FooterLinks extends StatelessWidget {
             ...items.map(
               (item) => Padding(
                 padding: EdgeInsets.only(bottom: 16.h),
-                child: Text(item, style: AppTextStyles.font17SemiBoldGrey),
+                child: InkWell(
+                  onTap: item.onTap,
+                  child: Text(item.text, style: AppTextStyles.font17SemiBoldGrey),
+                ),
               ),
             ),
           ],

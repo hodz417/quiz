@@ -83,7 +83,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get footerQuickLinksProjects => 'المشروعات';
 
   @override
-  String get footerQuickLinksMentoring => 'الإرشاد الأكاديمي';
+  String get footerQuickLinksMentoring => 'تعرف علي فريقنا';
 
   @override
   String get footerPlatformDescription =>

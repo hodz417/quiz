@@ -152,6 +152,12 @@ class AppTextStyles {
     color: Colors.grey[600],
   );
 
+  static TextStyle font14GreyRegular = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 14.sp,
+    color: Colors.grey.shade700,
+  );
+
   static TextStyle font12BoldGrey = TextStyle(
     fontSize: 12.sp,
     color: Colors.grey[600],

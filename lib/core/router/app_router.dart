@@ -8,6 +8,7 @@ import 'package:mentor/core/utils/widgets/donation_button.dart';
 import 'package:mentor/feature/landing/ui/pages/landing_page.dart';
 import 'package:mentor/feature/assessment/ui/pages/assessment_screen.dart';
 import 'package:mentor/feature/assessment/bloc/assessment_bloc.dart';
+import 'package:mentor/feature/landing/ui/pages/meet_our_team.dart';
 
 
 import '../utils/constants/routes.dart';
@@ -50,6 +51,11 @@ class AppRouter {
               path: Routes.landing,
               name: 'landing',
               builder: (_, __) => const LandingPage(),
+            ),
+            GoRoute(
+              path: Routes.meetOurTeam,
+              name: 'meetOurTeam',
+              builder: (_, __) => const AboutUsPage(),
             ),
 
             // Quiz route with the same bloc provider logic as before

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mentor/core/utils/constants/routes.dart';
 import 'package:mentor/core/utils/extensions/l10n_extension.dart';
 import 'package:mentor/core/utils/theme/app_theme.dart';
 import 'package:mentor/feature/landing/ui/widgets/footer_links.dart';
@@ -28,17 +30,20 @@ class FooterSection extends StatelessWidget {
           FooterLinks(
             title: context.l10n.footerServices,
             items: [
-              context.l10n.footerServiceGuidance,
-              context.l10n.footerServicePersonalityAnalysis,
-              context.l10n.footerServiceCourses,
+              LinkItem(text: context.l10n.footerServiceGuidance),
+              LinkItem(text: context.l10n.footerServicePersonalityAnalysis),
+              LinkItem(text: context.l10n.footerServiceCourses),
             ],
           ),
           FooterLinks(
             title: context.l10n.footerQuickLinks,
             items: [
-              context.l10n.footerQuickLinksDashboard,
-              context.l10n.footerQuickLinksProjects,
-              context.l10n.footerQuickLinksMentoring,
+              LinkItem(text: context.l10n.footerQuickLinksDashboard),
+              LinkItem(text: context.l10n.footerQuickLinksProjects),
+              LinkItem(
+                text: context.l10n.footerQuickLinksMentoring,
+                onTap: () => context.push(Routes.meetOurTeam),
+              ),
             ],
           ),
         ],
